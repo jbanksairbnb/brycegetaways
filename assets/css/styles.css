@@ -261,6 +261,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .homes .eyebrow { color: var(--sage); }
 .homes h2 { color: #fff; }
 .homes .section__head { margin-bottom: 60px; }
+/* Enlarged "Two Homes" heading lockup (doubled from the base scale) */
+.homes .section__head .eyebrow { font-size: 24px; letter-spacing: .24em; line-height: 1.2; margin-bottom: 20px; }
+.homes .section__head h2 { font-size: 48px; }
 
 .home-row { display: grid; gap: 52px; align-items: center; margin-bottom: 40px; }
 .home-row--photos-left { grid-template-columns: 1.2fr 1fr; }
@@ -309,10 +312,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .explore { background: var(--sand); padding: 90px var(--pad); }
 .explore .section__head { margin-bottom: 52px; }
 .places { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
-.place { background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine); }
+.place {
+  background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine);
+  color: inherit; display: flex; flex-direction: column;
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+}
+a.place:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 12px 26px rgba(27, 29, 27, .10); color: inherit; }
 .place__dist { font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: var(--muted-grey); margin-bottom: 12px; }
 .place__name { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; margin-bottom: 10px; }
 .place__copy { font-size: 14px; line-height: 1.65; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+.place__more {
+  margin-top: 16px; font-family: var(--sans); font-weight: 400; font-size: 11px;
+  line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--pine);
+}
+a.place:hover .place__more { color: var(--pine-dark); }
 
 .getting-here {
   display: flex; justify-content: center; gap: 56px; align-items: center; flex-wrap: wrap;
@@ -409,6 +422,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 
   .hero h1 { font-size: 44px; }
   .section h2, .book h2 { font-size: 34px; }
+  .homes .section__head .eyebrow { font-size: 18px; }
+  .homes .section__head h2 { font-size: 36px; }
 
   .season-body { grid-template-columns: 1fr; gap: 28px; }
   .season-figure, .season-figure img { height: 300px; }
@@ -437,4 +452,60 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
+}
+
+/* ==========================================================================
+   Sub-page: Wine Country (and other interior pages)
+   ========================================================================== */
+.subpage-hero { position: relative; height: 56vh; min-height: 420px; overflow: hidden; }
+.subpage-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
+.subpage-hero__scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(12,14,13,.5) 0%, rgba(12,14,13,.15) 45%, rgba(12,14,13,.6) 100%);
+}
+.subpage-hero__content { position: absolute; left: var(--pad); right: var(--pad); bottom: 52px; max-width: 720px; }
+.subpage-hero__eyebrow {
+  font-family: var(--sans); font-weight: 400; font-size: 13px; line-height: 1;
+  letter-spacing: .3em; text-transform: uppercase; color: rgba(255,255,255,.85); margin-bottom: 16px;
+}
+.subpage-hero h1 { font-size: 60px; line-height: 1.05; color: #fff; }
+
+.wine-intro { max-width: 760px; margin: 0 auto; padding: 74px var(--pad) 20px; text-align: center; }
+.wine-intro p { font-size: 17px; line-height: 1.75; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+
+.wine-group { max-width: var(--maxw); margin: 0 auto; padding: 54px var(--pad) 0; }
+.wine-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--hairline); padding-bottom: 18px; margin-bottom: 34px; }
+.wine-group__head h2 { font-size: 34px; line-height: 1.1; }
+.wine-group__head .eyebrow { color: var(--muted-grey); }
+
+.venues { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.venue {
+  border: 1px solid var(--hairline); border-top: 2px solid var(--pine);
+  padding: 26px 26px 24px; display: flex; flex-direction: column;
+  background: #fff; color: inherit;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+a.venue:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(27,29,27,.10); color: inherit; }
+.venue__top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.venue__name { font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.15; }
+.venue__dist { font-family: var(--sans); font-weight: 400; font-size: 10.5px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--pine); white-space: nowrap; padding-top: 4px; }
+.venue__town { font-family: var(--sans); font-weight: 400; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted-grey); margin: 8px 0 14px; }
+.venue__copy { font-size: 14.5px; line-height: 1.65; font-weight: 300; color: var(--body-grey); margin: 0 0 18px; text-wrap: pretty; }
+.venue__link { margin-top: auto; font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--pine); }
+a.venue:hover .venue__link { color: var(--pine-dark); }
+
+.wine-note { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 0; }
+.wine-note p { font-size: 13.5px; line-height: 1.7; font-weight: 300; color: var(--muted-grey); margin: 0; text-align: center; text-wrap: pretty; }
+
+.wine-cta { text-align: center; padding: 64px var(--pad) 96px; }
+.wine-cta h2 { font-size: 38px; line-height: 1.1; margin-bottom: 10px; }
+.wine-cta p { font-size: 15px; line-height: 1.7; font-weight: 300; color: var(--body-grey); margin: 0 auto 26px; max-width: 480px; }
+
+@media (max-width: 1000px) {
+  .subpage-hero h1 { font-size: 40px; }
+  .wine-group__head h2 { font-size: 28px; }
+}
+@media (max-width: 560px) {
+  .venues { grid-template-columns: 1fr; }
+  .subpage-hero h1 { font-size: 32px; }
 }

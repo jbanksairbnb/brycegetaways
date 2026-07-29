@@ -66,18 +66,22 @@
     if (panel) panel.setAttribute("aria-labelledby", "tab-" + name);
   }
 
-  tabs.forEach(function (t, i) {
-    t.addEventListener("click", function () { selectSeason(t.getAttribute("data-season")); });
-    t.addEventListener("keydown", function (e) {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      e.preventDefault();
-      var dir = e.key === "ArrowRight" ? 1 : -1;
-      var next = tabs[(i + dir + tabs.length) % tabs.length];
-      next.focus();
-      selectSeason(next.getAttribute("data-season"));
+  // Seasons only exist on the homepage — guard so this script is safe to
+  // include on interior pages (wine country, property pages) too.
+  if (seasonImg && seasonTitle && seasonCopy && seasonChips && tabs.length) {
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { selectSeason(t.getAttribute("data-season")); });
+      t.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        var dir = e.key === "ArrowRight" ? 1 : -1;
+        var next = tabs[(i + dir + tabs.length) % tabs.length];
+        next.focus();
+        selectSeason(next.getAttribute("data-season"));
+      });
     });
-  });
-  selectSeason("Summer");
+    selectSeason("Summer");
+  }
 
   /* --------------------------------------------------------- Sticky header */
   var header = document.getElementById("siteHeader");
