@@ -283,6 +283,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
   letter-spacing: .1em; color: var(--bone); margin-bottom: 22px;
 }
 .home-rate { font-size: 14px; line-height: 1.6; color: var(--sage); margin-bottom: 24px; }
+.home-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
 .book-both {
   margin-top: 64px; border: 1px solid rgba(247, 245, 241, .25);
@@ -309,10 +310,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .explore { background: var(--sand); padding: 90px var(--pad); }
 .explore .section__head { margin-bottom: 52px; }
 .places { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
-.place { background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine); }
+.place {
+  background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine);
+  color: inherit; display: flex; flex-direction: column;
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+}
+a.place:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 12px 26px rgba(27, 29, 27, .10); color: inherit; }
 .place__dist { font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: var(--muted-grey); margin-bottom: 12px; }
 .place__name { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; margin-bottom: 10px; }
 .place__copy { font-size: 14px; line-height: 1.65; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+.place__more {
+  margin-top: 16px; font-family: var(--sans); font-weight: 400; font-size: 11px;
+  line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--pine);
+}
+a.place:hover .place__more { color: var(--pine-dark); }
 
 .getting-here {
   display: flex; justify-content: center; gap: 56px; align-items: center; flex-wrap: wrap;
