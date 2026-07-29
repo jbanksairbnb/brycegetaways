@@ -613,6 +613,9 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
    ========================================================================== */
 .pull-quote { background: var(--sand); padding: 80px var(--pad); text-align: center; }
 .pull-quote__stars { color: var(--pine); font-size: 13px; letter-spacing: 3px; margin-bottom: 22px; }
+/* Rotating verbatims: fade the text out/in as JS swaps quotes */
+.pull-quote blockquote, .pull-quote cite { transition: opacity .45s ease; }
+.pull-quote.is-fading blockquote, .pull-quote.is-fading cite { opacity: 0; }
 .pull-quote blockquote {
   max-width: 940px; margin: 0 auto; padding: 0;
   font-family: var(--serif); font-weight: 300; font-size: 33px; line-height: 1.36;

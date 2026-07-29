@@ -182,4 +182,30 @@
     img.addEventListener("error", function () { markMissing(img); });
     if (img.complete && img.naturalWidth === 0) markMissing(img);
   });
+
+  /* ------------------------------------------------ Rotating verbatims */
+  // Any <section class="pull-quote" data-quote-rotator> with a JSON list of
+  // {quote, who} in a .pull-quote__quotes script tag cycles through them,
+  // fading between quotes. Honors prefers-reduced-motion (shows the first).
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("[data-quote-rotator]").forEach(function (section) {
+    var dataEl = section.querySelector(".pull-quote__quotes");
+    var quoteEl = section.querySelector("blockquote");
+    var citeEl = section.querySelector("cite");
+    if (!dataEl || !quoteEl || !citeEl) return;
+    var quotes;
+    try { quotes = JSON.parse(dataEl.textContent); } catch (e) { return; }
+    if (!Array.isArray(quotes) || quotes.length < 2 || reduceMotion) return;
+    var i = 0;
+    setInterval(function () {
+      i = (i + 1) % quotes.length;
+      section.classList.add("is-fading");
+      setTimeout(function () {
+        quoteEl.textContent = '"' + quotes[i].quote + '"';
+        citeEl.textContent = quotes[i].who;
+        section.classList.remove("is-fading");
+      }, 450); // match the CSS opacity transition
+    }, 7000);
+  });
 })();
