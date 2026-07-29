@@ -9,7 +9,7 @@
       alt: "Snow on the slopes at Bryce Resort",
       title: "Ski-country winters, minutes from your door",
       copy: "Bryce Resort runs day and night skiing, snowboarding, tubing, and ice skating all winter — a five-minute walk from The Modern, a short stroll from The Chalet. Come home to the fireplace, or a hot tub under a cold, clear sky.",
-      chips: ["Skiing & snowboarding", "Night skiing", "Snow tubing", "Ice skating", "Après by the fire"]
+      chips: ["Skiing & snowboarding", "Ski & snowboard lessons", "Night skiing", "Snow tubing", "Ice skating", "Après by the fire"]
     },
     Spring: {
       img: "assets/img/season-spring.jpg",
@@ -23,14 +23,14 @@
       alt: "Covered deck bar with the Shenandoah Valley below",
       title: "Golf, lake days, and long evenings on the deck",
       copy: "Tee off on the PGA championship course, swim or kayak at Lake Laura, ride the mountain bike park — then grill dinner with the whole Shenandoah Valley laid out below you.",
-      chips: ["PGA golf", "Lake Laura", "Mountain bike park", "Zip line", "Deck dinners"]
+      chips: ["PGA golf", "Fling golf", "Scenic lift rides", "Lake Laura", "Mountain bike park", "Deck dinners"]
     },
     Fall: {
       img: "assets/img/season-fall.jpg",
       alt: "Fall foliage across the valley on Skyline Drive",
       title: "Foliage season on Skyline Drive",
       copy: "October is peak Bryce — fire-red ridgelines, wineries along the Shenandoah Wine Trail, and the most famous fall drive in America under an hour away. Firepit nights included.",
-      chips: ["Skyline Drive foliage", "Shenandoah wineries", "Hiking", "Firepit nights"]
+      chips: ["Skyline Drive foliage", "Shenandoah wineries", "Mountain biking", "Hiking", "Firepit nights"]
     }
   };
 
@@ -66,18 +66,22 @@
     if (panel) panel.setAttribute("aria-labelledby", "tab-" + name);
   }
 
-  tabs.forEach(function (t, i) {
-    t.addEventListener("click", function () { selectSeason(t.getAttribute("data-season")); });
-    t.addEventListener("keydown", function (e) {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      e.preventDefault();
-      var dir = e.key === "ArrowRight" ? 1 : -1;
-      var next = tabs[(i + dir + tabs.length) % tabs.length];
-      next.focus();
-      selectSeason(next.getAttribute("data-season"));
+  // Seasons only exist on the homepage — guard so this script is safe to
+  // include on interior pages (wine country, property pages) too.
+  if (seasonImg && seasonTitle && seasonCopy && seasonChips && tabs.length) {
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { selectSeason(t.getAttribute("data-season")); });
+      t.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        var dir = e.key === "ArrowRight" ? 1 : -1;
+        var next = tabs[(i + dir + tabs.length) % tabs.length];
+        next.focus();
+        selectSeason(next.getAttribute("data-season"));
+      });
     });
-  });
-  selectSeason("Summer");
+    selectSeason("Summer");
+  }
 
   /* --------------------------------------------------------- Sticky header */
   var header = document.getElementById("siteHeader");
