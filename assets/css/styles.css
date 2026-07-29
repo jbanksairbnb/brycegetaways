@@ -1,0 +1,440 @@
+/* ==========================================================================
+   Bryce Mountain Getaways — design system
+   Tokens and type scale per the approved high-fidelity homepage design.
+   Border radius: 0 everywhere. No shadows, no gradients except the hero scrim.
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --ink: #1b1d1b;
+  --bone: #f7f5f1;
+  --sand: #eceae3;
+  --pine: #3d5c4c;
+  --pine-dark: #2c453a;
+  --sage: #93a89a;
+  --sage-deep: #5f7a6b;
+  --mist: #e9ece8;
+  --body-grey: #454843;
+  --muted-grey: #5c5f5a;
+  --faint-grey: #8a8d86;
+  --hairline: rgba(27, 29, 27, .12);
+  --hairline-strong: rgba(27, 29, 27, .25);
+  --hairline-dark: rgba(247, 245, 241, .25);
+
+  /* Fonts */
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --maxw: 1240px;
+  --pad: 48px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; }
+
+a { color: var(--pine); text-decoration: none; transition: color .12s ease; }
+a:hover { color: var(--pine-dark); }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--pine);
+}
+
+/* Buttons -------------------------------------------------------------- */
+.btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 15px 28px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+  background: none;
+}
+.btn--solid { background: #fff; color: var(--ink); }
+.btn--solid:hover { background: var(--mist); color: var(--ink); }
+.btn--dark { background: var(--ink); color: #fff; }
+.btn--dark:hover { background: var(--pine); color: #fff; }
+.btn--light-outline { border-color: rgba(255, 255, 255, .7); color: #fff; }
+.btn--light-outline:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.btn--dark-outline { border-color: rgba(247, 245, 241, .6); color: #fff; }
+.btn--dark-outline:hover { background: rgba(247, 245, 241, .12); color: #fff; }
+.btn--bone { background: var(--bone); color: var(--ink); }
+.btn--bone:hover { background: #dfe4dd; color: var(--ink); }
+
+/* ==========================================================================
+   Logo lockup
+   ========================================================================== */
+.logo { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.logo__row { display: flex; align-items: baseline; gap: 9px; }
+.logo__word {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: .1em;
+}
+.logo__sub {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 10.5px;
+  line-height: 1;
+  letter-spacing: .64em;
+  padding-left: 2px;
+}
+
+/* ==========================================================================
+   Header — transparent over hero, opaque bone bar once scrolled
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px var(--pad);
+  transition: background .25s ease, padding .25s ease, box-shadow .25s ease;
+}
+.site-header .logo__word { color: #fff; }
+.site-header .logo__sub { color: rgba(255, 255, 255, .85); }
+.site-nav { display: flex; align-items: center; gap: 34px; }
+.site-nav a {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 12.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .9);
+}
+.site-nav a:hover { color: #fff; }
+.site-nav .btn { padding: 11px 22px; }
+
+/* the two logo peak variants */
+.logo__peaks--light { display: inline-block; }
+.logo__peaks--dark { display: none; }
+
+/* scrolled state */
+.site-header.is-scrolled {
+  background: var(--bone);
+  padding-top: 16px;
+  padding-bottom: 16px;
+  box-shadow: 0 1px 0 var(--hairline);
+}
+.site-header.is-scrolled .logo__word { color: var(--ink); }
+.site-header.is-scrolled .logo__sub { color: var(--muted-grey); }
+.site-header.is-scrolled .site-nav a { color: var(--ink); }
+.site-header.is-scrolled .site-nav a:hover { color: var(--pine); }
+.site-header.is-scrolled .site-nav .btn { border-color: var(--hairline-strong); color: var(--ink); }
+.site-header.is-scrolled .site-nav .btn:hover { background: var(--ink); color: #fff; }
+.site-header.is-scrolled .logo__peaks--light { display: none; }
+.site-header.is-scrolled .logo__peaks--dark { display: inline-block; }
+
+.nav-toggle { display: none; }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero { position: relative; height: 92vh; min-height: 640px; overflow: hidden; }
+.hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+.hero__scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(12, 14, 13, .45) 0%,
+    rgba(12, 14, 13, 0) 30%,
+    rgba(12, 14, 13, 0) 55%,
+    rgba(12, 14, 13, .55) 100%);
+}
+.hero__content { position: absolute; left: var(--pad); bottom: 56px; max-width: 640px; }
+.hero__eyebrow {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .85);
+  margin-bottom: 18px;
+}
+.hero h1 { font-size: 68px; line-height: 1.05; color: #fff; }
+.hero__sub {
+  font-size: 17px; line-height: 1.6; font-weight: 300;
+  color: rgba(255, 255, 255, .88);
+  margin: 20px 0 28px; max-width: 480px;
+}
+.hero__cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ==========================================================================
+   Trust strip
+   ========================================================================== */
+.trust {
+  display: flex; justify-content: center; gap: 70px;
+  padding: 44px 40px;
+  border-bottom: 1px solid rgba(27, 29, 27, .1);
+  flex-wrap: wrap;
+}
+.trust__item { text-align: center; }
+.trust__value { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; }
+.trust__label {
+  font-weight: 300; font-size: 11.5px; line-height: 1.5;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--muted-grey); margin-top: 5px;
+}
+
+/* ==========================================================================
+   Section scaffolding
+   ========================================================================== */
+.section { padding: 90px var(--pad) 80px; }
+.section__head { text-align: center; margin-bottom: 40px; }
+.section__head .eyebrow { margin-bottom: 14px; }
+.section h2 { font-size: 46px; line-height: 1.1; }
+
+/* anchor offset for the fixed header */
+:target { scroll-margin-top: 90px; }
+
+/* ==========================================================================
+   Seasons
+   ========================================================================== */
+#seasons { max-width: var(--maxw); margin: 0 auto; }
+.season-tabs {
+  display: flex; justify-content: center; gap: 8px;
+  border-bottom: 1px solid rgba(27, 29, 27, .12);
+  margin-bottom: 44px;
+}
+.season-tab {
+  font-family: var(--sans); font-weight: 400; font-size: 13px;
+  letter-spacing: .22em; text-transform: uppercase;
+  padding: 16px 26px; cursor: pointer;
+  color: var(--muted-grey);
+  background: none; border: 0;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color .12s ease, border-color .12s ease;
+}
+.season-tab:hover { color: var(--ink); }
+.season-tab.is-active { color: var(--ink); border-bottom-color: var(--pine); }
+
+.season-body { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center; }
+.season-figure { height: 420px; position: relative; overflow: hidden; }
+.season-figure img { width: 100%; height: 420px; object-fit: cover; }
+.season-title { font-size: 34px; line-height: 1.15; margin-bottom: 16px; }
+.season-copy {
+  font-size: 16px; line-height: 1.75; font-weight: 300;
+  color: var(--body-grey); margin: 0 0 26px; text-wrap: pretty;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  font-family: var(--sans); font-weight: 400; font-size: 12px;
+  letter-spacing: .14em; color: var(--pine);
+  border: 1px solid rgba(61, 92, 76, .4); padding: 9px 16px;
+}
+
+/* ==========================================================================
+   The Homes — dark section
+   ========================================================================== */
+.homes { background: var(--ink); color: var(--bone); padding: 90px var(--pad); }
+.homes .eyebrow { color: var(--sage); }
+.homes h2 { color: #fff; }
+.homes .section__head { margin-bottom: 60px; }
+
+.home-row { display: grid; gap: 52px; align-items: center; margin-bottom: 40px; }
+.home-row--photos-left { grid-template-columns: 1.2fr 1fr; }
+.home-row--photos-right { grid-template-columns: 1fr 1.2fr; }
+
+.home-gallery__hero { width: 100%; height: 400px; object-fit: cover; }
+.home-gallery__strip { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+.home-gallery__strip img { width: 100%; height: 110px; object-fit: cover; }
+
+.home-eyebrow {
+  font-family: var(--sans); font-weight: 400; font-size: 11.5px; line-height: 1;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px;
+}
+.home-name { font-size: 36px; line-height: 1.1; color: #fff; margin-bottom: 6px; }
+.home-airbnb { font-size: 13px; line-height: 1.5; color: rgba(247, 245, 241, .55); margin-bottom: 18px; }
+.home-desc { font-size: 15.5px; line-height: 1.75; color: rgba(247, 245, 241, .82); margin: 0 0 22px; text-wrap: pretty; }
+.home-specs {
+  display: flex; flex-wrap: wrap; gap: 26px;
+  font-weight: 400; font-size: 12.5px; line-height: 1.6;
+  letter-spacing: .1em; color: var(--bone); margin-bottom: 22px;
+}
+.home-rate { font-size: 14px; line-height: 1.6; color: var(--sage); margin-bottom: 24px; }
+
+.book-both {
+  margin-top: 64px; border: 1px solid rgba(247, 245, 241, .25);
+  padding: 28px 36px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.book-both__title { font-family: var(--serif); font-weight: 300; font-size: 24px; line-height: 1.2; color: #fff; }
+.book-both__copy { font-size: 14.5px; line-height: 1.6; color: rgba(247, 245, 241, .7); margin-top: 4px; }
+
+/* ==========================================================================
+   Reviews
+   ========================================================================== */
+#reviews { max-width: var(--maxw); margin: 0 auto; }
+#reviews .section__head { margin-bottom: 52px; }
+.reviews-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+.review-card { border: 1px solid rgba(27, 29, 27, .14); padding: 32px 30px; }
+.review-stars { color: var(--pine); font-size: 13px; letter-spacing: 3px; margin-bottom: 16px; }
+.review-quote { font-family: var(--serif); font-weight: 300; font-size: 20px; line-height: 1.5; margin: 0 0 18px; text-wrap: pretty; }
+.review-who { font-family: var(--sans); font-weight: 400; font-size: 11.5px; line-height: 1; letter-spacing: .2em; color: var(--muted-grey); }
+.reviews-foot { text-align: center; margin-top: 40px; font-size: 14px; line-height: 1.6; color: var(--muted-grey); }
+
+/* ==========================================================================
+   Explore
+   ========================================================================== */
+.explore { background: var(--sand); padding: 90px var(--pad); }
+.explore .section__head { margin-bottom: 52px; }
+.places { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.place { background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine); }
+.place__dist { font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1; letter-spacing: .24em; text-transform: uppercase; color: var(--muted-grey); margin-bottom: 12px; }
+.place__name { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; margin-bottom: 10px; }
+.place__copy { font-size: 14px; line-height: 1.65; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+
+.getting-here {
+  display: flex; justify-content: center; gap: 56px; align-items: center; flex-wrap: wrap;
+  margin-top: 56px; padding-top: 44px; border-top: 1px solid rgba(27, 29, 27, .12);
+}
+.getting-here__label { font-family: var(--sans); font-weight: 400; font-size: 12px; line-height: 1; letter-spacing: .28em; text-transform: uppercase; color: var(--pine); }
+.drive { text-align: center; }
+.drive__time { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.1; }
+.drive__from { font-weight: 300; font-size: 11.5px; line-height: 1.5; letter-spacing: .18em; text-transform: uppercase; color: var(--muted-grey); margin-top: 4px; }
+
+/* ==========================================================================
+   Booking
+   ========================================================================== */
+.book { padding: 90px var(--pad); max-width: 900px; margin: 0 auto; text-align: center; }
+.book .eyebrow { margin-bottom: 14px; }
+.book h2 { font-size: 46px; line-height: 1.1; margin-bottom: 16px; }
+.book__intro { font-size: 15.5px; line-height: 1.7; font-weight: 300; color: var(--body-grey); max-width: 560px; margin: 0 auto 36px; }
+
+.book-form { text-align: left; }
+.book-form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field--full { grid-column: 1 / -1; }
+.field label {
+  font-family: var(--sans); font-weight: 400; font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted-grey);
+}
+.field input, .field select, .field textarea {
+  font-family: var(--sans); font-weight: 300; font-size: 14px; color: var(--ink);
+  padding: 14px 16px; border: 1px solid var(--hairline-strong); background: #fff; border-radius: 0;
+  width: 100%;
+}
+.field textarea { resize: vertical; min-height: 90px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--pine); }
+
+.consent { display: flex; gap: 12px; align-items: flex-start; margin: 22px 0; background: #f1efe9; border: 1px solid var(--hairline); padding: 16px 18px; }
+.consent input { margin-top: 3px; }
+.consent label { font-size: 13.5px; line-height: 1.55; color: var(--body-grey); }
+.book-form__submit { display: flex; justify-content: center; margin-top: 8px; }
+.book-form__submit .btn { min-width: 260px; text-align: center; }
+.book-note { font-weight: 300; font-size: 12.5px; line-height: 1.6; color: var(--faint-grey); margin-top: 18px; text-align: center; }
+.form-status { text-align: center; margin-top: 18px; font-size: 14px; color: var(--pine); min-height: 1em; }
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer { background: var(--ink); color: rgba(247, 245, 241, .75); padding: 54px var(--pad); }
+.site-footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap; }
+.site-footer .logo__word { color: #fff; font-size: 20px; }
+.site-footer .logo__sub { color: rgba(247, 245, 241, .6); font-size: 9px; }
+.footer-links { display: flex; gap: 36px; font-weight: 300; font-size: 12.5px; letter-spacing: .16em; }
+.footer-links a { color: rgba(247, 245, 241, .75); }
+.footer-links a:hover { color: #fff; }
+.footer-addr { font-weight: 300; font-size: 12px; line-height: 1.6; color: rgba(247, 245, 241, .45); text-align: right; }
+
+/* ==========================================================================
+   Image placeholder fallback (before real photos are dropped in)
+   ========================================================================== */
+.img-missing {
+  background: var(--mist) !important;
+  position: relative;
+}
+.img-missing::after {
+  content: attr(data-label);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; text-align: center;
+  font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--sage-deep);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1000px) {
+  :root { --pad: 28px; }
+
+  .nav-toggle {
+    display: inline-flex; flex-direction: column; gap: 5px;
+    background: none; border: 0; cursor: pointer; padding: 6px; z-index: 110;
+  }
+  .nav-toggle span { width: 26px; height: 2px; background: #fff; transition: background .2s ease; }
+  .site-header.is-scrolled .nav-toggle span { background: var(--ink); }
+
+  .site-nav {
+    position: fixed; inset: 0 0 0 auto; width: min(78vw, 320px);
+    background: var(--ink); flex-direction: column; align-items: flex-start;
+    justify-content: center; gap: 26px; padding: 40px;
+    transform: translateX(100%); transition: transform .3s ease;
+  }
+  .site-nav.is-open { transform: translateX(0); }
+  .site-nav a { color: rgba(255, 255, 255, .92); font-size: 15px; }
+  .site-header.is-scrolled .site-nav a { color: rgba(255, 255, 255, .92); }
+  .site-header.is-scrolled .site-nav .btn { border-color: rgba(255,255,255,.7); color: #fff; }
+
+  .hero h1 { font-size: 44px; }
+  .section h2, .book h2 { font-size: 34px; }
+
+  .season-body { grid-template-columns: 1fr; gap: 28px; }
+  .season-figure, .season-figure img { height: 300px; }
+  .season-tabs { overflow-x: auto; justify-content: flex-start; }
+
+  .home-row--photos-left, .home-row--photos-right { grid-template-columns: 1fr; }
+  .home-row--photos-right .home-copy { order: 2; }
+  .home-row--photos-right .home-gallery { order: 1; }
+
+  .reviews-grid { grid-template-columns: 1fr; }
+  .places { grid-template-columns: 1fr 1fr; }
+  .book-both { flex-direction: column; align-items: flex-start; }
+
+  .site-footer .wrap { flex-direction: column; align-items: flex-start; }
+  .footer-addr { text-align: left; }
+}
+
+@media (max-width: 560px) {
+  .hero h1 { font-size: 36px; }
+  .trust { gap: 32px 40px; }
+  .places { grid-template-columns: 1fr; }
+  .book-form__grid { grid-template-columns: 1fr; }
+  .getting-here { gap: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
