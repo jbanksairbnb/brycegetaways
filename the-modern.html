@@ -56,7 +56,15 @@
 
   <!-- ====================================================== Hero -->
   <section class="subpage-hero">
-    <img class="subpage-hero__img" src="assets/img/hero-modern-twilight.jpg" alt="The Modern at twilight with the Shenandoah ridgeline behind">
+    <!-- Background hero video. Drop a short, silent, web-optimized loop at
+         assets/video/modern-hero.mp4 and it plays automatically. Until the file
+         exists (and on reduced-motion, mobile data savers, or unsupported
+         browsers) the poster photo shows instead — no broken state. -->
+    <video class="subpage-hero__img" autoplay muted loop playsinline preload="metadata"
+           poster="assets/img/hero-modern-twilight.jpg"
+           aria-label="The Modern at twilight with the Shenandoah ridgeline behind">
+      <source src="assets/video/modern-hero.mp4" type="video/mp4">
+    </video>
     <div class="subpage-hero__scrim"></div>
     <div class="subpage-hero__content">
       <div class="subpage-hero__eyebrow">155 ASPEN WAY SOUTH · NEW FOR THIS SEASON</div>
@@ -85,6 +93,23 @@
     <div class="prop-badges">
       <span>New for 2026</span><span>Superhost Hosts</span><span>Self Check-In</span><span>Hot Tub &amp; Fire Pit</span><span>Heated Bath Floors</span><span>Shentel Fiber Wi-Fi</span>
     </div>
+  </section>
+
+  <!-- ====================================================== Perfect for -->
+  <section class="perfect-for">
+    <span class="perfect-for__label">Perfect For</span>
+    <span class="chip">Families</span>
+    <span class="chip">Couples</span>
+    <span class="chip">Remote Work</span>
+    <span class="chip">Ski Weekends</span>
+    <span class="chip">Dogs Welcome</span>
+  </section>
+
+  <!-- ====================================================== Pull quote -->
+  <section class="pull-quote">
+    <div class="pull-quote__stars">★★★★★</div>
+    <blockquote>"You cannot beat this view — this home is truly the perfect location for gathering with friends or family and spending time together."</blockquote>
+    <cite>Sampath · Powell, Ohio</cite>
   </section>
 
   <!-- ====================================================== Walkthrough -->
@@ -159,6 +184,31 @@
 
   </section>
 
+  <!-- ====================================================== Kitchen feature -->
+  <section class="feature">
+    <div class="feature__wrap">
+      <div class="feature__media">
+        <img src="assets/img/modern-kitchen.jpg" alt="The Modern chef's kitchen with an oversized island">
+      </div>
+      <div class="feature__text">
+        <div class="eyebrow">Guests' #1 Feature</div>
+        <h2>A kitchen made for gathering</h2>
+        <p class="feature__lead">An oversized island at the heart of the home, a fully stocked gourmet kitchen, and a coffee bar that would make a barista jealous.</p>
+        <ul class="feature__list">
+          <li>Oversized island seating</li>
+          <li>Gourmet cookware &amp; bakeware</li>
+          <li>Breville espresso machine</li>
+          <li>Drip coffee maker &amp; Keurig</li>
+          <li>Grinder &amp; complimentary coffee</li>
+          <li>Spices, oils &amp; staples</li>
+          <li>Double ovens</li>
+          <li>Room to cook together</li>
+        </ul>
+        <p class="feature__quote">"An impressively stocked kitchen that made it super easy for us to cook — loved this spot, and the views were absolutely incredible too!"<cite>George · Alexandria, Virginia</cite></p>
+      </div>
+    </div>
+  </section>
+
   <!-- ====================================================== Amenities -->
   <section class="amen">
     <div class="amen__wrap">
@@ -216,6 +266,7 @@
             <li>High chair</li>
             <li>Baby gate</li>
             <li>Dog friendly (up to 2 dogs)</li>
+            <li>Dog park about a mile away</li>
           </ul>
         </div>
         <div class="amen-group">
@@ -224,6 +275,7 @@
             <li>Self check-in with lockbox</li>
             <li>Exclusive access to the whole home</li>
             <li>Private driveway &amp; street parking</li>
+            <li>Thorough digital house &amp; area guide</li>
           </ul>
         </div>
       </div>

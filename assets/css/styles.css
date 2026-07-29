@@ -607,3 +607,50 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   .room__gallery img { height: 240px; }
   .prop-facts { gap: 28px 40px; }
 }
+
+/* ==========================================================================
+   Shared marketing blocks — pull-quote, "perfect for", feature callout
+   ========================================================================== */
+.pull-quote { background: var(--sand); padding: 80px var(--pad); text-align: center; }
+.pull-quote__stars { color: var(--pine); font-size: 13px; letter-spacing: 3px; margin-bottom: 22px; }
+.pull-quote blockquote {
+  max-width: 940px; margin: 0 auto; padding: 0;
+  font-family: var(--serif); font-weight: 300; font-size: 33px; line-height: 1.36;
+  color: var(--ink); text-wrap: pretty;
+}
+.pull-quote cite {
+  display: block; margin-top: 24px; font-family: var(--sans); font-style: normal;
+  font-weight: 400; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted-grey);
+}
+
+.perfect-for {
+  max-width: var(--maxw); margin: 0 auto; padding: 42px var(--pad);
+  display: flex; align-items: center; justify-content: center; gap: 12px 14px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--hairline);
+}
+.perfect-for__label {
+  font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--pine); margin-right: 6px;
+}
+
+.feature { padding: 82px var(--pad); }
+.feature__wrap { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 54px; align-items: center; }
+.feature--flip .feature__media { order: 2; }
+.feature__media img { width: 100%; height: 460px; object-fit: cover; }
+.feature .eyebrow { margin-bottom: 12px; }
+.feature h2 { font-size: 34px; line-height: 1.12; margin-bottom: 16px; }
+.feature__lead { font-size: 16px; line-height: 1.75; font-weight: 300; color: var(--body-grey); margin: 0 0 22px; text-wrap: pretty; }
+.feature__list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; margin: 0 0 4px; padding: 0; list-style: none; }
+.feature__list li { font-size: 14px; line-height: 1.5; font-weight: 300; color: var(--body-grey); padding: 8px 0; border-top: 1px solid var(--hairline); }
+.feature__quote { margin-top: 22px; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 18px; line-height: 1.5; color: var(--ink); text-wrap: pretty; }
+.feature__quote cite { font-style: normal; display: block; margin-top: 8px; font-family: var(--sans); font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted-grey); }
+
+@media (max-width: 1000px) {
+  .pull-quote blockquote { font-size: 26px; }
+  .feature__wrap { grid-template-columns: 1fr; gap: 32px; }
+  .feature--flip .feature__media { order: 0; }
+  .feature__media img { height: 320px; }
+}
+@media (max-width: 560px) {
+  .feature__list { grid-template-columns: 1fr; }
+}
