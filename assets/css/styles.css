@@ -806,6 +806,8 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
 .bk-row--sub { color: var(--muted-grey); font-size: 13px; }
 .bk-row--total { border-top: 1px solid var(--hairline); margin-top: 6px; padding-top: 10px; font-weight: 500; font-size: 16px; }
 .bk-fineprint { font-size: 12px; color: var(--muted-grey); margin: 12px 0 0; text-wrap: pretty; }
+.bk-cancel { font-size: 12.5px; line-height: 1.5; color: var(--body-grey); margin: 12px 0 0; padding: 10px 12px; background: var(--sand); border-left: 3px solid var(--sage-deep); text-wrap: pretty; }
+.bk-cancel strong { color: var(--ink); }
 .bk-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; }
 .bk-actions .btn--light-outline { border-color: var(--hairline-strong); color: var(--ink); }
 .bk-actions .btn--light-outline:hover { background: var(--mist); color: var(--ink); }
