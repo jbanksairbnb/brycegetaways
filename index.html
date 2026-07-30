@@ -52,7 +52,7 @@
       <a href="#homes">THE HOMES</a>
       <a href="#reviews">REVIEWS</a>
       <a href="#explore">EXPLORE</a>
-      <a href="#book" class="btn btn--light-outline" data-availability="chalet">CHECK AVAILABILITY</a>
+      <a href="#homes" class="btn btn--light-outline" data-availability="chalet">CHECK AVAILABILITY</a>
     </nav>
   </header>
 
@@ -65,7 +65,7 @@
       <h1>Four seasons.<br>Two front doors.</h1>
       <p class="hero__sub">Two mountain homes, side by side on Aspen Way South — a short walk to the slopes &amp; a quick drive to the lodge, links, and lake at Bryce Resort.</p>
       <div class="hero__cta">
-        <a href="#book" class="btn btn--solid">BOOK YOUR STAY</a>
+        <a href="#homes" class="btn btn--solid" data-availability="chalet">BOOK YOUR STAY</a>
         <a href="#homes" class="btn btn--light-outline">SEE THE HOMES</a>
       </div>
     </div>
@@ -132,7 +132,7 @@
           <div class="home-rate">From $375 per night · 2-night minimum</div>
           <div class="home-actions">
             <a href="the-chalet.html" class="btn btn--bone">TAKE THE WALKTHROUGH →</a>
-            <a href="#book" class="btn btn--dark-outline" data-home="chalet" data-availability="chalet">CHECK DATES</a>
+            <a href="#homes" class="btn btn--dark-outline" data-home="chalet" data-availability="chalet">CHECK DATES</a>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@
           <div class="home-rate">From $375 per night · 2-night minimum</div>
           <div class="home-actions">
             <a href="the-modern.html" class="btn btn--bone">TAKE THE WALKTHROUGH →</a>
-            <a href="#book" class="btn btn--dark-outline" data-home="modern" data-availability="modern">CHECK DATES</a>
+            <a href="#homes" class="btn btn--dark-outline" data-home="modern" data-availability="modern">CHECK DATES</a>
           </div>
         </div>
         <div class="home-gallery">
@@ -167,7 +167,7 @@
           <div class="book-both__title">Traveling with a crowd?</div>
           <div class="book-both__copy">Book both homes — one driveway apart — and bring up to 20 guests together.</div>
         </div>
-        <a href="#book" class="btn btn--bone" data-home="both">BOOK BOTH HOMES</a>
+        <a href="#contact" class="btn btn--bone" data-home="both">BOOK BOTH HOMES</a>
       </div>
     </div>
   </section>
@@ -250,78 +250,43 @@
   </section>
 
   <!-- ====================================================== Booking -->
-  <section class="book" id="book">
-    <div class="eyebrow">Plan Your Stay</div>
-    <h2>Request your dates</h2>
-    <p class="book__intro">Choose a home and your dates — we hold them while we confirm your booking personally. Two-night minimum. Calendars stay in sync with our Airbnb listings.</p>
-
-    <!-- Interim booking-request form. Emails the hosts via Formspree until the
-         full availability-calendar + hold flow is built. -->
-    <form class="book-form" id="bookForm" action="https://formspree.io/f/mqaqgypl" method="POST">
-      <div class="book-form__grid">
-        <div class="field">
-          <label for="f-home">Home</label>
-          <select id="f-home" name="home" required>
-            <option value="Either home">Either home</option>
-            <option value="The Chalet">The Chalet</option>
-            <option value="The Modern">The Modern</option>
-            <option value="Both homes">Both homes</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="f-guests">Guests</label>
-          <select id="f-guests" name="guests" required>
-            <option value="" disabled selected>Select…</option>
-            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-            <option>11–20 (both homes)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="f-checkin">Check-in</label>
-          <input type="date" id="f-checkin" name="check_in" required>
-        </div>
-        <div class="field">
-          <label for="f-checkout">Check-out</label>
-          <input type="date" id="f-checkout" name="check_out" required>
-        </div>
-        <div class="field">
-          <label for="f-name">Full name</label>
-          <input type="text" id="f-name" name="name" minlength="2" required>
-        </div>
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input type="email" id="f-email" name="email" required>
-        </div>
-        <div class="field">
-          <label for="f-phone">Phone</label>
-          <input type="tel" id="f-phone" name="phone" required>
-        </div>
-        <div class="field">
-          <label for="f-pets">Pets? (+$50)</label>
-          <select id="f-pets" name="pets">
-            <option value="No">No pets</option>
-            <option value="Yes">Yes — 1 dog</option>
-            <option value="Yes — 2 dogs">Yes — 2 dogs</option>
-          </select>
-        </div>
-        <div class="field field--full">
-          <label for="f-msg">Anything we should know? (optional)</label>
-          <textarea id="f-msg" name="message"></textarea>
-        </div>
+  <section class="contact" id="contact">
+    <div class="contact__wrap">
+      <div class="section__head">
+        <div class="eyebrow">Questions?</div>
+        <h2>Contact us</h2>
+        <p class="book__intro">A question about the homes, your dates, or booking both homes together? Send a note and we'll get back to you — usually within the hour. To check availability and book, use <a href="#homes" data-availability="chalet">Check Availability</a>.</p>
       </div>
-
-      <div class="consent">
-        <input type="checkbox" id="f-consent" name="consent" required>
-        <label for="f-consent">I understand this is a <strong>booking request</strong>. My dates will be held while the hosts confirm and send payment details. This is not a confirmed reservation yet.</label>
-      </div>
-
-      <div class="book-form__submit">
-        <button type="submit" class="btn btn--dark" id="bookSubmit">REQUEST THESE DATES</button>
-      </div>
-      <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
-      <p class="book-note">Prefer to talk it through? Email <a href="mailto:brycegetaways@gmail.com">brycegetaways@gmail.com</a> or message us on Instagram. A live availability calendar is coming soon.</p>
-    </form>
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/mqaqgypl" method="POST">
+        <input type="hidden" name="type" value="Website question">
+        <input type="hidden" name="_subject" value="Website question — Bryce Mountain Getaways">
+        <div class="cf-row">
+          <label for="c-name">Full name</label>
+          <input type="text" id="c-name" name="name" minlength="2" required>
+        </div>
+        <div class="cf-row">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" name="email" required>
+        </div>
+        <div class="cf-row">
+          <label for="c-phone">Phone (optional)</label>
+          <input type="tel" id="c-phone" name="phone">
+        </div>
+        <div class="cf-row">
+          <label for="c-subject">Subject</label>
+          <input type="text" id="c-subject" name="subject" placeholder="e.g. Booking both homes">
+        </div>
+        <div class="cf-row cf-full">
+          <label for="c-msg">Message</label>
+          <textarea id="c-msg" name="message" required></textarea>
+        </div>
+        <div class="cf-full book-form__submit">
+          <button type="submit" class="btn btn--dark" id="contactSubmit">SEND MESSAGE</button>
+        </div>
+        <div class="contact__status" id="contactStatus" role="status" aria-live="polite"></div>
+        <p class="book-note cf-full">Prefer email? <a href="mailto:brycegetaways@gmail.com">brycegetaways@gmail.com</a> &middot; or message us on <a href="https://instagram.com/brycemountaingetaways" target="_blank" rel="noopener">Instagram</a>.</p>
+      </form>
+    </div>
   </section>
 
   <!-- ====================================================== Footer -->
@@ -348,5 +313,6 @@
 
   <script src="assets/js/main.js"></script>
   <script src="assets/js/calendar.js"></script>
+  <script src="assets/js/booking.js"></script>
 </body>
 </html>

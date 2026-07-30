@@ -85,7 +85,7 @@
         '<div class="cal-months"></div>' +
         '<div class="cal-foot">' +
           '<div class="cal-summary">Select your check-in date</div>' +
-          '<button class="btn btn--dark cal-request" type="button" disabled>REQUEST THESE DATES</button>' +
+          '<button class="btn btn--dark cal-request" type="button" disabled>CONTINUE</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(overlay);
@@ -217,21 +217,12 @@
 
   function request() {
     if (!state.start || !state.end) return;
-    var label = LABEL[state.homeKey];
-    var form = document.getElementById("bookForm");
-    if (form) {
-      var sel = document.getElementById("f-home"); if (sel) sel.value = label;
-      var ci = document.getElementById("f-checkin"); if (ci) { ci.value = state.start; ci.dispatchEvent(new Event("change")); }
-      var co = document.getElementById("f-checkout"); if (co) co.value = state.end;
-      close();
-      var book = document.getElementById("book");
-      if (book) book.scrollIntoView({ behavior: "smooth" });
-      var nm = document.getElementById("f-name");
-      if (nm) setTimeout(function () { nm.focus(); }, 500);
+    close();
+    if (window.BMGBooking) {
+      window.BMGBooking.open(state.homeKey, state.start, state.end);
     } else {
-      // No form on this page (property pages) — hand off to the homepage form.
       window.location.href = "index.html?home=" + state.homeKey +
-        "&in=" + state.start + "&out=" + state.end + "#book";
+        "&in=" + state.start + "&out=" + state.end + "#homes";
     }
   }
 
@@ -261,6 +252,7 @@
     .then(function (r) { return r.json(); })
     .then(function (d) {
       state.data = d;
+      window.BMGData = d; // shared with the booking flow (booking.js)
       if (d.publicMonths && d.publicMonths >= 1) monthsAhead = d.publicMonths;
       build();
       bindTriggers();

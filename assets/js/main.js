@@ -106,85 +106,42 @@
     });
   }
 
-  /* --------------------------------------- Deep-link a home into the form */
-  var homeSelect = document.getElementById("f-home");
-  document.querySelectorAll("[data-home]").forEach(function (el) {
-    el.addEventListener("click", function () {
-      if (!homeSelect) return;
-      var map = { chalet: "The Chalet", modern: "The Modern", both: "Both homes" };
-      var val = map[el.getAttribute("data-home")];
-      if (val) homeSelect.value = val;
-    });
-  });
+  /* --------------------------------------------- Contact form submission */
+  var contactForm = document.getElementById("contactForm");
+  var contactStatus = document.getElementById("contactStatus");
+  var contactSubmit = document.getElementById("contactSubmit");
 
-  /* --------------------------------------------- Booking form submission */
-  var form = document.getElementById("bookForm");
-  var status = document.getElementById("formStatus");
-  var submitBtn = document.getElementById("bookSubmit");
-  var checkin = document.getElementById("f-checkin");
-  var checkout = document.getElementById("f-checkout");
-
-  // Prevent past dates; keep check-out after check-in with a 2-night minimum.
-  var today = new Date().toISOString().split("T")[0];
-  if (checkin) checkin.min = today;
-  if (checkout) checkout.min = today;
-  if (checkin && checkout) {
-    checkin.addEventListener("change", function () {
-      if (!checkin.value) return;
-      var min = new Date(checkin.value);
-      min.setDate(min.getDate() + 2);
-      checkout.min = min.toISOString().split("T")[0];
-      if (checkout.value && checkout.value < checkout.min) checkout.value = "";
-    });
-  }
-
-  if (form) {
-    form.addEventListener("submit", function (e) {
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (!form.checkValidity()) { form.reportValidity(); return; }
-      submitBtn.disabled = true;
-      submitBtn.textContent = "SENDING…";
-      status.textContent = "";
+      if (!contactForm.checkValidity()) { contactForm.reportValidity(); return; }
+      contactSubmit.disabled = true;
+      contactSubmit.textContent = "SENDING…";
+      contactStatus.textContent = "";
 
-      fetch(form.action, {
+      fetch(contactForm.action, {
         method: "POST",
-        body: new FormData(form),
+        body: new FormData(contactForm),
         headers: { Accept: "application/json" }
       })
         .then(function (res) {
           if (res.ok) {
-            form.reset();
-            status.style.color = "var(--pine)";
-            status.textContent = "Your request is in — Jonathan or Anna will reach out within a few hours with booking & payment details. Your dates are on hold.";
-            submitBtn.textContent = "REQUEST SENT ✓";
+            contactForm.reset();
+            contactStatus.style.color = "var(--pine)";
+            contactStatus.textContent = "Thanks — your message is on its way. Jonathan or Anna will get back to you, usually within the hour.";
+            contactSubmit.textContent = "MESSAGE SENT ✓";
           } else {
             throw new Error("Bad response");
           }
         })
         .catch(function () {
-          status.style.color = "#b3261e";
-          status.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out right away.";
-          submitBtn.disabled = false;
-          submitBtn.textContent = "REQUEST THESE DATES";
+          contactStatus.style.color = "#b3261e";
+          contactStatus.textContent = "Something went wrong. Please email brycegetaways@gmail.com and we'll get right back to you.";
+          contactSubmit.disabled = false;
+          contactSubmit.textContent = "SEND MESSAGE";
         });
     });
   }
-
-  /* ------------------------ Prefill the form from calendar query params */
-  // The availability calendar on the property pages hands off to this form via
-  // index.html?home=chalet&in=YYYY-MM-DD&out=YYYY-MM-DD#book
-  (function () {
-    if (!form) return;
-    var q = new URLSearchParams(window.location.search);
-    var homeMap = { chalet: "The Chalet", modern: "The Modern", both: "Both homes" };
-    if (q.get("home") && homeSelect && homeMap[q.get("home")]) homeSelect.value = homeMap[q.get("home")];
-    if (q.get("in") && checkin) { checkin.value = q.get("in"); checkin.dispatchEvent(new Event("change")); }
-    if (q.get("out") && checkout) checkout.value = q.get("out");
-    if (q.get("home") || q.get("in")) {
-      var nm = document.getElementById("f-name");
-      if (nm) setTimeout(function () { nm.focus(); }, 600);
-    }
-  })();
 
   /* --------------------------------- Graceful fallback for missing photos */
   function markMissing(img) {
