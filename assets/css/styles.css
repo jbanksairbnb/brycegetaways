@@ -556,6 +556,13 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
 .walk__head .eyebrow { margin-bottom: 14px; }
 .walk__head h2 { font-size: 40px; line-height: 1.1; }
 
+.video-tour { max-width: 960px; margin: 0 auto; padding: 64px var(--pad) 8px; }
+.video-tour__head { text-align: center; margin-bottom: 32px; }
+.video-tour__head .eyebrow { margin-bottom: 14px; }
+.video-tour__head h2 { font-size: 40px; line-height: 1.1; }
+.video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--ink); overflow: hidden; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
 .room { margin-bottom: 64px; }
 .room__caption {
   display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
