@@ -170,6 +170,22 @@
     });
   }
 
+  /* ------------------------ Prefill the form from calendar query params */
+  // The availability calendar on the property pages hands off to this form via
+  // index.html?home=chalet&in=YYYY-MM-DD&out=YYYY-MM-DD#book
+  (function () {
+    if (!form) return;
+    var q = new URLSearchParams(window.location.search);
+    var homeMap = { chalet: "The Chalet", modern: "The Modern", both: "Both homes" };
+    if (q.get("home") && homeSelect && homeMap[q.get("home")]) homeSelect.value = homeMap[q.get("home")];
+    if (q.get("in") && checkin) { checkin.value = q.get("in"); checkin.dispatchEvent(new Event("change")); }
+    if (q.get("out") && checkout) checkout.value = q.get("out");
+    if (q.get("home") || q.get("in")) {
+      var nm = document.getElementById("f-name");
+      if (nm) setTimeout(function () { nm.focus(); }, 600);
+    }
+  })();
+
   /* --------------------------------- Graceful fallback for missing photos */
   function markMissing(img) {
     img.classList.add("img-missing");
