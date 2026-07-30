@@ -92,8 +92,10 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
    Logo lockup
    ========================================================================== */
 .logo { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; }
-.logo__row { display: flex; align-items: baseline; gap: 9px; }
+.logo__row { display: flex; align-items: baseline; gap: 0; }
 .logo__word {
+  position: relative;
+  z-index: 1;
   font-family: var(--sans);
   font-weight: 500;
   font-size: 24px;
@@ -136,7 +138,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .site-nav a:hover { color: #fff; }
 .site-nav .btn { padding: 11px 22px; }
 
-/* the two logo peak variants */
+/* the two logo peak variants — enlarged and tucked left so the "E" overlaps the first peak */
+.logo__peaks { position: relative; z-index: 0; width: 60px; height: 30px; margin-left: -34px; }
 .logo__peaks--light { display: inline-block; }
 .logo__peaks--dark { display: none; }
 
