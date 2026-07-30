@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Availability Manager — Bryce Mountain Getaways</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body { padding: 0; }
+    .mgr { max-width: 1180px; margin: 0 auto; padding: 28px var(--pad) 80px; }
+    .mgr-top { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 6px; }
+    .mgr-top h1 { font-family: var(--serif); font-weight: 400; font-size: 34px; }
+    .mgr-top a { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; }
+    .mgr-sub { color: var(--muted-grey); font-size: 14px; margin-bottom: 22px; }
+
+    .mgr-card { background: #fff; border: 1px solid var(--hairline); padding: 18px 20px; margin-bottom: 18px; }
+    .mgr-bar { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+    .mgr-field { display: flex; flex-direction: column; gap: 5px; }
+    .mgr-field label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-grey); }
+    .mgr-field input { font-family: var(--sans); font-size: 14px; padding: 9px 11px; border: 1px solid var(--hairline-strong); background: var(--bone); min-width: 90px; }
+    .mgr-field input.wide { min-width: 280px; }
+    .mgr-btn { font-family: var(--sans); font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; padding: 11px 20px; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+    .mgr-btn--ghost { background: none; color: var(--ink); }
+    .mgr-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .mgr-status { margin-top: 12px; font-size: 13.5px; }
+    .mgr-status.is-ok { color: var(--pine); }
+    .mgr-status.is-err { color: #b3261e; }
+
+    .mgr-controls { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+    .mgr-home { display: flex; align-items: center; gap: 14px; }
+    .mgr-home img { width: 54px; height: 54px; object-fit: cover; }
+    .mgr-home__name { font-family: var(--serif); font-size: 24px; }
+    .mgr-rates { display: flex; align-items: flex-end; gap: 12px; margin-left: auto; flex-wrap: wrap; }
+
+    .mgr-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: sticky; top: 0; z-index: 5; }
+    .mgr-count { font-size: 13.5px; color: var(--muted-grey); margin-right: 4px; min-width: 120px; }
+    .mgr-toolbar[data-empty="true"] .mgr-needsel { opacity: .4; pointer-events: none; }
+
+    .mgr-legend { border: 0; padding: 8px 0 0; font-size: 13px; }
+    .mgr-legend .cal-key--price { background: var(--pine); }
+    .mgr-legend .cal-key--minx { background: var(--sage-deep); }
+    .mgr-legend__note { margin-left: auto; color: var(--muted-grey); }
+    .mgr-cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px 32px; margin-top: 14px; }
+    .mgr-cal .cal-month__label { font-family: var(--serif); font-size: 20px; margin-bottom: 10px; }
+    .mgr-cal .cal-cell--open, .mgr-cal .cal-cell--blocked { cursor: pointer; }
+    .mgr-cal .cal-cell.is-picked { outline: 2px solid var(--pine); outline-offset: -2px; }
+    .mgr-cal .cal-cell.has-override .cal-price { color: var(--pine); font-weight: 500; }
+
+    details.mgr-help { margin-top: 26px; font-size: 14px; color: var(--body-grey); }
+    details.mgr-help summary { cursor: pointer; font-family: var(--sans); letter-spacing: .1em; text-transform: uppercase; font-size: 12px; color: var(--pine); }
+    details.mgr-help ol { line-height: 1.7; }
+    details.mgr-help code { background: var(--sand); padding: 1px 5px; }
+  </style>
+</head>
+<body>
+  <div class="mgr">
+    <div class="mgr-top">
+      <h1>Availability &amp; Rates</h1>
+      <a href="index.html">← Back to site</a>
+    </div>
+    <p class="mgr-sub">Private manager for The Chalet &amp; The Modern. Click days to select, then set prices or block/unblock. Save writes straight to the live site.</p>
+
+    <!-- Connection -->
+    <div class="mgr-card">
+      <div class="mgr-bar">
+        <div class="mgr-field">
+          <label for="mgr-token">GitHub token</label>
+          <input id="mgr-token" class="wide" type="password" placeholder="paste once — stored in this browser only" autocomplete="off">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-branch">Branch</label>
+          <input id="mgr-branch" type="text" value="main">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-publicmonths">Guest view (months)</label>
+          <input id="mgr-publicmonths" type="number" min="1" max="24" value="12">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-taxrate">Tax rate (% room)</label>
+          <input id="mgr-taxrate" type="number" min="0" max="30" step="0.1" value="10.3">
+        </div>
+        <button id="mgr-load" class="mgr-btn mgr-btn--ghost" type="button">Load</button>
+        <button id="mgr-save" class="mgr-btn" type="button">Save to site</button>
+      </div>
+      <div id="mgr-status" class="mgr-status"></div>
+    </div>
+
+    <!-- Home + base rates -->
+    <div class="mgr-card mgr-controls">
+      <div class="cal-toggle" role="tablist" aria-label="Choose a home">
+        <button class="cal-tab" type="button" data-home="chalet" role="tab">The Chalet</button>
+        <button class="cal-tab" type="button" data-home="modern" role="tab">The Modern</button>
+      </div>
+      <div class="mgr-home">
+        <img id="mgr-home-img" alt="">
+        <span id="mgr-home-name" class="mgr-home__name"></span>
+      </div>
+      <div class="mgr-rates">
+        <div class="mgr-field">
+          <label for="mgr-default">Weekday rate ($)</label>
+          <input id="mgr-default" type="number" min="0" step="5">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-weekend">Weekend rate ($)</label>
+          <input id="mgr-weekend" type="number" min="0" step="5">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-minbase">Base min nights</label>
+          <input id="mgr-minbase" type="number" min="1" step="1">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-cleaning">Cleaning fee ($)</label>
+          <input id="mgr-cleaning" type="number" min="0" step="5">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-petfee">Pet fee ($)</label>
+          <input id="mgr-petfee" type="number" min="0" step="5">
+        </div>
+        <button id="mgr-apply-rates" class="mgr-btn mgr-btn--ghost" type="button">Apply base settings</button>
+      </div>
+    </div>
+
+    <!-- Selection toolbar -->
+    <div class="mgr-card mgr-toolbar" id="mgr-toolbar" data-empty="true">
+      <span class="mgr-count" id="mgr-count">No days selected</span>
+      <div class="mgr-field mgr-needsel">
+        <label for="mgr-price">Price for selected ($)</label>
+        <input id="mgr-price" type="number" min="0" step="5" placeholder="e.g. 550">
+      </div>
+      <button id="mgr-setprice" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Set price</button>
+      <button id="mgr-resetprice" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Reset to base</button>
+      <button id="mgr-block" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Block</button>
+      <button id="mgr-unblock" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Unblock</button>
+      <div class="mgr-field mgr-needsel">
+        <label for="mgr-min">Min nights (selected)</label>
+        <input id="mgr-min" type="number" min="1" step="1" placeholder="e.g. 3">
+      </div>
+      <button id="mgr-setmin" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Set min nights</button>
+      <button id="mgr-resetmin" class="mgr-btn mgr-btn--ghost mgr-needsel" type="button">Reset min nights</button>
+      <button id="mgr-clear" class="mgr-btn mgr-btn--ghost" type="button">Clear selection</button>
+    </div>
+
+    <div class="cal-legend mgr-legend">
+      <span class="cal-key cal-key--open"></span>Available
+      <span class="cal-key cal-key--blk"></span>Blocked
+      <span class="cal-key cal-key--price"></span>Custom price
+      <span class="cal-key cal-key--minx"></span>Holiday minimum
+      <span class="mgr-legend__note" id="mgr-legend-count"></span>
+    </div>
+    <div class="mgr-cal" id="mgr-cal"></div>
+
+    <details class="mgr-help">
+      <summary>How to set this up (one time)</summary>
+      <ol>
+        <li>On GitHub, go to <strong>Settings → Developer settings → Fine-grained personal access tokens → Generate new token</strong>.</li>
+        <li>Give it access to only the <code>jbanksairbnb/brycegetaways</code> repository, with <strong>Repository permissions → Contents → Read and write</strong>.</li>
+        <li>Copy the token and paste it in the box above. It's stored only in this browser (localStorage) — never uploaded anywhere but GitHub.</li>
+        <li><strong>Branch:</strong> use <code>main</code> to change the live site. (To preview on the working branch first, enter that branch name instead.)</li>
+        <li>Click <strong>Load</strong>, edit, then <strong>Save to site</strong>. Changes go live in about a minute.</li>
+      </ol>
+      <p>Bookmark this page and keep the link private — anyone with the token can edit the site.</p>
+    </details>
+  </div>
+
+  <script src="assets/js/manage.js"></script>
+</body>
+</html>

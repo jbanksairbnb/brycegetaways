@@ -3,166 +3,318 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bryce Resort Cabin with Breathtaking Views</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f8f8;
-    }
-    header {
-      position: relative;
-      height: 80vh;
-      text-align: center;
-      overflow: hidden;
-    }
-    header img.hero {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    header h1 {
-      position: relative;
-      color: white;
-      font-size: 3em;
-      background-color: rgba(0, 0, 0, 0.6);
-      display: inline-block;
-      padding: 1rem;
-      margin-top: 20vh;
-      border-radius: 10px;
-    }
-    .thumbnail-row {
-      position: absolute;
-      bottom: 10px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 10px;
-    }
-    .thumbnail-row img {
-      width: 200px;
-      height: 140px;
-      object-fit: cover;
-      border: 2px solid white;
-      border-radius: 5px;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background: white;
-    }
-    .btn {
-      display: inline-block;
-      background: #ff5a5f;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 1rem;
-    }
-    section {
-      margin-bottom: 2rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-    input, textarea {
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    footer {
-      background: #333;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-    }
-    .accolades {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .accolades img {
-      width: 100px;
-      height: auto;
-    }
-  </style>
+  <title>Bryce Mountain Getaways — Two luxury homes at Bryce Resort, Basye VA</title>
+  <meta name="description" content="Two side-by-side luxury mountain homes on Aspen Way South at Bryce Resort in Basye, Virginia — a short walk to the ski slopes and a quick drive to the lodge, golf, and Lake Laura. Book direct with Superhosts Jonathan & Anna.">
+
+  <meta property="og:title" content="Bryce Mountain Getaways">
+  <meta property="og:description" content="Four seasons. Two front doors. Two luxury mountain homes at Bryce Resort, Basye, Virginia.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.brycemountaingetaways.com/">
+  <meta property="og:image" content="https://www.brycemountaingetaways.com/assets/img/hero-modern-twilight.jpg">
+  <meta name="theme-color" content="#1b1d1b">
+  <link rel="canonical" href="https://www.brycemountaingetaways.com/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
-  <header>
-    <img class="hero" src="https://i.imgur.com/oqs2KT2.jpg" alt="Main Cabin Image">
-    <h1>Breathtaking Views at Bryce Resort</h1>
-    <div class="thumbnail-row">
-      <img src="https://i.imgur.com/Sx2zyux.jpg" alt="Cabin 1">
-      <img src="https://i.imgur.com/JNICYNG.jpg" alt="Cabin 2">
-      <img src="https://i.imgur.com/RbSFems.jpg" alt="Cabin 3">
-      <img src="https://i.imgur.com/Eo2T0p2.jpg" alt="Cabin 4">
-    </div>
+<body id="top">
+
+  <!-- ====================================================== Header -->
+  <header class="site-header" id="siteHeader">
+    <a href="#top" class="logo" aria-label="Bryce Mountain Getaways — home">
+      <span class="logo__row">
+        <span class="logo__word">BRYCE</span>
+        <!-- over-hero variant -->
+        <svg class="logo__peaks logo__peaks--light" width="42" height="20" viewBox="0 0 42 20" aria-hidden="true">
+          <polygon points="0,20 9,7 18,20" fill="#93a89a"/>
+          <polygon points="11,20 21,1 31,20" fill="#e9ece8"/>
+          <polygon points="26,20 33,9 42,20" fill="#5f7a6b"/>
+        </svg>
+        <!-- scrolled / light-bar variant -->
+        <svg class="logo__peaks logo__peaks--dark" width="42" height="20" viewBox="0 0 42 20" aria-hidden="true">
+          <polygon points="0,20 9,7 18,20" fill="#5f7a6b"/>
+          <polygon points="11,20 21,1 31,20" fill="#3d5c4c"/>
+          <polygon points="26,20 33,9 42,20" fill="#93a89a"/>
+        </svg>
+      </span>
+      <span class="logo__sub">GETAWAYS</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="siteNav">
+      <a href="#seasons">THE SEASONS</a>
+      <a href="#homes">THE HOMES</a>
+      <a href="#reviews">REVIEWS</a>
+      <a href="#explore">EXPLORE</a>
+      <a href="#homes" class="btn btn--light-outline" data-availability="chalet">CHECK AVAILABILITY</a>
+    </nav>
   </header>
 
-  <div class="container">
-    <section>
-      <h2>Charming 5BR Cabin with spectacular views</h2>
-      <p>Welcome to our cozy 5-bedroom cabin nestled in the foothills of the Allegheny Mountains, just 5 minutes from Bryce Resort and 45 minutes to the famous Skyline Drive in the Shenandoah National Park. This modern yet rustic retreat comfortably sleeps up to 10 guests and features:</p>
-      <ul>
-        <li>Spacious living area with a wood-burning fireplace</li>
-        <li>Fully equipped kitchen with modern appliances</li>
-        <li>4 full bathrooms with dual sinks and overhead showers</li>
-        <li>Private deck with gorgeous mountain views and outdoor seating</li>
-        <li>Gas fire pit for evening gatherings under the stars</li>
-        <li>High-speed Wi-Fi and Smart TV for entertainment</li>
-        <li>Family-friendly amenities including a game room with Golden Tee, Pool Table, Board Games, Poker Set and more!</li>
-      </ul>
-      <p>Whether you're seeking adventure or relaxation, our cabin offers the perfect getaway in the heart of nature.</p>
-      <a class="btn" href="http://www.airbnb.com/h/bryce-mountain-view" target="_blank">Book on Airbnb</a>
-    </section>
-
-    <section>
-      <h2>Our Airbnb Accolades</h2>
-      <div class="accolades">
-        <p>We're proud to be recognized as a <strong>Guest Favorite</strong> on Airbnb, a distinction awarded to the top-rated homes based on guest reviews and reliability.</p>
-       <div style="text-align: center; margin: 2rem 0;">
-  <img src="https://imgur.com/6wN2RKr.jpg" alt="5-Star Review Badge" style="display: block; margin: 0 auto; width: 600px; max-width: 100%; height: auto;">
-<br>
-
-        <p>Our guests consistently rate us 5 stars for cleanliness, communication, and overall experience.</p>
+  <!-- ====================================================== Hero -->
+  <section class="hero">
+    <img class="hero__img" src="assets/img/hero-modern-twilight.jpg" alt="The Modern at twilight, front elevation, with the Shenandoah ridgeline behind" data-label="Homepage hero — The Modern at twilight">
+    <div class="hero__scrim"></div>
+    <div class="hero__content">
+      <div class="hero__eyebrow">BASYE, VIRGINIA&nbsp;&nbsp;·&nbsp;&nbsp;BRYCE RESORT</div>
+      <h1>Four seasons.<br>Two front doors.</h1>
+      <p class="hero__sub">Two mountain homes, side by side on Aspen Way South — a short walk to the slopes &amp; a quick drive to the lodge, links, and lake at Bryce Resort.</p>
+      <div class="hero__cta">
+        <a href="#homes" class="btn btn--solid" data-availability="chalet">BOOK YOUR STAY</a>
+        <a href="#homes" class="btn btn--light-outline">SEE THE HOMES</a>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section>
-      <h2>Things to Do Nearby</h2>
-      <ul>
-        <li>Golfing, skiing, and lake activities at Bryce Resort</li>
-        <li>Hiking trails with varying levels of difficulty</li>
-        <li>Wineries, caverns, and local dining</li>
-      </ul>
-    </section>
+  <!-- ====================================================== Trust strip -->
+  <section class="trust" aria-label="At a glance">
+    <div class="trust__item"><div class="trust__value">★ 4.99</div><div class="trust__label">275 Airbnb Reviews</div></div>
+    <div class="trust__item"><div class="trust__value">Superhosts</div><div class="trust__label">6 Years · 500+ Five-Star Stays</div></div>
+    <div class="trust__item"><div class="trust__value">Sleeps 10 each</div><div class="trust__label">Or 20 across both homes</div></div>
+    <div class="trust__item"><div class="trust__value">5-min walk</div><div class="trust__label">To the ski slopes</div></div>
+  </section>
 
-    <section>
-      <h2>Contact Us</h2>
-      <form action="https://formspree.io/f/mqaqgypl" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required>
-        <input type="email" name="email" placeholder="Your Email" required>
-        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-        <button type="submit" class="btn">Send Message</button>
+  <!-- ====================================================== Seasons -->
+  <section class="section" id="seasons">
+    <div class="section__head">
+      <div class="eyebrow">A Four-Season Resort, Five Minutes Away</div>
+      <h2>There is no off-season at Bryce</h2>
+    </div>
+
+    <div class="season-tabs" role="tablist" aria-label="Seasons at Bryce">
+      <button class="season-tab" role="tab" data-season="Winter" id="tab-Winter" aria-controls="season-panel">Winter</button>
+      <button class="season-tab" role="tab" data-season="Spring" id="tab-Spring" aria-controls="season-panel">Spring</button>
+      <button class="season-tab is-active" role="tab" data-season="Summer" id="tab-Summer" aria-selected="true" aria-controls="season-panel">Summer</button>
+      <button class="season-tab" role="tab" data-season="Fall" id="tab-Fall" aria-controls="season-panel">Fall</button>
+    </div>
+
+    <div class="season-body" id="season-panel" role="tabpanel" aria-labelledby="tab-Summer">
+      <div class="season-figure">
+        <img id="seasonImg" src="assets/img/season-summer.jpg" alt="Covered deck bar with the Shenandoah Valley below" data-label="Summer — deck view">
+      </div>
+      <div class="season-copy-block">
+        <h3 class="season-title" id="seasonTitle">Golf, lake days, and long evenings on the deck</h3>
+        <p class="season-copy" id="seasonCopy">Tee off on the PGA championship course, swim or kayak at Lake Laura, ride the mountain bike park — then grill dinner with the whole Shenandoah Valley laid out below you.</p>
+        <div class="chips" id="seasonChips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== The Homes -->
+  <section class="homes" id="homes">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="eyebrow">Two Homes, Next Door to Each Other</div>
+        <h2>Choose your getaway — or take both</h2>
+      </div>
+
+      <!-- The Chalet -->
+      <div class="home-row home-row--photos-left">
+        <div class="home-gallery">
+          <img class="home-gallery__hero" src="assets/img/chalet-upperdeck-4.jpg" alt="The Chalet's covered deck with a hanging egg chair and the Shenandoah Valley beyond" data-label="The Chalet — deck">
+          <div class="home-gallery__strip">
+            <img src="assets/img/chalet-living.jpg" alt="The Chalet sunken great room with a stone fireplace and chevron mountain-wood panel" data-label="Great room">
+            <img src="assets/img/chalet-dining.jpg" alt="Dining room with a deck view" data-label="Dining room">
+            <img src="assets/img/chalet-gameroom.jpg" alt="Lower-level game room with a pool table" data-label="Game room">
+          </div>
+        </div>
+        <div class="home-copy">
+          <div class="home-eyebrow">133 Aspen Way South · ★ 4.99 · Guest Favorite</div>
+          <h3 class="home-name">The Chalet</h3>
+          <div class="home-airbnb">"Bryce Resort Cabin · Amazing Views · Sleeps 10" on Airbnb</div>
+          <p class="home-desc">The award-winning original — named a "Most Popular Ski Airbnb" by Travel Off Path. Five bedrooms across three storied levels, a sunken lounge around the fireplace, a game room with a pool table and full-size Golden Tee arcade, and two big decks with the whole Shenandoah Valley laid out below — the view guests write home about. A five-minute walk to the slopes; a short drive to golf and Lake Laura.</p>
+          <div class="home-specs"><span>5 Bedrooms</span><span>3 Baths</span><span>Sleeps 10</span><span>Pet Friendly</span></div>
+          <div class="home-rate">From $375 per night · 2-night minimum</div>
+          <div class="home-actions">
+            <a href="the-chalet.html" class="btn btn--bone">TAKE THE WALKTHROUGH →</a>
+            <a href="#homes" class="btn btn--dark-outline" data-home="chalet" data-availability="chalet">CHECK DATES</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Modern -->
+      <div class="home-row home-row--photos-right">
+        <div class="home-copy">
+          <div class="home-eyebrow">155 Aspen Way South · New for This Season</div>
+          <h3 class="home-name">The Modern</h3>
+          <div class="home-airbnb">"Luxury Modern Mountain Retreat · Hot Tub · Sleeps 10" on Airbnb</div>
+          <p class="home-desc">A brand-new luxury build where contemporary design meets the Shenandoah — floor-to-ceiling glass framing uninterrupted mountain views, an oversized island and a gourmet kitchen with a Breville espresso bar, a loft game room, and a hot tub and fire pit under the stars. A two-minute walk to the ski run, with heated bathroom floors, an EV charger, and Shentel fiber Wi-Fi throughout.</p>
+          <div class="home-specs"><span>4 Bedrooms</span><span>3 Baths</span><span>Sleeps 10</span><span>Hot Tub</span><span>EV Charger</span></div>
+          <div class="home-rate">From $375 per night · 2-night minimum</div>
+          <div class="home-actions">
+            <a href="the-modern.html" class="btn btn--bone">TAKE THE WALKTHROUGH →</a>
+            <a href="#homes" class="btn btn--dark-outline" data-home="modern" data-availability="modern">CHECK DATES</a>
+          </div>
+        </div>
+        <div class="home-gallery">
+          <img class="home-gallery__hero" src="assets/img/modern-greatroom.jpg" alt="The Modern great room with a ring chandelier and floor-to-ceiling glass" data-label="The Modern — great room">
+          <div class="home-gallery__strip">
+            <img src="assets/img/modern-kitchen.jpg" alt="Chef's kitchen with a loft above" data-label="Kitchen">
+            <img src="assets/img/modern-deck.jpg" alt="Covered deck with a valley view" data-label="Deck view">
+            <img src="assets/img/modern-loft.jpg" alt="Loft game room with pool table and foosball" data-label="Loft game room">
+          </div>
+        </div>
+      </div>
+
+      <!-- Book both banner -->
+      <div class="book-both">
+        <div>
+          <div class="book-both__title">Traveling with a crowd?</div>
+          <div class="book-both__copy">Book both homes — one driveway apart — and bring up to 20 guests together.</div>
+        </div>
+        <a href="#contact" class="btn btn--bone" data-home="both">BOOK BOTH HOMES</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== Pull quote -->
+  <section class="pull-quote">
+    <div class="pull-quote__stars">★★★★★</div>
+    <blockquote>"It truly felt like we had checked into our own private resort. Everything from booking, to checking in, to checking out, was a breeze."</blockquote>
+    <cite>Rachel · Austin, Texas</cite>
+  </section>
+
+  <!-- ====================================================== Reviews -->
+  <section class="section" id="reviews">
+    <div class="section__head">
+      <div class="eyebrow">From Our Airbnb Guests</div>
+      <h2>Rated 4.99 across 275 stays</h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"By far the best Airbnb we've ever stayed at in the U.S. It's absolutely gorgeous — the photos simply don't do it justice."</p>
+        <div class="review-who">Nirisha · Phoenix, Arizona</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"As we walked in, each of us said 'wow!' The view was beyond words. The teenagers spent most of their time in the game room — the pool table was a real hit."</p>
+        <div class="review-who">Stephanie · Washington, D.C.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"We felt 'at home' the minute we walked through the door. We stayed here last winter also — and LOVED it. We're already looking forward to next year."</p>
+        <div class="review-who">Jim · Forest Heights, Maryland</div>
+      </div>
+    </div>
+    <div class="reviews-foot">Hosted by Jonathan &amp; Anna — Airbnb Superhosts for six years. We reply within the hour, stock every home the way we'd want it ourselves, and send a thorough digital guidebook so you can make the most of the valley. Many guests come back year after year.</div>
+  </section>
+
+  <!-- ====================================================== Explore -->
+  <section class="explore" id="explore">
+    <div class="wrap">
+      <div class="section__head">
+        <div class="eyebrow">Explore the Shenandoah</div>
+        <h2>Beyond the front porch</h2>
+      </div>
+      <div class="places">
+        <a class="place" href="https://bryceresort.com/" target="_blank" rel="noopener">
+          <div class="place__dist">5 Minute Drive</div>
+          <div class="place__name">Bryce Resort</div>
+          <p class="place__copy">Skiing, tubing, mountain biking and a PGA championship golf course — a true four-season resort.</p>
+          <span class="place__more">Visit the resort ↗</span>
+        </a>
+        <a class="place" href="https://bryceresort.com/summer/lake-laura" target="_blank" rel="noopener">
+          <div class="place__dist">5 Min Drive</div>
+          <div class="place__name">Lake Laura</div>
+          <p class="place__copy">A 45-acre private lake with a sand beach — swim, kayak, paddleboard, and fish through the warm months.</p>
+          <span class="place__more">Plan a lake day ↗</span>
+        </a>
+        <a class="place" href="https://visitskylinedrive.org/plan-your-visit/" target="_blank" rel="noopener">
+          <div class="place__dist">45 Min Drive</div>
+          <div class="place__name">Skyline Drive</div>
+          <p class="place__copy">Shenandoah National Park and the most scenic 105 miles in Virginia, at their best in October.</p>
+          <span class="place__more">Plan your visit ↗</span>
+        </a>
+        <a class="place" href="wine-country.html">
+          <div class="place__dist">Within 35 Min</div>
+          <div class="place__name">Wine Country</div>
+          <p class="place__copy">The Shenandoah Wine Trail — vineyards, cideries, and farm breweries tucked through the valley.</p>
+          <span class="place__more">See the trail →</span>
+        </a>
+      </div>
+
+      <div class="getting-here">
+        <div class="getting-here__label">Getting Here</div>
+        <div class="drive"><div class="drive__time">2 hrs</div><div class="drive__from">Washington, D.C.</div></div>
+        <div class="drive"><div class="drive__time">1.5 hrs</div><div class="drive__from">Northern Virginia</div></div>
+        <div class="drive"><div class="drive__time">2.5 hrs</div><div class="drive__from">Richmond</div></div>
+        <div class="drive"><div class="drive__time">2.5 hrs</div><div class="drive__from">Baltimore</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== Booking -->
+  <section class="contact" id="contact">
+    <div class="contact__wrap">
+      <div class="section__head">
+        <div class="eyebrow">Questions?</div>
+        <h2>Contact us</h2>
+        <p class="book__intro">A question about the homes, your dates, or booking both homes together? Send a note and we'll get back to you — usually within the hour. To check availability and book, use <a href="#homes" data-availability="chalet">Check Availability</a>.</p>
+      </div>
+      <form class="contact-form" id="contactForm" action="https://formspree.io/f/mqaqgypl" method="POST">
+        <input type="hidden" name="type" value="Website question">
+        <input type="hidden" name="_subject" value="Website question — Bryce Mountain Getaways">
+        <div class="cf-row">
+          <label for="c-name">Full name</label>
+          <input type="text" id="c-name" name="name" minlength="2" required>
+        </div>
+        <div class="cf-row">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" name="email" required>
+        </div>
+        <div class="cf-row">
+          <label for="c-phone">Phone (optional)</label>
+          <input type="tel" id="c-phone" name="phone">
+        </div>
+        <div class="cf-row">
+          <label for="c-subject">Subject</label>
+          <input type="text" id="c-subject" name="subject" placeholder="e.g. Booking both homes">
+        </div>
+        <div class="cf-row cf-full">
+          <label for="c-msg">Message</label>
+          <textarea id="c-msg" name="message" required></textarea>
+        </div>
+        <div class="cf-full book-form__submit">
+          <button type="submit" class="btn btn--dark" id="contactSubmit">SEND MESSAGE</button>
+        </div>
+        <div class="contact__status" id="contactStatus" role="status" aria-live="polite"></div>
+        <p class="book-note cf-full">Prefer email? <a href="mailto:brycegetaways@gmail.com">brycegetaways@gmail.com</a> &middot; or message us on <a href="https://instagram.com/brycemountaingetaways" target="_blank" rel="noopener">Instagram</a>.</p>
       </form>
-    </section>
-  </div>
+    </div>
+  </section>
 
-  <footer>
-    <p>&copy; 2025 Relax & Recharge Cabin | Bryce Resort</p>
+  <!-- ====================================================== Footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <a href="#top" class="logo" aria-label="Bryce Mountain Getaways — home">
+        <span class="logo__row">
+          <span class="logo__word">BRYCE</span>
+          <svg width="36" height="17" viewBox="0 0 42 20" aria-hidden="true">
+            <polygon points="0,20 9,7 18,20" fill="#5f7a6b"/>
+            <polygon points="11,20 21,1 31,20" fill="#e9ece8"/>
+            <polygon points="26,20 33,9 42,20" fill="#93a89a"/>
+          </svg>
+        </span>
+        <span class="logo__sub">GETAWAYS</span>
+      </a>
+      <div class="footer-links">
+        <a href="https://instagram.com/brycemountaingetaways" target="_blank" rel="noopener">@BRYCEMOUNTAINGETAWAYS</a>
+        <a href="mailto:brycegetaways@gmail.com">BRYCEGETAWAYS@GMAIL.COM</a>
+      </div>
+      <div class="footer-addr">Aspen Way South, Basye, Virginia<br>© 2026 Bryce Mountain Getaways</div>
+    </div>
   </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/calendar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="assets/js/site-config.js"></script>
+  <script src="assets/js/booking.js"></script>
 </body>
 </html>
