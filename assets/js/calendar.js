@@ -45,6 +45,17 @@
     for (var i = 0; i < n; i++) { if (isBlocked(h, iso(addDays(parseISO(a), i)))) return true; }
     return false;
   }
+  function baseMin(h) { return h.minNights || 2; }
+  function minStayFor(h, isoStr) {
+    if (h.minStays && h.minStays[isoStr] != null) return h.minStays[isoStr];
+    return baseMin(h);
+  }
+  // A stay must meet the highest minimum among the nights it covers.
+  function requiredMin(h, a, b) {
+    var req = baseMin(h), n = nightsBetween(a, b);
+    for (var i = 0; i < n; i++) req = Math.max(req, minStayFor(h, iso(addDays(parseISO(a), i))));
+    return req;
+  }
 
   /* --------------------------------------------------------- build DOM */
   function build() {
@@ -136,9 +147,12 @@
           html += '<div class="' + cls + '"><span class="cal-daynum">' + day + "</span></div>";
         } else {
           cls += " cal-cell--open";
-          html += '<div class="' + cls + '" data-date="' + s + '">' +
+          var cell = '<div class="' + cls + '" data-date="' + s + '">' +
             '<span class="cal-daynum">' + day + "</span>" +
-            '<span class="cal-price">' + money(priceFor(h, s)) + "</span></div>";
+            '<span class="cal-price">' + money(priceFor(h, s)) + "</span>";
+          var ms = (h.minStays && h.minStays[s] != null) ? h.minStays[s] : null;
+          if (ms != null && ms !== baseMin(h)) cell += '<span class="cal-min">' + ms + "-night min</span>";
+          html += cell + "</div>";
         }
       }
       html += "</div></div>";
@@ -182,9 +196,9 @@
     if (state.start && state.end) {
       var n = nightsBetween(state.start, state.end), total = 0;
       for (var i = 0; i < n; i++) total += priceFor(h, iso(addDays(parseISO(state.start), i)));
-      var min = h.minNights || 2;
+      var min = requiredMin(h, state.start, state.end);
       if (n < min) {
-        els.summary.textContent = n + " night" + (n > 1 ? "s" : "") + " selected — " + min + "-night minimum";
+        els.summary.textContent = n + " night" + (n > 1 ? "s" : "") + " selected — " + min + "-night minimum for these dates";
         els.request.disabled = true;
       } else {
         els.summary.innerHTML = fmt(state.start) + " &rarr; " + fmt(state.end) +

@@ -732,6 +732,9 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
 .cal-cell--empty { border: 0; }
 .cal-daynum { font-size: 13px; font-weight: 400; line-height: 1.2; }
 .cal-price { font-size: 10.5px; color: var(--muted-grey); margin-top: 2px; }
+.cal-min { font-size: 9px; line-height: 1.1; letter-spacing: .01em; color: var(--pine); margin-top: 1px; text-align: center; }
+.cal-cell--open.is-start .cal-min, .cal-cell--open.is-end .cal-min { color: rgba(255, 255, 255, .9); }
+.mgr-cal .cal-cell.has-minoverride .cal-min { color: var(--sage-deep); font-weight: 500; }
 .cal-cell--past { color: var(--faint-grey); opacity: .5; }
 .cal-cell--blocked {
   color: var(--faint-grey);

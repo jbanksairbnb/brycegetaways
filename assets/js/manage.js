@@ -30,6 +30,7 @@
   }
   function isBlocked(h, s) { return h.blocked && h.blocked.indexOf(s) !== -1; }
   function hasOverride(h, s) { return h.rates && h.rates[s] != null; }
+  function baseMin(h) { return h.minNights || 2; }
 
   /* ---- GitHub ---- */
   function token() { return (el.token.value || "").trim(); }
@@ -119,16 +120,20 @@
   /* ---- editing ops (apply to the picked set) ---- */
   function pickedList() { return Object.keys(state.picked); }
   function setPrice(v) {
-    var h = home();
+    var h = home(); if (!h.rates) h.rates = {};
     pickedList().forEach(function (s) { if (v == null) delete h.rates[s]; else h.rates[s] = v; });
   }
   function setBlocked(on) {
-    var h = home();
+    var h = home(); if (!h.blocked) h.blocked = [];
     pickedList().forEach(function (s) {
       var i = h.blocked.indexOf(s);
       if (on && i < 0) h.blocked.push(s);
       if (!on && i >= 0) h.blocked.splice(i, 1);
     });
+  }
+  function setMinStay(v) {
+    var h = home(); if (!h.minStays) h.minStays = {};
+    pickedList().forEach(function (s) { if (v == null) delete h.minStays[s]; else h.minStays[s] = v; });
   }
 
   /* ---- render ---- */
@@ -139,6 +144,7 @@
     el.homeName.textContent = h.name;
     el.rateDefault.value = h.defaultRate;
     el.rateWeekend.value = (h.weekendRate != null ? h.weekendRate : h.defaultRate);
+    el.minBase.value = baseMin(h);
     el.tabs.forEach(function (t) { t.classList.toggle("is-active", t.getAttribute("data-home") === k); });
     render();
   }
@@ -158,11 +164,18 @@
         var cd = new Date(y, mo, day), s = iso(cd);
         if (cd < t) { html += '<div class="cal-cell cal-cell--past"><span class="cal-daynum">' + day + "</span></div>"; continue; }
         var blk = isBlocked(h, s);
+        var minOv = (h.minStays && h.minStays[s] != null && h.minStays[s] !== baseMin(h));
         var cls = "cal-cell " + (blk ? "cal-cell--blocked" : "cal-cell--open");
         if (hasOverride(h, s)) cls += " has-override";
+        if (minOv) cls += " has-minoverride";
         if (state.picked[s]) cls += " is-picked";
         html += '<div class="' + cls + '" data-date="' + s + '"><span class="cal-daynum">' + day + "</span>";
-        html += blk ? '<span class="cal-price">Booked</span>' : '<span class="cal-price">' + money(priceFor(h, s)) + "</span>";
+        if (blk) {
+          html += '<span class="cal-price">Booked</span>';
+        } else {
+          html += '<span class="cal-price">' + money(priceFor(h, s)) + "</span>";
+          if (minOv) html += '<span class="cal-min">' + h.minStays[s] + "-night min</span>";
+        }
         html += "</div>";
       }
       html += "</div></div>";
@@ -195,6 +208,7 @@
     el.homeName = document.getElementById("mgr-home-name");
     el.rateDefault = document.getElementById("mgr-default");
     el.rateWeekend = document.getElementById("mgr-weekend");
+    el.minBase = document.getElementById("mgr-minbase");
     el.cal = document.getElementById("mgr-cal");
     el.toolbar = document.getElementById("mgr-toolbar");
     el.count = document.getElementById("mgr-count");
@@ -211,11 +225,12 @@
 
     document.getElementById("mgr-apply-rates").addEventListener("click", function () {
       var h = home();
-      var dv = parseFloat(el.rateDefault.value), wv = parseFloat(el.rateWeekend.value);
+      var dv = parseFloat(el.rateDefault.value), wv = parseFloat(el.rateWeekend.value), mb = parseInt(el.minBase.value, 10);
       if (!isNaN(dv)) h.defaultRate = dv;
       if (!isNaN(wv)) h.weekendRate = wv;
+      if (!isNaN(mb) && mb >= 1) h.minNights = mb;
       render();
-      status("Base rates updated for " + h.name + " — remember to Save.", false);
+      status("Base settings updated for " + h.name + " — remember to Save.", false);
     });
     document.getElementById("mgr-setprice").addEventListener("click", function () {
       var v = parseFloat(el.price.value);
@@ -226,6 +241,13 @@
     document.getElementById("mgr-resetprice").addEventListener("click", function () { setPrice(null); render(); });
     document.getElementById("mgr-block").addEventListener("click", function () { setBlocked(true); render(); });
     document.getElementById("mgr-unblock").addEventListener("click", function () { setBlocked(false); render(); });
+    el.min = document.getElementById("mgr-min");
+    document.getElementById("mgr-setmin").addEventListener("click", function () {
+      var v = parseInt(el.min.value, 10);
+      if (isNaN(v) || v < 1) { status("Enter a minimum-night number first.", true); return; }
+      setMinStay(v); render();
+    });
+    document.getElementById("mgr-resetmin").addEventListener("click", function () { setMinStay(null); render(); });
     document.getElementById("mgr-clear").addEventListener("click", function () { state.picked = {}; render(); });
 
     // First paint from the published copy so the grid isn't empty before Load.
