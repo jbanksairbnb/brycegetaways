@@ -238,7 +238,7 @@
     el.tabs = Array.prototype.slice.call(document.querySelectorAll(".cal-tab"));
 
     el.token.value = localStorage.getItem(TOKEN_KEY) || "";
-    el.branch.value = localStorage.getItem(BRANCH_KEY) || "claude/bryce-mountain-getaways-site-oaq9ts";
+    el.branch.value = localStorage.getItem(BRANCH_KEY) || "main";
 
     document.getElementById("mgr-load").addEventListener("click", load);
     el.save.addEventListener("click", save);
