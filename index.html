@@ -176,22 +176,27 @@
       <div class="eyebrow">From Our Airbnb Guests</div>
       <h2>Rated 4.99 across 275 stays</h2>
     </div>
-    <div class="reviews-grid">
-      <div class="review-card">
+    <div class="rev-themes" id="revThemes" role="tablist" aria-label="Filter reviews by what guests mention"></div>
+    <div class="reviews-grid" id="revGrid">
+      <figure class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-quote">"By far the best Airbnb we've ever stayed at in the U.S. It's absolutely gorgeous — the photos simply don't do it justice."</p>
-        <div class="review-who">Nirisha · Phoenix, Arizona</div>
-      </div>
-      <div class="review-card">
+        <blockquote class="review-quote">“By far the best Airbnb we've ever stayed at in the U.S. It's absolutely gorgeous — the photos simply don't do it justice.”</blockquote>
+        <figcaption class="review-who">Nirisha · Phoenix, Arizona</figcaption>
+      </figure>
+      <figure class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-quote">"As we walked in, each of us said 'wow!' The view was beyond words. The teenagers spent most of their time in the game room — the pool table was a real hit."</p>
-        <div class="review-who">Stephanie · Washington, D.C.</div>
-      </div>
-      <div class="review-card">
+        <blockquote class="review-quote">“As we walked in, each of us said 'wow!' The view was beyond words. The teenagers spent most of their time in the game room — the pool table was a real hit.”</blockquote>
+        <figcaption class="review-who">Stephanie · Washington, D.C.</figcaption>
+      </figure>
+      <figure class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-quote">"We felt 'at home' the minute we walked through the door. We stayed here last winter also — and LOVED it. We're already looking forward to next year."</p>
-        <div class="review-who">Jim · Forest Heights, Maryland</div>
-      </div>
+        <blockquote class="review-quote">“We felt 'at home' the minute we walked through the door. We stayed here last winter also — and LOVED it. We're already looking forward to next year.”</blockquote>
+        <figcaption class="review-who">Jim · Forest Heights, Maryland</figcaption>
+      </figure>
+    </div>
+    <div class="rev-more-wrap">
+      <button class="btn" id="revMore" type="button">Read more reviews</button>
+      <div class="rev-count" id="revCount"></div>
     </div>
     <div class="reviews-foot">Hosted by Jonathan &amp; Anna — Airbnb Superhosts for six years. We reply within the hour, stock every home the way we'd want it ourselves, and send a thorough digital guidebook so you can make the most of the valley. Many guests come back year after year.</div>
   </section>
@@ -300,6 +305,7 @@
 
   <script src="assets/js/main.js"></script>
   <script src="assets/js/calendar.js"></script>
+  <script src="assets/js/reviews.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="assets/js/site-config.js"></script>
   <script src="assets/js/booking.js"></script>
