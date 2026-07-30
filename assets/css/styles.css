@@ -267,7 +267,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .homes .section__head { margin-bottom: 60px; }
 /* Enlarged "Two Homes" heading lockup (doubled from the base scale) */
 .homes .section__head .eyebrow { font-size: 24px; letter-spacing: .24em; line-height: 1.2; margin-bottom: 20px; }
-.homes .section__head h2 { font-size: 48px; }
+.homes .section__head h2 { font-size: clamp(52px, 6.5vw, 92px); line-height: 1.04; }
 
 .home-row { display: grid; gap: 52px; align-items: center; margin-bottom: 40px; }
 .home-row--photos-left { grid-template-columns: 1.2fr 1fr; }
@@ -307,12 +307,26 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
    ========================================================================== */
 #reviews { max-width: var(--maxw); margin: 0 auto; }
 #reviews .section__head { margin-bottom: 52px; }
-.reviews-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
-.review-card { border: 1px solid rgba(27, 29, 27, .14); padding: 32px 30px; }
+/* Editorial theme-filter row — clickable to filter the wall below */
+.rev-themes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; margin-bottom: 46px; }
+.rev-theme { font-family: var(--sans); font-weight: 400; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted-grey); background: none; border: 0; padding: 6px 0; cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s ease, border-color .15s ease; }
+.rev-theme:hover { color: var(--ink); }
+.rev-theme.is-active { color: var(--pine); border-bottom-color: var(--pine); }
+.rev-theme__n { color: var(--sage); margin-left: 7px; font-size: 10.5px; letter-spacing: .05em; }
+.rev-theme.is-active .rev-theme__n { color: var(--pine); }
+
+/* Masonry wall so the varied review lengths pack cleanly */
+.reviews-grid { columns: 3; column-gap: 32px; }
+.review-card { break-inside: avoid; -webkit-column-break-inside: avoid; border: 1px solid rgba(27, 29, 27, .14); padding: 30px 28px; margin: 0 0 32px; }
 .review-stars { color: var(--pine); font-size: 13px; letter-spacing: 3px; margin-bottom: 16px; }
-.review-quote { font-family: var(--serif); font-weight: 300; font-size: 20px; line-height: 1.5; margin: 0 0 18px; text-wrap: pretty; }
-.review-who { font-family: var(--sans); font-weight: 400; font-size: 11.5px; line-height: 1; letter-spacing: .2em; color: var(--muted-grey); }
-.reviews-foot { text-align: center; margin-top: 40px; font-size: 14px; line-height: 1.6; color: var(--muted-grey); }
+.review-quote { font-family: var(--serif); font-weight: 300; font-size: 19px; line-height: 1.5; margin: 0 0 18px; text-wrap: pretty; }
+.review-who { font-family: var(--sans); font-weight: 400; font-size: 11.5px; line-height: 1.5; letter-spacing: .2em; color: var(--muted-grey); }
+.review-meta { display: block; margin-top: 7px; font-size: 10px; letter-spacing: .16em; color: var(--sage); }
+.rev-more-wrap { text-align: center; margin-top: 44px; }
+#revMore { border-color: var(--hairline-strong); color: var(--ink); }
+#revMore:hover { background: var(--ink); color: #fff; }
+.rev-count { margin-top: 14px; font-size: 12px; letter-spacing: .08em; color: var(--muted-grey); }
+.reviews-foot { text-align: center; margin-top: 44px; font-size: 14px; line-height: 1.6; color: var(--muted-grey); max-width: 760px; margin-left: auto; margin-right: auto; }
 
 /* ==========================================================================
    Explore
@@ -432,7 +446,7 @@ a.place:hover .place__more { color: var(--pine-dark); }
   .hero h1 { font-size: 44px; }
   .section h2, .book h2 { font-size: 34px; }
   .homes .section__head .eyebrow { font-size: 18px; }
-  .homes .section__head h2 { font-size: 36px; }
+  .homes .section__head h2 { font-size: 46px; }
 
   .season-body { grid-template-columns: 1fr; gap: 28px; }
   .season-figure, .season-figure img { height: 300px; }
@@ -442,7 +456,7 @@ a.place:hover .place__more { color: var(--pine-dark); }
   .home-row--photos-right .home-copy { order: 2; }
   .home-row--photos-right .home-gallery { order: 1; }
 
-  .reviews-grid { grid-template-columns: 1fr; }
+  .reviews-grid { columns: 2; }
   .places { grid-template-columns: 1fr 1fr; }
   .book-both { flex-direction: column; align-items: flex-start; }
 
@@ -453,6 +467,8 @@ a.place:hover .place__more { color: var(--pine-dark); }
 @media (max-width: 560px) {
   .hero h1 { font-size: 36px; }
   .trust { gap: 32px 40px; }
+  .reviews-grid { columns: 1; }
+  .rev-themes { gap: 6px 16px; }
   .places { grid-template-columns: 1fr; }
   .book-form__grid { grid-template-columns: 1fr; }
   .getting-here { gap: 28px; }
