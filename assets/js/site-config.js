@@ -14,7 +14,7 @@
 window.BMGConfig = {
   emailjs: {
     publicKey: "Olkr11Rp94JH-M-Nm",
-    serviceId: "",              // paste the "service_..." ID from Email Services
+    serviceId: "brycegetaways@gmail.com",
     templateId: "template_je53hdm"
   }
 };
