@@ -106,7 +106,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 }
 .logo__sub {
   font-family: var(--sans);
-  font-weight: 300;
+  font-weight: 500;
   font-size: 12.5px;
   line-height: 1;
   letter-spacing: .5em;
@@ -143,7 +143,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 /* the two logo peak variants — enlarged and tucked left so the "E" overlaps the first peak */
 /* Line-ridgeline mark. Single SVG tinted by `color` (currentColor stroke) per
    context. Small negative margin tucks the mark's left edge behind the "E". */
-.logo__peaks { width: 100%; height: 30px; margin: 0 0 6px; }
+.logo__peaks { width: 100%; height: 30px; margin: 0 0 -3px; }
 .logo__peaks path { vector-effect: non-scaling-stroke; }
 .logo__peaks--footer { width: 100%; height: 22px; }
 .site-header .logo__peaks { color: #f4f2ee; }
