@@ -55,16 +55,53 @@
     }
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Where are the homes, and how close are the ski slopes?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Both homes sit side by side on Aspen Way South at Bryce Resort in Basye, Virginia. It's about a five-minute walk to the ski slopes, and a short drive to the lodge, the PGA-championship golf course, and Lake Laura." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I rent both homes at the same time?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes — The Chalet and The Modern are next door to each other, and each sleeps up to 10, so you can host up to 20 guests across both. Use Check Availability or send us a message to book both together." }
+      },
+      {
+        "@type": "Question",
+        "name": "Are the homes pet-friendly?",
+        "acceptedAnswer": { "@type": "Answer", "text": "They are — we happily welcome dogs. Just let us know you're bringing a pet when you book so we can have everything ready for them." }
+      },
+      {
+        "@type": "Question",
+        "name": "How many people does each home sleep?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Each home comfortably sleeps up to 10 guests — 20 in total if you book both. Every bedroom is set up with hotel-quality linens and comfortable beds." }
+      },
+      {
+        "@type": "Question",
+        "name": "What amenities do the homes have?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Expect a hot tub, fire pit, and expansive decks with sweeping Shenandoah Valley views, plus fully stocked chef's kitchens, fast Wi-Fi, and smart TVs. The Chalet adds a lower-level game room with a pool table, and The Modern has an EV charger." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you book direct, or only through Airbnb?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Both — but booking direct with us is the best value, with no extra platform fees. We're Airbnb Superhosts with a 4.99 rating across 275 stays. Use Check Availability or message us to book direct." }
+      }
+    ]
+  }
+  </script>
 </head>
 <body id="top">
 
   <!-- ====================================================== Header -->
   <header class="site-header" id="siteHeader">
     <a href="#top" class="logo" aria-label="Bryce Mountain Getaways — home">
-      <span class="logo__row">
-        <span class="logo__word">BRYCE</span>
-        <svg class="logo__peaks" viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 22 L13 11 L18 15 L26 7 L32 11 L40 3 L47 13 L53 8 L62 22"/><path d="M13 11 L15.5 16 M26 7 L29 12.5 M40 3 L36.5 10 M40 3 L44 11 M53 8 L51 13"/></svg>
-      </span>
+      <svg class="logo__peaks" viewBox="0 0 64 24" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 22 L13 11 L18 15 L26 7 L32 11 L40 3 L47 13 L53 8 L62 22"/><path d="M13 11 L15.5 16 M26 7 L29 12.5 M40 3 L36.5 10 M40 3 L44 11 M53 8 L51 13"/></svg>
+        <span class="logo__word">BRYCE MOUNTAIN</span>
       <span class="logo__sub">GETAWAYS</span>
     </a>
 
@@ -83,7 +120,7 @@
 
   <!-- ====================================================== Hero -->
   <section class="hero">
-    <img class="hero__img" src="assets/img/hero-modern-twilight.jpg" alt="The Modern at twilight, front elevation, with the Shenandoah ridgeline behind" data-label="Homepage hero — The Modern at twilight">
+    <img decoding="async" fetchpriority="high" class="hero__img" src="assets/img/hero-modern-twilight.jpg" alt="The Modern at twilight, front elevation, with the Shenandoah ridgeline behind" data-label="Homepage hero — The Modern at twilight">
     <div class="hero__scrim"></div>
     <div class="hero__content">
       <div class="hero__eyebrow">BASYE, VIRGINIA&nbsp;&nbsp;·&nbsp;&nbsp;BRYCE RESORT</div>
@@ -120,7 +157,7 @@
 
     <div class="season-body" id="season-panel" role="tabpanel" aria-labelledby="tab-Summer">
       <div class="season-figure">
-        <img id="seasonImg" src="assets/img/season-summer.jpg" alt="Covered deck bar with the Shenandoah Valley below" data-label="Summer — deck view">
+        <img loading="lazy" decoding="async" id="seasonImg" src="assets/img/season-summer.jpg" alt="Covered deck bar with the Shenandoah Valley below" data-label="Summer — deck view">
       </div>
       <div class="season-copy-block">
         <h3 class="season-title" id="seasonTitle">Golf, lake days, and long evenings on the deck</h3>
@@ -141,11 +178,11 @@
       <!-- The Chalet -->
       <div class="home-row home-row--photos-left">
         <div class="home-gallery">
-          <img class="home-gallery__hero" src="assets/img/chalet-upperdeck-4.jpg" alt="The Chalet's covered deck with a hanging egg chair and the Shenandoah Valley beyond" data-label="The Chalet — deck">
+          <img loading="lazy" decoding="async" class="home-gallery__hero" src="assets/img/chalet-upperdeck-4.jpg" alt="The Chalet's covered deck with a hanging egg chair and the Shenandoah Valley beyond" data-label="The Chalet — deck">
           <div class="home-gallery__strip">
-            <img src="assets/img/chalet-living.jpg" alt="The Chalet sunken great room with a stone fireplace and chevron mountain-wood panel" data-label="Great room">
-            <img src="assets/img/chalet-dining.jpg" alt="Dining room with a deck view" data-label="Dining room">
-            <img src="assets/img/chalet-gameroom.jpg" alt="Lower-level game room with a pool table" data-label="Game room">
+            <img loading="lazy" decoding="async" src="assets/img/chalet-living.jpg" alt="The Chalet sunken great room with a stone fireplace and chevron mountain-wood panel" data-label="Great room">
+            <img loading="lazy" decoding="async" src="assets/img/chalet-dining.jpg" alt="Dining room with a deck view" data-label="Dining room">
+            <img loading="lazy" decoding="async" src="assets/img/chalet-gameroom.jpg" alt="Lower-level game room with a pool table" data-label="Game room">
           </div>
         </div>
         <div class="home-copy">
@@ -179,11 +216,11 @@
           <p class="home-otas">Best rates when you book direct. Also on <a href="https://www.airbnb.com/h/brycemountaingetaway" target="_blank" rel="noopener">Airbnb</a> &amp; <a href="https://www.vrbo.com/5413043" target="_blank" rel="noopener">Vrbo</a>.</p>
         </div>
         <div class="home-gallery">
-          <img class="home-gallery__hero" src="assets/img/modern-greatroom.jpg" alt="The Modern great room with a ring chandelier and floor-to-ceiling glass" data-label="The Modern — great room">
+          <img loading="lazy" decoding="async" class="home-gallery__hero" src="assets/img/modern-greatroom.jpg" alt="The Modern great room with a ring chandelier and floor-to-ceiling glass" data-label="The Modern — great room">
           <div class="home-gallery__strip">
-            <img src="assets/img/modern-kitchen.jpg" alt="Chef's kitchen with a loft above" data-label="Kitchen">
-            <img src="assets/img/modern-deck.jpg" alt="Covered deck with a valley view" data-label="Deck view">
-            <img src="assets/img/modern-loft.jpg" alt="Loft game room with pool table and foosball" data-label="Loft game room">
+            <img loading="lazy" decoding="async" src="assets/img/modern-kitchen.jpg" alt="Chef's kitchen with a loft above" data-label="Kitchen">
+            <img loading="lazy" decoding="async" src="assets/img/modern-deck.jpg" alt="Covered deck with a valley view" data-label="Deck view">
+            <img loading="lazy" decoding="async" src="assets/img/modern-loft.jpg" alt="Loft game room with pool table and foosball" data-label="Loft game room">
           </div>
         </div>
       </div>
@@ -279,6 +316,40 @@
     </div>
   </section>
 
+  <!-- ====================================================== FAQ -->
+  <section class="section faq" id="faq">
+    <div class="section__head">
+      <div class="eyebrow">Good to Know</div>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq__list">
+      <details class="faq__item">
+        <summary>Where are the homes, and how close are the ski slopes?</summary>
+        <div class="faq__a">Both homes sit side by side on Aspen Way South at Bryce Resort in Basye, Virginia. It's about a five-minute walk to the ski slopes, and a short drive to the lodge, the PGA-championship golf course, and Lake Laura.</div>
+      </details>
+      <details class="faq__item">
+        <summary>Can I rent both homes at the same time?</summary>
+        <div class="faq__a">Yes — The Chalet and The Modern are next door to each other, and each sleeps up to 10, so you can host up to 20 guests across both. It's a favorite for extended families and group getaways. Use Check Availability or send us a message to book both together.</div>
+      </details>
+      <details class="faq__item">
+        <summary>Are the homes pet-friendly?</summary>
+        <div class="faq__a">They are — we happily welcome dogs. Just let us know you're bringing a pet when you book so we can have everything ready for them.</div>
+      </details>
+      <details class="faq__item">
+        <summary>How many people does each home sleep?</summary>
+        <div class="faq__a">Each home comfortably sleeps up to 10 guests — 20 in total if you book both. Every bedroom is set up with hotel-quality linens and supremely comfortable beds.</div>
+      </details>
+      <details class="faq__item">
+        <summary>What amenities do the homes have?</summary>
+        <div class="faq__a">Expect a hot tub, fire pit, and expansive decks with sweeping Shenandoah Valley views, plus fully stocked chef's kitchens, fast Wi-Fi, and smart TVs. The Chalet adds a lower-level game room with a pool table, and The Modern has an EV charger.</div>
+      </details>
+      <details class="faq__item">
+        <summary>Do you book direct, or only through Airbnb?</summary>
+        <div class="faq__a">Both — but booking direct with us is the best value, with no extra platform fees. We're Airbnb Superhosts with a 4.99 rating across 275 stays, so you get the same trusted hosting either way. Use Check Availability or message us to book direct.</div>
+      </details>
+    </div>
+  </section>
+
   <!-- ====================================================== Booking -->
   <section class="contact" id="contact">
     <div class="contact__wrap">
@@ -323,10 +394,8 @@
   <footer class="site-footer">
     <div class="wrap">
       <a href="#top" class="logo" aria-label="Bryce Mountain Getaways — home">
-        <span class="logo__row">
-          <span class="logo__word">BRYCE</span>
-          <svg class="logo__peaks logo__peaks--footer" viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 22 L13 11 L18 15 L26 7 L32 11 L40 3 L47 13 L53 8 L62 22"/><path d="M13 11 L15.5 16 M26 7 L29 12.5 M40 3 L36.5 10 M40 3 L44 11 M53 8 L51 13"/></svg>
-        </span>
+        <svg class="logo__peaks logo__peaks--footer" viewBox="0 0 64 24" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 22 L13 11 L18 15 L26 7 L32 11 L40 3 L47 13 L53 8 L62 22"/><path d="M13 11 L15.5 16 M26 7 L29 12.5 M40 3 L36.5 10 M40 3 L44 11 M53 8 L51 13"/></svg>
+        <span class="logo__word">BRYCE MOUNTAIN</span>
         <span class="logo__sub">GETAWAYS</span>
       </a>
       <div class="footer-links">
