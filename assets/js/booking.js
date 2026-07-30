@@ -145,11 +145,15 @@
       row("Taxes (" + taxRate() + "% room rate)", money(c.tax)) +
       '<div class="bk-row bk-row--total"><span>Total</span><span>' + money(c.total) + "</span></div>" +
       due;
+    var cancel = c.fullNow
+      ? "<strong>Cancellation:</strong> because check-in is within 5 days, this booking is non-refundable once paid."
+      : "<strong>Cancellation:</strong> your deposit is fully refunded if you cancel at least 5 days before check-in — after that, the deposit is forfeited.";
     document.getElementById("bk-summary").innerHTML = rows +
       '<p class="bk-fineprint">' + (c.fullNow
         ? "Check-in is within 5 days, so the full amount is due to confirm."
         : "A 10% deposit holds your dates; the balance is due 5 days before check-in.") +
-      " You pay the owners directly — nothing is charged here.</p>";
+      " You pay the owners directly — nothing is charged here.</p>" +
+      '<p class="bk-cancel">' + cancel + "</p>";
   }
   function row(label, val) { return '<div class="bk-row"><span>' + esc(label) + "</span><span>" + val + "</span></div>"; }
 
