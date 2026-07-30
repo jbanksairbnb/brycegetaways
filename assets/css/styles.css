@@ -323,8 +323,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .review-who { font-family: var(--sans); font-weight: 400; font-size: 11.5px; line-height: 1.5; letter-spacing: .2em; color: var(--muted-grey); }
 .review-meta { display: block; margin-top: 7px; font-size: 10px; letter-spacing: .16em; color: var(--sage); }
 .rev-more-wrap { text-align: center; margin-top: 44px; }
-#revMore { border-color: var(--hairline-strong); color: var(--ink); }
-#revMore:hover { background: var(--ink); color: #fff; }
+.rev-more-wrap .btn { border-color: var(--hairline-strong); color: var(--ink); }
+.rev-more-wrap .btn:hover { background: var(--ink); color: #fff; }
+.reviews-intro { max-width: 620px; margin: 16px auto 0; font-size: 15px; line-height: 1.6; color: var(--body-grey); }
+/* Homepage teaser: a fixed 3-across row (the full wall lives on reviews.html) */
+.reviews-grid--teaser { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; columns: auto; }
+.reviews-grid--teaser .review-card { margin: 0; }
 .rev-count { margin-top: 14px; font-size: 12px; letter-spacing: .08em; color: var(--muted-grey); }
 .reviews-foot { text-align: center; margin-top: 44px; font-size: 14px; line-height: 1.6; color: var(--muted-grey); max-width: 760px; margin-left: auto; margin-right: auto; }
 
@@ -457,6 +461,7 @@ a.place:hover .place__more { color: var(--pine-dark); }
   .home-row--photos-right .home-gallery { order: 1; }
 
   .reviews-grid { columns: 2; }
+  .reviews-grid--teaser { grid-template-columns: 1fr; }
   .places { grid-template-columns: 1fr 1fr; }
   .book-both { flex-direction: column; align-items: flex-start; }
 
