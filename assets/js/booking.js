@@ -53,9 +53,17 @@
     var pet = st.dogs > 0 ? feePet(h) : 0;
     var tax = round2(sub * taxRate() / 100); // room rate only
     var total = round2(sub + clean + pet + tax);
-    var deposit = round2(total / 2);
-    return { n: n, sub: sub, clean: clean, pet: pet, tax: tax, total: total, deposit: deposit, balance: round2(total - deposit) };
+    // Booking more than 5 days before check-in → 10% holds the dates, balance
+    // due later. Booking within 5 days → the full amount is due to confirm.
+    var advance = nights(todayISO(), st.start);
+    var fullNow = advance <= 5;
+    var deposit = fullNow ? total : round2(total * 0.10);
+    var balance = round2(total - deposit);
+    return { n: n, sub: sub, clean: clean, pet: pet, tax: tax, total: total,
+      deposit: deposit, balance: balance, fullNow: fullNow,
+      depositPct: fullNow ? 100 : 10, advance: advance };
   }
+  function balanceDueISO() { return addDaysISO(st.start, -5); }
 
   /* --------------------------------------------------------- build shell */
   function build() {
@@ -126,16 +134,22 @@
 
   function renderSummary() {
     var c = compute();
+    var due = c.fullNow
+      ? '<div class="bk-row bk-row--sub"><span>Due now (full amount)</span><span>' + money(c.total) + "</span></div>"
+      : '<div class="bk-row bk-row--sub"><span>Due now to hold (10%)</span><span>' + money(c.deposit) + "</span></div>" +
+        '<div class="bk-row bk-row--sub"><span>Balance (90%), 5 days before check-in</span><span>' + money(c.balance) + "</span></div>";
     var rows =
       row("Nightly rate — " + c.n + " night" + (c.n > 1 ? "s" : ""), money(c.sub)) +
       row("Cleaning fee", money(c.clean)) +
       (st.dogs > 0 ? row("Pet fee", money(c.pet)) : "") +
       row("Taxes (" + taxRate() + "% room rate)", money(c.tax)) +
       '<div class="bk-row bk-row--total"><span>Total</span><span>' + money(c.total) + "</span></div>" +
-      '<div class="bk-row bk-row--sub"><span>Due now to hold (50%)</span><span>' + money(c.deposit) + "</span></div>" +
-      '<div class="bk-row bk-row--sub"><span>Balance, 5 days before check-in</span><span>' + money(c.balance) + "</span></div>";
+      due;
     document.getElementById("bk-summary").innerHTML = rows +
-      '<p class="bk-fineprint">Estimate before your booking is confirmed. You pay the owners directly — nothing is charged here.</p>';
+      '<p class="bk-fineprint">' + (c.fullNow
+        ? "Check-in is within 5 days, so the full amount is due to confirm."
+        : "A 10% deposit holds your dates; the balance is due 5 days before check-in.") +
+      " You pay the owners directly — nothing is charged here.</p>";
   }
   function row(label, val) { return '<div class="bk-row"><span>' + esc(label) + "</span><span>" + val + "</span></div>"; }
 
@@ -173,6 +187,16 @@
   }
   function bindField(id, key) { document.getElementById(id).addEventListener("input", function () { st[key] = this.value.trim(); if (key === "name" && !st.signature) { st.signature = this.value; var s = document.getElementById("bk-signature"); if (s) s.value = this.value; refillAgreement(); } }); }
 
+  // The payment schedule is conditional, so it's built as ready-to-insert HTML
+  // (amounts already resolved — fill() does a single token pass, no nesting).
+  function paymentScheduleHTML(c) {
+    if (c.fullNow) {
+      return "<li><strong>Full payment</strong> (" + money(c.total) + ") is due within <strong>3 days</strong> of the date of this Agreement, or before check-in if sooner, to secure the reservation. <strong>If payment is not received in time, this Agreement is void and the reserved dates will be released and made available to other guests.</strong></li>";
+    }
+    return "<li><strong>Reservation deposit</strong> of 10% (" + money(c.deposit) + ") is due within <strong>3 days</strong> of the date of this Agreement to secure the reservation. <strong>If the reservation deposit is not received within 3 days of the date of this Agreement, this Agreement is void and the reserved dates will be released and made available to other guests.</strong></li>" +
+      "<li><strong>Balance</strong> of the remaining 90% (" + money(c.balance) + ") is due <strong>5 days before check-in</strong> (" + fmtLong(balanceDueISO()) + ").</li>";
+  }
+
   function tokenMap() {
     var c = compute();
     return {
@@ -183,7 +207,9 @@
       NIGHTLY_SUBTOTAL: money(c.sub), CLEANING_FEE: money(c.clean), PET_FEE: money(c.pet),
       TAX_RATE: taxRate(), TAX_AMOUNT: money(c.tax), TOTAL: money(c.total),
       DEPOSIT_AMOUNT: money(c.deposit), BALANCE_AMOUNT: money(c.balance),
-      BALANCE_DUE_DATE: fmtLong(addDaysISO(st.start, -5)), CANCEL_BY_DATE: fmtLong(addDaysISO(st.start, -5)),
+      DEPOSIT_PCT: c.depositPct, BALANCE_PCT: 100 - c.depositPct,
+      PAYMENT_SCHEDULE: paymentScheduleHTML(c),
+      BALANCE_DUE_DATE: fmtLong(balanceDueISO()), CANCEL_BY_DATE: fmtLong(balanceDueISO()),
       SIGNATURE: st.signature ? esc(st.signature) : "____________________", SIGN_DATE: fmtLong(todayISO())
     };
   }
@@ -233,7 +259,9 @@
         row(LABEL[st.homeKey] + " · " + st.guests + " guest" + (st.guests > 1 ? "s" : "") + (st.dogs ? " · " + st.dogs + " dog" + (st.dogs > 1 ? "s" : "") : ""), "") +
         row(fmtLong(st.start) + " → " + fmtLong(st.end), c.n + " nights") +
         row("Total", money(c.total)) +
-        '<div class="bk-row bk-row--total"><span>Due now to hold (50%)</span><span>' + money(c.deposit) + "</span></div>" +
+        (c.fullNow
+          ? '<div class="bk-row bk-row--total"><span>Due now (full amount)</span><span>' + money(c.total) + "</span></div>"
+          : '<div class="bk-row bk-row--total"><span>Due now to hold (10%)</span><span>' + money(c.deposit) + "</span></div>") +
       "</div>" +
       '<p class="bk-fineprint">Submitting sends your signed request to Jonathan &amp; Anna. They\'ll confirm and you\'ll pay them directly — see options below.</p>' +
       '<div class="bk-err" id="bk-err3"></div>' +
@@ -243,20 +271,52 @@
     document.getElementById("bk-submit").addEventListener("click", submit);
   }
 
+  // A plain-text summary so both the owners' notification and the guest's
+  // confirmation copy read clearly at a glance (not just a field dump).
+  function summaryText(c) {
+    var pay = c.fullNow
+      ? "Full payment due now: " + money(c.total) + " (within 3 days, or before check-in if sooner)"
+      : "Deposit due now to hold (10%): " + money(c.deposit) + "\n" +
+        "  Balance (90%): " + money(c.balance) + " — due 5 days before check-in (" + fmtLong(balanceDueISO()) + ")";
+    return "BOOKING REQUEST — " + LABEL[st.homeKey] + "\n" +
+      ADDRESS[st.homeKey] + "\n\n" +
+      "Guest: " + st.name + "\n" +
+      "Email: " + st.email + "\n" +
+      "Phone: " + st.phone + "\n" +
+      "Mailing address: " + st.address + "\n\n" +
+      "Check-in:  " + fmtLong(st.start) + " (3:00 PM)\n" +
+      "Check-out: " + fmtLong(st.end) + " (11:00 AM)\n" +
+      "Nights: " + c.n + "  ·  Guests: " + st.guests + "  ·  Dogs: " + st.dogs + "\n\n" +
+      "COST\n" +
+      "  Nightly (" + c.n + " night" + (c.n > 1 ? "s" : "") + "): " + money(c.sub) + "\n" +
+      "  Cleaning fee: " + money(c.clean) + "\n" +
+      (st.dogs > 0 ? "  Pet fee: " + money(c.pet) + "\n" : "") +
+      "  Tax (" + taxRate() + "% room rate): " + money(c.tax) + "\n" +
+      "  TOTAL: " + money(c.total) + "\n\n" +
+      "PAYMENT\n  " + pay + "\n" +
+      "  Zelle: 805-689-2914  ·  Venmo: @jonathan-banks-27  ·  PayPal (Friends & Family): anyamaryams@gmail.com\n\n" +
+      "AGREEMENT\n" +
+      "  Signed electronically by: " + st.signature + "\n" +
+      "  Signed at: " + new Date().toISOString() + "\n";
+  }
+
   function submit() {
     var btn = document.getElementById("bk-submit"), err = document.getElementById("bk-err3");
     btn.disabled = true; btn.textContent = "SENDING…";
     var c = compute();
     var payload = {
       _subject: "Booking request — " + LABEL[st.homeKey] + " — " + st.name,
+      _replyto: st.email, _cc: st.email, // owners get it; guest is copied in
+      name: st.name, email: st.email, phone: st.phone, mailing_address: st.address,
       type: "Booking request", home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: st.start, check_out: st.end, nights: c.n, guests: st.guests, dogs: st.dogs,
       nightly_subtotal: money(c.sub), cleaning_fee: money(c.clean), pet_fee: money(c.pet),
-      taxes: money(c.tax), total: money(c.total), deposit_due_now: money(c.deposit),
-      balance: money(c.balance), balance_due: fmtLong(addDaysISO(st.start, -5)),
-      name: st.name, email: st.email, phone: st.phone, mailing_address: st.address,
+      taxes: money(c.tax), total: money(c.total),
+      payment_type: c.fullNow ? "Full payment due now" : "10% deposit to hold",
+      due_now: money(c.deposit), balance: money(c.balance),
+      balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
       agreement_accepted: "YES", signature_typed: st.signature, signed_at: new Date().toISOString(),
-      _replyto: st.email
+      message: summaryText(c)
     };
     fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
       .then(function (r) { if (!r.ok) throw new Error("bad"); return r.json(); })
@@ -269,18 +329,23 @@
 
   function renderDone(c) {
     setStep(3);
+    var holdText = c.fullNow
+      ? "To confirm your stay, the <strong>full amount of " + money(c.total) + "</strong> is due within <strong>3 days</strong> (or before check-in if sooner), or the dates are released."
+      : "To <strong>hold your dates</strong>, the 10% deposit of <strong>" + money(c.deposit) + "</strong> is due within <strong>3 days</strong>, or the dates are released. The balance of <strong>" + money(c.balance) + "</strong> is due 5 days before check-in (" + fmtLong(balanceDueISO()) + ").";
     els.body.innerHTML =
       '<div class="bk-done">' +
         '<div class="bk-done__check">✓</div>' +
         "<h4>Request received — thank you!</h4>" +
-        "<p>Jonathan &amp; Anna will confirm your dates shortly. A copy of your signed agreement is yours to download above. To <strong>hold your dates</strong>, the 50% reservation deposit of <strong>" + money(c.deposit) + "</strong> is due within <strong>3 days</strong>, or the dates are released.</p>" +
+        "<p>A confirmation has been emailed to you, and your signed request has gone to Jonathan &amp; Anna, who will confirm your dates shortly. A copy of your signed agreement is yours to download below.</p>" +
+        "<p>" + holdText + "</p>" +
         '<div class="bk-pay">' +
-          '<div class="bk-pay__title">How to send your deposit</div>' +
+          '<div class="bk-pay__title">How to pay</div>' +
           "<ul>" +
             "<li><strong>Zelle</strong> — 805-689-2914 (no fee)</li>" +
-            "<li><strong>Venmo</strong> — @jonathan-banks-27 (Goods &amp; Services adds 3%)</li>" +
-            "<li><strong>PayPal</strong> — we'll send a payment link (Goods &amp; Services adds 3%)</li>" +
+            "<li><strong>Venmo</strong> — @jonathan-banks-27 (send to friends, no fee)</li>" +
+            "<li><strong>PayPal</strong> — anyamaryams@gmail.com (send as Friends &amp; Family, no fee)</li>" +
           "</ul>" +
+          '<p class="bk-fineprint">Please avoid &ldquo;Goods &amp; Services&rdquo; on Venmo/PayPal — it adds a 3% fee.</p>' +
         "</div>" +
         '<div class="bk-actions"><button type="button" class="btn btn--light-outline" id="bk-download2">Download agreement</button>' +
         '<button type="button" class="btn btn--dark" id="bk-done-close">DONE</button></div>' +
