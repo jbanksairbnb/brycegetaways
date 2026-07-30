@@ -4,8 +4,8 @@
       "name": "The Chalet",
       "image": "assets/img/chalet-livingroom.jpg",
       "minNights": 2,
-      "defaultRate": 375,
-      "weekendRate": 375,
+      "defaultRate": 365,
+      "weekendRate": 645,
       "rates": {},
       "blocked": []
     },
@@ -19,5 +19,5 @@
       "blocked": []
     }
   },
-  "updatedAt": null
+  "updatedAt": "2026-07-30T02:55:16.595Z"
 }
