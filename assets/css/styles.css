@@ -139,9 +139,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .site-nav .btn { padding: 11px 22px; }
 
 /* the two logo peak variants — enlarged and tucked left so the "E" overlaps the first peak */
-.logo__peaks { position: relative; z-index: 0; width: 60px; height: 30px; margin-left: -34px; }
-.logo__peaks--light { display: inline-block; }
-.logo__peaks--dark { display: none; }
+/* Line-ridgeline mark. Single SVG tinted by `color` (currentColor stroke) per
+   context. Small negative margin tucks the mark's left edge behind the "E". */
+.logo__peaks { position: relative; z-index: 0; width: 50px; height: auto; margin-left: -9px; align-self: flex-end; margin-bottom: 1px; }
+.logo__peaks--footer { width: 42px; }
+.site-header .logo__peaks { color: #f4f2ee; }
 
 /* scrolled state */
 .site-header.is-scrolled {
@@ -156,8 +158,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 .site-header.is-scrolled .site-nav a:hover { color: var(--pine); }
 .site-header.is-scrolled .site-nav .btn { border-color: var(--hairline-strong); color: var(--ink); }
 .site-header.is-scrolled .site-nav .btn:hover { background: var(--ink); color: #fff; }
-.site-header.is-scrolled .logo__peaks--light { display: none; }
-.site-header.is-scrolled .logo__peaks--dark { display: inline-block; }
+.site-header.is-scrolled .logo__peaks { color: var(--pine); }
 
 .nav-toggle { display: none; }
 
@@ -382,6 +383,7 @@ a.place:hover .place__more { color: var(--pine-dark); }
 .site-footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap; }
 .site-footer .logo__word { color: #fff; font-size: 20px; }
 .site-footer .logo__sub { color: rgba(247, 245, 241, .6); font-size: 9px; }
+.site-footer .logo__peaks { color: var(--sage); }
 .footer-links { display: flex; gap: 36px; font-weight: 300; font-size: 12.5px; letter-spacing: .16em; }
 .footer-links a { color: rgba(247, 245, 241, .75); }
 .footer-links a:hover { color: #fff; }
