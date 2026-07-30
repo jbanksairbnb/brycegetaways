@@ -247,6 +247,26 @@
     });
   }
 
+  /* Merge OTA (Airbnb/VRBO) booked nights from /api/availability into each home's
+     blocked list. Display-only — never persisted. Fails silently when the sync
+     function isn't reachable (e.g. local preview), leaving manual blocks intact. */
+  function mergeIcal(d) {
+    return fetch("/api/availability", { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (res) {
+        if (!res || !res.blocked) return;
+        Object.keys(res.blocked).forEach(function (k) {
+          var h = d.homes && d.homes[k];
+          if (!h) return;
+          if (!h.blocked) h.blocked = [];
+          var seen = {};
+          h.blocked.forEach(function (x) { seen[x] = 1; });
+          res.blocked[k].forEach(function (x) { if (!seen[x]) { h.blocked.push(x); seen[x] = 1; } });
+        });
+      })
+      .catch(function () { /* offline / not deployed — manual blocks only */ });
+  }
+
   /* ------------------------------------------------------------- init */
   fetch(DATA_URL, { cache: "no-store" })
     .then(function (r) { return r.json(); })
@@ -254,6 +274,9 @@
       state.data = d;
       window.BMGData = d; // shared with the booking flow (booking.js)
       if (d.publicMonths && d.publicMonths >= 1) monthsAhead = d.publicMonths;
+      return mergeIcal(d); // always resolves, even on failure
+    })
+    .then(function () {
       build();
       bindTriggers();
       window.BMGCalendar = { open: open };
