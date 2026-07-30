@@ -13,8 +13,8 @@
    to emailing the owners only (via Formspree). */
 window.BMGConfig = {
   emailjs: {
-    publicKey: "",
-    serviceId: "",
-    templateId: ""
+    publicKey: "Olkr11Rp94JH-M-Nm",
+    serviceId: "",              // paste the "service_..." ID from Email Services
+    templateId: "template_je53hdm"
   }
 };
