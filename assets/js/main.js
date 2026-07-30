@@ -112,6 +112,20 @@
   var contactSubmit = document.getElementById("contactSubmit");
 
   if (contactForm) {
+    var contactOk = function () {
+      contactForm.reset();
+      contactStatus.style.color = "var(--pine)";
+      contactStatus.textContent = "Thanks — your message is on its way. Jonathan or Anna will get back to you, usually within the hour.";
+      contactSubmit.textContent = "MESSAGE SENT ✓";
+    };
+    var contactFail = function () {
+      contactStatus.style.color = "#b3261e";
+      contactStatus.textContent = "Something went wrong. Please email brycegetaways@gmail.com and we'll get right back to you.";
+      contactSubmit.disabled = false;
+      contactSubmit.textContent = "SEND MESSAGE";
+    };
+    var val = function (id) { var f = contactForm.querySelector('[name="' + id + '"]'); return f ? f.value.trim() : ""; };
+
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!contactForm.checkValidity()) { contactForm.reportValidity(); return; }
@@ -119,27 +133,24 @@
       contactSubmit.textContent = "SENDING…";
       contactStatus.textContent = "";
 
-      fetch(contactForm.action, {
-        method: "POST",
-        body: new FormData(contactForm),
-        headers: { Accept: "application/json" }
-      })
-        .then(function (res) {
-          if (res.ok) {
-            contactForm.reset();
-            contactStatus.style.color = "var(--pine)";
-            contactStatus.textContent = "Thanks — your message is on its way. Jonathan or Anna will get back to you, usually within the hour.";
-            contactSubmit.textContent = "MESSAGE SENT ✓";
-          } else {
-            throw new Error("Bad response");
-          }
+      // Resolved at submit time — the EmailJS SDK and config load after main.js.
+      var cfg = (window.BMGConfig && window.BMGConfig.emailjs) || {};
+      var contactViaEmailJS = !!(window.emailjs && cfg.publicKey && cfg.serviceId && cfg.contactTemplateId);
+
+      if (contactViaEmailJS) {
+        window.emailjs.send(cfg.serviceId, cfg.contactTemplateId, {
+          to_email: "brycegetaways@gmail.com", reply_to: val("email"),
+          name: val("name"), email: val("email"), phone: val("phone"),
+          subject: val("subject") || "Website question", message: val("message")
+        }, { publicKey: cfg.publicKey })
+          .then(contactOk).catch(contactFail);
+      } else {
+        fetch(contactForm.action, {
+          method: "POST", body: new FormData(contactForm), headers: { Accept: "application/json" }
         })
-        .catch(function () {
-          contactStatus.style.color = "#b3261e";
-          contactStatus.textContent = "Something went wrong. Please email brycegetaways@gmail.com and we'll get right back to you.";
-          contactSubmit.disabled = false;
-          contactSubmit.textContent = "SEND MESSAGE";
-        });
+          .then(function (res) { if (res.ok) contactOk(); else throw new Error("Bad response"); })
+          .catch(contactFail);
+      }
     });
   }
 

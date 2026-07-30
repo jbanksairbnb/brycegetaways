@@ -79,6 +79,10 @@
           <label for="mgr-publicmonths">Guest view (months)</label>
           <input id="mgr-publicmonths" type="number" min="1" max="24" value="12">
         </div>
+        <div class="mgr-field">
+          <label for="mgr-taxrate">Tax rate (% room)</label>
+          <input id="mgr-taxrate" type="number" min="0" max="30" step="0.1" value="10.3">
+        </div>
         <button id="mgr-load" class="mgr-btn mgr-btn--ghost" type="button">Load</button>
         <button id="mgr-save" class="mgr-btn" type="button">Save to site</button>
       </div>
@@ -107,6 +111,14 @@
         <div class="mgr-field">
           <label for="mgr-minbase">Base min nights</label>
           <input id="mgr-minbase" type="number" min="1" step="1">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-cleaning">Cleaning fee ($)</label>
+          <input id="mgr-cleaning" type="number" min="0" step="5">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-petfee">Pet fee ($)</label>
+          <input id="mgr-petfee" type="number" min="0" step="5">
         </div>
         <button id="mgr-apply-rates" class="mgr-btn mgr-btn--ghost" type="button">Apply base settings</button>
       </div>

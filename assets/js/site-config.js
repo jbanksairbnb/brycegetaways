@@ -15,6 +15,7 @@ window.BMGConfig = {
   emailjs: {
     publicKey: "Olkr11Rp94JH-M-Nm",
     serviceId: "brycegetaways@gmail.com",
-    templateId: "template_je53hdm"
+    templateId: "template_je53hdm",        // booking confirmation (guest + owner)
+    contactTemplateId: ""                   // Contact-Us form (owner + auto-reply)
   }
 };

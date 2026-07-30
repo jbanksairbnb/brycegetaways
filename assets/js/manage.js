@@ -32,6 +32,9 @@
   function hasOverride(h, s) { return h.rates && h.rates[s] != null; }
   function baseMin(h) { return h.minNights || 2; }
   function publicMonths() { var n = state.data && state.data.publicMonths; return (n && n >= 1) ? n : 12; }
+  function cleaningFee(h) { return h.cleaningFee != null ? h.cleaningFee : 150; }
+  function petFee(h) { return h.petFee != null ? h.petFee : 50; }
+  function taxRate() { var n = state.data && state.data.taxRate; return (n != null) ? n : 10.3; }
 
   /* ---- GitHub ---- */
   function token() { return (el.token.value || "").trim(); }
@@ -99,6 +102,8 @@
     status("Saving…");
     var doPut = function () {
       state.data.publicMonths = Math.max(1, parseInt(el.publicMonths.value, 10) || 12);
+      var tr = parseFloat(el.taxrate.value);
+      state.data.taxRate = (!isNaN(tr) && tr >= 0) ? tr : 10.3;
       state.data.updatedAt = new Date().toISOString();
       var body = {
         message: "Update availability & rates (" + branch() + ")",
@@ -147,6 +152,8 @@
     el.rateDefault.value = h.defaultRate;
     el.rateWeekend.value = (h.weekendRate != null ? h.weekendRate : h.defaultRate);
     el.minBase.value = baseMin(h);
+    el.cleaning.value = cleaningFee(h);
+    el.petfee.value = petFee(h);
     el.tabs.forEach(function (t) { t.classList.toggle("is-active", t.getAttribute("data-home") === k); });
     render();
   }
@@ -186,6 +193,7 @@
     el.cal.innerHTML = html;
     updateToolbar();
     if (el.publicMonths && document.activeElement !== el.publicMonths) el.publicMonths.value = publicMonths();
+    if (el.taxrate && document.activeElement !== el.taxrate) el.taxrate.value = taxRate();
     if (el.legendCount) {
       el.legendCount.textContent = (h.blocked || []).length + " blocked · " +
         Object.keys(h.rates || {}).length + " custom prices · " +
@@ -218,7 +226,10 @@
     el.rateDefault = document.getElementById("mgr-default");
     el.rateWeekend = document.getElementById("mgr-weekend");
     el.minBase = document.getElementById("mgr-minbase");
+    el.cleaning = document.getElementById("mgr-cleaning");
+    el.petfee = document.getElementById("mgr-petfee");
     el.publicMonths = document.getElementById("mgr-publicmonths");
+    el.taxrate = document.getElementById("mgr-taxrate");
     el.cal = document.getElementById("mgr-cal");
     el.toolbar = document.getElementById("mgr-toolbar");
     el.count = document.getElementById("mgr-count");
@@ -237,9 +248,12 @@
     document.getElementById("mgr-apply-rates").addEventListener("click", function () {
       var h = home();
       var dv = parseFloat(el.rateDefault.value), wv = parseFloat(el.rateWeekend.value), mb = parseInt(el.minBase.value, 10);
+      var cf = parseFloat(el.cleaning.value), pf = parseFloat(el.petfee.value);
       if (!isNaN(dv)) h.defaultRate = dv;
       if (!isNaN(wv)) h.weekendRate = wv;
       if (!isNaN(mb) && mb >= 1) h.minNights = mb;
+      if (!isNaN(cf) && cf >= 0) h.cleaningFee = cf;
+      if (!isNaN(pf) && pf >= 0) h.petFee = pf;
       render();
       status("Base settings updated for " + h.name + " — remember to Save.", false);
     });
