@@ -6,7 +6,7 @@
 
   var OWNER = "jbanksairbnb", REPO = "brycegetaways", PATH = "assets/data/availability.json";
   var TOKEN_KEY = "bmg_gh_token", BRANCH_KEY = "bmg_gh_branch";
-  var MONTHS_AHEAD = 12;
+  var MONTHS_AHEAD = 15; // editor shows 15 months out; the public calendar shows 12
   var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   var DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
