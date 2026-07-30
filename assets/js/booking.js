@@ -300,13 +300,34 @@
       "  Signed at: " + new Date().toISOString() + "\n";
   }
 
-  function submit() {
-    var btn = document.getElementById("bk-submit"), err = document.getElementById("bk-err3");
-    btn.disabled = true; btn.textContent = "SENDING…";
-    var c = compute();
+  // EmailJS is used when configured (emails BOTH the guest and the owners);
+  // otherwise we fall back to Formspree, which emails the owners only.
+  function emailCfg() { return (window.BMGConfig && window.BMGConfig.emailjs) || {}; }
+  function emailjsReady() { var e = emailCfg(); return !!(window.emailjs && e.publicKey && e.serviceId && e.templateId); }
+
+  function emailParams(c) {
+    return {
+      to_email: st.email, owner_email: "brycegetaways@gmail.com", reply_to: st.email,
+      guest_name: st.name, guest_phone: st.phone, guest_address: st.address,
+      home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
+      check_in: fmtLong(st.start), check_out: fmtLong(st.end),
+      nights: c.n, guests: st.guests, dogs: st.dogs,
+      nightly_subtotal: money(c.sub), cleaning_fee: money(c.clean),
+      pet_fee: st.dogs > 0 ? money(c.pet) : "—", taxes: money(c.tax), total: money(c.total),
+      payment_type: c.fullNow ? "Full payment due now" : "10% deposit to hold",
+      due_now: money(c.deposit), balance: c.fullNow ? "—" : money(c.balance),
+      balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
+      signature: st.signature, signed_at: new Date().toISOString(), summary: summaryText(c)
+    };
+  }
+  function sendViaEmailJS(c) {
+    var e = emailCfg();
+    return window.emailjs.send(e.serviceId, e.templateId, emailParams(c), { publicKey: e.publicKey });
+  }
+  function sendViaFormspree(c) {
     var payload = {
       _subject: "Booking request — " + LABEL[st.homeKey] + " — " + st.name,
-      _replyto: st.email, _cc: st.email, // owners get it; guest is copied in
+      _replyto: st.email,
       name: st.name, email: st.email, phone: st.phone, mailing_address: st.address,
       type: "Booking request", home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: st.start, check_out: st.end, nights: c.n, guests: st.guests, dogs: st.dogs,
@@ -318,13 +339,27 @@
       agreement_accepted: "YES", signature_typed: st.signature, signed_at: new Date().toISOString(),
       message: summaryText(c)
     };
-    fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
-      .then(function (r) { if (!r.ok) throw new Error("bad"); return r.json(); })
-      .then(function () { renderDone(c); })
-      .catch(function () {
-        err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
-        btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
-      });
+    return fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
+      .then(function (r) { if (!r.ok) throw new Error("bad"); return r.json(); });
+  }
+
+  function submit() {
+    var btn = document.getElementById("bk-submit"), err = document.getElementById("bk-err3");
+    btn.disabled = true; btn.textContent = "SENDING…"; err.textContent = "";
+    var c = compute();
+    var fail = function () {
+      err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
+      btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
+    };
+    if (emailjsReady()) {
+      sendViaEmailJS(c)
+        .then(function () { st.guestEmailed = true; renderDone(c); })
+        .catch(function () { // don't lose the request — still notify the owners
+          sendViaFormspree(c).then(function () { st.guestEmailed = false; renderDone(c); }).catch(fail);
+        });
+    } else {
+      sendViaFormspree(c).then(function () { st.guestEmailed = false; renderDone(c); }).catch(fail);
+    }
   }
 
   function renderDone(c) {
@@ -336,7 +371,10 @@
       '<div class="bk-done">' +
         '<div class="bk-done__check">✓</div>' +
         "<h4>Request received — thank you!</h4>" +
-        "<p>A confirmation has been emailed to you, and your signed request has gone to Jonathan &amp; Anna, who will confirm your dates shortly. A copy of your signed agreement is yours to download below.</p>" +
+        "<p>" + (st.guestEmailed
+          ? "A confirmation has been emailed to you, and your signed request has gone to Jonathan &amp; Anna, who will confirm your dates shortly."
+          : "Your signed request has gone to Jonathan &amp; Anna, who will confirm your dates and follow up by email shortly.") +
+        " A copy of your signed agreement is yours to download below.</p>" +
         "<p>" + holdText + "</p>" +
         '<div class="bk-pay">' +
           '<div class="bk-pay__title">How to pay</div>' +
