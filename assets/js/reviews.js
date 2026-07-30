@@ -7,8 +7,8 @@
   "use strict";
 
   var DATA_URL = "assets/data/reviews.json";
-  var BATCH = 9;                 // cards revealed per "Read more"
-  var START = 6;                 // cards shown initially
+  var BATCH = 15;                // cards revealed per "Read more"
+  var START = 12;                // cards shown initially
 
   // Theme filters shown in the highlight row (order matters). Keys match the
   // `themes` tags in reviews.json; counts are computed from the data.
