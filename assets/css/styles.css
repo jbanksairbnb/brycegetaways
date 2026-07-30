@@ -290,6 +290,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
 }
 .home-rate { font-size: 14px; line-height: 1.6; color: var(--sage); margin-bottom: 24px; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.home-otas { font-size: 12px; letter-spacing: .01em; color: rgba(247, 245, 241, .48); margin: 14px 0 0; }
+.home-otas a { color: rgba(247, 245, 241, .68); text-decoration: underline; text-underline-offset: 2px; }
+.home-otas a:hover { color: #fff; }
 
 .book-both {
   margin-top: 64px; border: 1px solid rgba(247, 245, 241, .25);
