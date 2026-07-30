@@ -6,7 +6,7 @@
   "use strict";
 
   var DATA_URL = "assets/data/availability.json";
-  var MONTHS_AHEAD = 12;
+  var monthsAhead = 12; // overridden by data.publicMonths on load
   var LABEL = { chalet: "The Chalet", modern: "The Modern" };
 
   var state = { data: null, homeKey: "chalet", start: null, end: null };
@@ -127,7 +127,7 @@
 
   function renderMonths() {
     var h = home(), t = today(), html = "";
-    for (var m = 0; m < MONTHS_AHEAD; m++) {
+    for (var m = 0; m < monthsAhead; m++) {
       var first = new Date(t.getFullYear(), t.getMonth() + m, 1);
       var y = first.getFullYear(), mo = first.getMonth();
       html += '<div class="cal-month"><div class="cal-month__label">' +
@@ -261,6 +261,7 @@
     .then(function (r) { return r.json(); })
     .then(function (d) {
       state.data = d;
+      if (d.publicMonths && d.publicMonths >= 1) monthsAhead = d.publicMonths;
       build();
       bindTriggers();
       window.BMGCalendar = { open: open };

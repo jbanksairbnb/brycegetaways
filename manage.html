@@ -40,7 +40,11 @@
     .mgr-count { font-size: 13.5px; color: var(--muted-grey); margin-right: 4px; min-width: 120px; }
     .mgr-toolbar[data-empty="true"] .mgr-needsel { opacity: .4; pointer-events: none; }
 
-    .mgr-cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px 32px; margin-top: 22px; }
+    .mgr-legend { border: 0; padding: 8px 0 0; font-size: 13px; }
+    .mgr-legend .cal-key--price { background: var(--pine); }
+    .mgr-legend .cal-key--minx { background: var(--sage-deep); }
+    .mgr-legend__note { margin-left: auto; color: var(--muted-grey); }
+    .mgr-cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px 32px; margin-top: 14px; }
     .mgr-cal .cal-month__label { font-family: var(--serif); font-size: 20px; margin-bottom: 10px; }
     .mgr-cal .cal-cell--open, .mgr-cal .cal-cell--blocked { cursor: pointer; }
     .mgr-cal .cal-cell.is-picked { outline: 2px solid var(--pine); outline-offset: -2px; }
@@ -70,6 +74,10 @@
         <div class="mgr-field">
           <label for="mgr-branch">Branch</label>
           <input id="mgr-branch" type="text" value="claude/bryce-mountain-getaways-site-oaq9ts">
+        </div>
+        <div class="mgr-field">
+          <label for="mgr-publicmonths">Guest view (months)</label>
+          <input id="mgr-publicmonths" type="number" min="1" max="24" value="12">
         </div>
         <button id="mgr-load" class="mgr-btn mgr-btn--ghost" type="button">Load</button>
         <button id="mgr-save" class="mgr-btn" type="button">Save to site</button>
@@ -124,6 +132,13 @@
       <button id="mgr-clear" class="mgr-btn mgr-btn--ghost" type="button">Clear selection</button>
     </div>
 
+    <div class="cal-legend mgr-legend">
+      <span class="cal-key cal-key--open"></span>Available
+      <span class="cal-key cal-key--blk"></span>Blocked
+      <span class="cal-key cal-key--price"></span>Custom price
+      <span class="cal-key cal-key--minx"></span>Holiday minimum
+      <span class="mgr-legend__note" id="mgr-legend-count"></span>
+    </div>
     <div class="mgr-cal" id="mgr-cal"></div>
 
     <details class="mgr-help">

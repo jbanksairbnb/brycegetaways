@@ -6,7 +6,7 @@
 
   var OWNER = "jbanksairbnb", REPO = "brycegetaways", PATH = "assets/data/availability.json";
   var TOKEN_KEY = "bmg_gh_token", BRANCH_KEY = "bmg_gh_branch";
-  var MONTHS_AHEAD = 15; // editor shows 15 months out; the public calendar shows 12
+  var EDITOR_MIN_MONTHS = 15; // editor always shows at least this many months
   var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   var DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -31,6 +31,7 @@
   function isBlocked(h, s) { return h.blocked && h.blocked.indexOf(s) !== -1; }
   function hasOverride(h, s) { return h.rates && h.rates[s] != null; }
   function baseMin(h) { return h.minNights || 2; }
+  function publicMonths() { var n = state.data && state.data.publicMonths; return (n && n >= 1) ? n : 12; }
 
   /* ---- GitHub ---- */
   function token() { return (el.token.value || "").trim(); }
@@ -97,6 +98,7 @@
     el.save.disabled = true;
     status("Saving…");
     var doPut = function () {
+      state.data.publicMonths = Math.max(1, parseInt(el.publicMonths.value, 10) || 12);
       state.data.updatedAt = new Date().toISOString();
       var body = {
         message: "Update availability & rates (" + branch() + ")",
@@ -152,7 +154,8 @@
   function render() {
     if (!state.data) return;
     var h = home(), t = today(), html = "";
-    for (var m = 0; m < MONTHS_AHEAD; m++) {
+    var months = Math.max(EDITOR_MIN_MONTHS, publicMonths());
+    for (var m = 0; m < months; m++) {
       var first = new Date(t.getFullYear(), t.getMonth() + m, 1);
       var y = first.getFullYear(), mo = first.getMonth();
       html += '<div class="cal-month"><div class="cal-month__label">' + MONTH_NAMES[mo] + " " + y + '</div><div class="cal-grid">';
@@ -182,6 +185,12 @@
     }
     el.cal.innerHTML = html;
     updateToolbar();
+    if (el.publicMonths && document.activeElement !== el.publicMonths) el.publicMonths.value = publicMonths();
+    if (el.legendCount) {
+      el.legendCount.textContent = (h.blocked || []).length + " blocked · " +
+        Object.keys(h.rates || {}).length + " custom prices · " +
+        Object.keys(h.minStays || {}).length + " holiday minimums";
+    }
   }
 
   function updateToolbar() {
@@ -209,9 +218,11 @@
     el.rateDefault = document.getElementById("mgr-default");
     el.rateWeekend = document.getElementById("mgr-weekend");
     el.minBase = document.getElementById("mgr-minbase");
+    el.publicMonths = document.getElementById("mgr-publicmonths");
     el.cal = document.getElementById("mgr-cal");
     el.toolbar = document.getElementById("mgr-toolbar");
     el.count = document.getElementById("mgr-count");
+    el.legendCount = document.getElementById("mgr-legend-count");
     el.save = document.getElementById("mgr-save");
     el.tabs = Array.prototype.slice.call(document.querySelectorAll(".cal-tab"));
 
