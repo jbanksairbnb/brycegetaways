@@ -18,10 +18,10 @@ Recommended: JPG, ~2400px on the long edge, saved at ~80% quality.
 | `chalet-sunroom.jpg`            | The Chalet — thumbnail 1             | `133 Aspen Way - Full Res-1011.JPG` (egg chair)      |
 | `chalet-dining.jpg`             | The Chalet — thumbnail 2             | `133 Aspen Way - Full Res-1009.JPG` (dining)         |
 | `chalet-gameroom.jpg`           | The Chalet — thumbnail 3             | `133 Aspen Way - Full Res-1025.JPG` (game room)      |
-| `modern-greatroom.jpg`          | The Modern — main photo             | `155 Aspen Way South, Basye - 0009.jpg` (great room) |
-| `modern-kitchen.jpg`            | The Modern — thumbnail 1            | `155 Aspen Way South, Basye - 0022.jpg` (kitchen)    |
-| `modern-deck.jpg`               | The Modern — thumbnail 2            | `155 Aspen Way South, Basye - 0037.jpg` (deck)       |
-| `modern-loft.jpg`               | The Modern — thumbnail 3            | `155 Aspen Way South, Basye - 0046.jpg` (loft)       |
+| `modern-greatroom.jpg`          | The Cabin — main photo             | `155 Aspen Way South, Basye - 0009.jpg` (great room) |
+| `modern-kitchen.jpg`            | The Cabin — thumbnail 1            | `155 Aspen Way South, Basye - 0022.jpg` (kitchen)    |
+| `modern-deck.jpg`               | The Cabin — thumbnail 2            | `155 Aspen Way South, Basye - 0037.jpg` (deck)       |
+| `modern-loft.jpg`               | The Cabin — thumbnail 3            | `155 Aspen Way South, Basye - 0046.jpg` (loft)       |
 
 `season-summer.jpg` and `modern-deck.jpg` come from the same original photo
 (`- 0037.jpg`) — you can drop the same file under both names.

@@ -76,7 +76,7 @@
     return {
       homes: {
         chalet: { name: "The Chalet", image: "assets/img/chalet-livingroom.jpg", minNights: 2, defaultRate: 375, weekendRate: 375, rates: {}, blocked: [] },
-        modern: { name: "The Modern", image: "assets/img/modern-greatroom.jpg", minNights: 2, defaultRate: 375, weekendRate: 375, rates: {}, blocked: [] }
+        modern: { name: "The Cabin", image: "assets/img/modern-greatroom.jpg", minNights: 2, defaultRate: 375, weekendRate: 375, rates: {}, blocked: [] }
       }, updatedAt: null
     };
   }
