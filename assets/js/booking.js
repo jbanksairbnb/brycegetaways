@@ -8,7 +8,7 @@
 
   var FORM_ENDPOINT = "https://formspree.io/f/mqaqgypl";
   var TEMPLATE_URL = "assets/agreement-template.html";
-  var LABEL = { chalet: "The Chalet", modern: "The Modern" };
+  var LABEL = { chalet: "The Chalet", modern: "The Cabin" };
   var ADDRESS = {
     chalet: "133 Aspen Way South, Basye, VA 22810",
     modern: "155 Aspen Way South, Basye, VA 22810"

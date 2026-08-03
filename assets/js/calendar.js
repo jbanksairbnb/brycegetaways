@@ -7,7 +7,7 @@
 
   var DATA_URL = "assets/data/availability.json";
   var monthsAhead = 12; // overridden by data.publicMonths on load
-  var LABEL = { chalet: "The Chalet", modern: "The Modern" };
+  var LABEL = { chalet: "The Chalet", modern: "The Cabin" };
 
   var state = { data: null, homeKey: "chalet", start: null, end: null };
   var els = {};
@@ -73,7 +73,7 @@
           '</div>' +
           '<div class="cal-toggle" role="tablist" aria-label="Choose a home">' +
             '<button class="cal-tab" type="button" data-home="chalet" role="tab">The Chalet</button>' +
-            '<button class="cal-tab" type="button" data-home="modern" role="tab">The Modern</button>' +
+            '<button class="cal-tab" type="button" data-home="modern" role="tab">The Cabin</button>' +
           '</div>' +
         '</div>' +
         '<div class="cal-legend">' +

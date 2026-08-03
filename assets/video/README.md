@@ -2,7 +2,7 @@
 
 ## Background hero loop — `modern-hero.mp4`
 
-The Modern's hero (`the-modern.html`) is wired to play `assets/video/modern-hero.mp4`
+The Cabin's hero (`the-modern.html`) is wired to play `assets/video/modern-hero.mp4`
 as a silent, looping background. Until that file exists, the poster photo
 (`assets/img/hero-modern-twilight.jpg`) shows instead — so there's never a
 broken state.

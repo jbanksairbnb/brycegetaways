@@ -8,7 +8,7 @@
       img: "assets/img/season-winter.jpg",
       alt: "Snow on the slopes at Bryce Resort",
       title: "Ski-country winters, minutes from your door",
-      copy: "Bryce Resort runs day and night skiing, snowboarding, tubing, and ice skating all winter — a five-minute walk from The Modern, a short stroll from The Chalet. Come home to the fireplace, or a hot tub under a cold, clear sky.",
+      copy: "Bryce Resort runs day and night skiing, snowboarding, tubing, and ice skating all winter — a five-minute walk from The Cabin, a short stroll from The Chalet. Come home to the fireplace, or a hot tub under a cold, clear sky.",
       chips: ["Skiing & snowboarding", "Ski & snowboard lessons", "Night skiing", "Snow tubing", "Ice skating", "Après by the fire"]
     },
     Spring: {
