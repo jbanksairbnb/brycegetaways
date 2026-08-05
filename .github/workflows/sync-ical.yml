@@ -1,0 +1,51 @@
+name: Sync Airbnb/VRBO calendars
+
+# Keeps assets/data/ota-blocked.json up to date with booked nights pulled from
+# each home's private iCal feed. The static site (GitHub Pages) reads that file,
+# so guests always see OTA bookings as unavailable without any live server.
+#
+# Feed URLs are PRIVATE — store them as repo Actions secrets, never in the repo:
+#   Settings → Secrets and variables → Actions → New repository secret
+#     ICS_CHALET  = <The Chalet's Airbnb (and/or VRBO) .ics URL(s), comma-separated>
+#     ICS_MODERN  = <The Cabin's  Airbnb (and/or VRBO) .ics URL(s), comma-separated>
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes
+  workflow_dispatch:          # allow a manual run from the Actions tab
+
+# Let the job commit the refreshed data file back to the branch.
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-ical
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch OTA calendars
+        env:
+          ICS_CHALET: ${{ secrets.ICS_CHALET }}
+          ICS_MODERN: ${{ secrets.ICS_MODERN }}
+        run: node scripts/sync-ical.js
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- assets/data/ota-blocked.json; then
+            echo "No calendar changes."
+          else
+            git add assets/data/ota-blocked.json
+            git commit -m "Calendar: refresh OTA booked nights [skip ci]"
+            git push
+          fi

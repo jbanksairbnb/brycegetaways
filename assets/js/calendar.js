@@ -247,11 +247,13 @@
     });
   }
 
-  /* Merge OTA (Airbnb/VRBO) booked nights from /api/availability into each home's
-     blocked list. Display-only — never persisted. Fails silently when the sync
-     function isn't reachable (e.g. local preview), leaving manual blocks intact. */
+  /* Merge OTA (Airbnb/VRBO) booked nights into each home's blocked list. Those
+     nights are pulled from the private iCal feeds by a scheduled GitHub Action
+     (scripts/sync-ical.js) and committed to assets/data/ota-blocked.json, which
+     this static site reads. Display-only — never persisted here. Fails silently
+     when the file isn't present yet, leaving the manual blocks intact. */
   function mergeIcal(d) {
-    return fetch("/api/availability", { cache: "no-store" })
+    return fetch("assets/data/ota-blocked.json", { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (res) {
         if (!res || !res.blocked) return;

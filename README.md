@@ -16,6 +16,33 @@ real availability calendar with date holds, Airbnb iCal sync, and an owner
 admin back end. Those require a dynamic app host (e.g. Vercel) rather than
 GitHub Pages — a decision to be made before Phase 2.
 
+## Airbnb / VRBO calendar sync
+
+Booked nights from each home's OTA calendar show up as unavailable on the site
+automatically — no manual blocking needed for those. A scheduled GitHub Action
+(`.github/workflows/sync-ical.yml`, every 30 min) runs `scripts/sync-ical.js`,
+which fetches each home's private iCal feed, extracts the booked nights, and
+commits them to `assets/data/ota-blocked.json`. The public calendar
+(`assets/js/calendar.js`) reads that file and merges those nights on top of the
+manual blocks in `assets/data/availability.json`. No dynamic host required —
+this all works on plain GitHub Pages.
+
+**Setup (one time):** add the private `.ics` URL for each home as an *Actions
+secret* — repo **Settings → Secrets and variables → Actions → New repository
+secret**. Never put these URLs in the repo; anyone with one can read your
+booking calendar.
+
+| Secret name  | Home       | Value                                                    |
+|--------------|------------|----------------------------------------------------------|
+| `ICS_CHALET` | The Chalet | The Chalet's Airbnb (and/or VRBO) `.ics` URL(s)          |
+| `ICS_MODERN` | The Cabin  | The Cabin's Airbnb (and/or VRBO) `.ics` URL(s)           |
+
+Comma-separate multiple feeds for one home (e.g. Airbnb **and** VRBO). Get each
+URL from Airbnb → Calendar → **Availability settings → Sync calendars → Export
+calendar**. After adding the secrets, trigger the first run from the **Actions**
+tab → *Sync Airbnb/VRBO calendars* → **Run workflow** (it also runs on its own
+every 30 minutes). Manual date blocks still work as before via `manage.html`.
+
 ## Structure
 
 ```
