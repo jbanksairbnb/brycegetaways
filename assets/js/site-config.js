@@ -17,15 +17,16 @@ window.BMGConfig = {
     serviceId: "brycegetaways@gmail.com",
     templateId: "template_je53hdm",        // booking confirmation (guest + owner)
     contactTemplateId: "",                  // Contact-Us form (owner + auto-reply)
-    discountTemplateId: ""                  // First-booking $50 signup auto-reply (guest)
+    discountTemplateId: "template_guuhec9"  // First-booking $50 signup auto-reply (guest)
   },
 
   /* First-booking $50 discount.
      The signup form (popup + homepage banner) captures a name + e-mail, e-mails
      the guest a "book here" auto-reply, and stores the address so the owners can
      see who has claimed the $50 and who has already booked with it. Supabase is
-     the store; the anon key below is safe in the browser as long as Row Level
-     Security is enabled on the table (see README → "First-booking discount").
+     the store; the publishable (anon) key below is safe in the browser as long as
+     Row Level Security is enabled on the table (see README → "First-booking
+     discount"). Never put the Supabase *secret* key here — this file is public.
 
      Everything degrades gracefully: with no Supabase configured the signup still
      works — the guest gets their code, the owners get an e-mail — it just isn't
@@ -34,8 +35,8 @@ window.BMGConfig = {
   discount: {
     amount: 50,                             // dollars off the first booking; 0 = promo off
     label: "First-booking discount",
-    supabaseUrl: "",                        // Supabase → Project Settings → API → Project URL
-    supabaseAnonKey: "",                    // Supabase → Project Settings → API → anon public key
+    supabaseUrl: "https://lgjnssklvdblzohibzpw.supabase.co",       // Settings → API → Project URL
+    supabaseAnonKey: "sb_publishable_fTsNp10j8FnIYbXc1CrN_Q_Myem4vAR", // Settings → API → publishable key
     table: "discount_signups"
   }
 };
