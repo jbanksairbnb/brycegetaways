@@ -141,6 +141,14 @@
     <div class="trust__item"><div class="trust__value">5-min walk</div><div class="trust__label">To the ski slopes</div></div>
   </section>
 
+  <!-- ============================================ First-booking discount -->
+  <!-- Populated + shown/hidden by assets/js/discount.js per the visitor's state. -->
+  <section class="disc-banner" data-discount-banner hidden aria-label="First-booking discount">
+    <span class="disc-banner__badge">$50 OFF</span>
+    <p class="disc-banner__msg" data-discount-msg>Book direct and take $50 off your first stay.</p>
+    <button type="button" class="btn btn--solid disc-banner__cta" data-discount-open data-discount-cta>Get $50 off</button>
+  </section>
+
   <!-- ====================================================== Seasons -->
   <section class="section" id="seasons">
     <div class="section__head">
@@ -421,5 +429,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="assets/js/site-config.js"></script>
   <script src="assets/js/booking.js"></script>
+  <script src="assets/js/discount.js"></script>
 </body>
 </html>

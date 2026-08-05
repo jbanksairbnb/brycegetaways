@@ -46,20 +46,31 @@
   function feePet(h) { return h.petFee != null ? h.petFee : 50; }
   function taxRate() { var d = window.BMGData; return (d && d.taxRate != null) ? d.taxRate : 10.3; }
 
+  // First-booking $50 credit, applied off the total when the guest holds a code
+  // (see assets/js/discount.js). A flat coupon off the grand total — never below 0.
+  function discountFor() {
+    if (!window.BMGDiscount || typeof window.BMGDiscount.amountFor !== "function") return 0;
+    var d = window.BMGDiscount.amountFor(st.email);
+    return d > 0 ? d : 0;
+  }
+  function discountLabel() { return (window.BMGDiscount && window.BMGDiscount.label && window.BMGDiscount.label()) || "First-booking discount"; }
+
   function compute() {
     var h = homeObj(st.homeKey), n = nights(st.start, st.end), sub = 0;
     for (var i = 0; i < n; i++) sub += priceFor(h, addDaysISO(st.start, i));
     var clean = feeCleaning(h);
     var pet = st.dogs > 0 ? feePet(h) : 0;
     var tax = round2(sub * taxRate() / 100); // room rate only
-    var total = round2(sub + clean + pet + tax);
+    var gross = round2(sub + clean + pet + tax);
+    var disc = Math.min(discountFor(), gross); // never discount below $0
+    var total = round2(gross - disc);
     // Booking more than 5 days before check-in → 10% holds the dates, balance
     // due later. Booking within 5 days → the full amount is due to confirm.
     var advance = nights(todayISO(), st.start);
     var fullNow = advance <= 5;
     var deposit = fullNow ? total : round2(total * 0.10);
     var balance = round2(total - deposit);
-    return { n: n, sub: sub, clean: clean, pet: pet, tax: tax, total: total,
+    return { n: n, sub: sub, clean: clean, pet: pet, tax: tax, disc: disc, total: total,
       deposit: deposit, balance: balance, fullNow: fullNow,
       depositPct: fullNow ? 100 : 10, advance: advance };
   }
@@ -143,6 +154,7 @@
       row("Cleaning fee", money(c.clean)) +
       (st.dogs > 0 ? row("Pet fee", money(c.pet)) : "") +
       row("Taxes (" + taxRate() + "% room rate)", money(c.tax)) +
+      (c.disc > 0 ? '<div class="bk-row bk-row--disc"><span>' + esc(discountLabel()) + "</span><span>&minus;" + money(c.disc) + "</span></div>" : "") +
       '<div class="bk-row bk-row--total"><span>Total</span><span>' + money(c.total) + "</span></div>" +
       due;
     var cancel = c.fullNow
@@ -210,6 +222,9 @@
       NUM_GUESTS: st.guests, NUM_DOGS: st.dogs, NUM_NIGHTS: c.n,
       NIGHTLY_SUBTOTAL: money(c.sub), CLEANING_FEE: money(c.clean), PET_FEE: money(c.pet),
       TAX_RATE: taxRate(), TAX_AMOUNT: money(c.tax), TOTAL: money(c.total),
+      DISCOUNT_ROW: c.disc > 0
+        ? '<tr><td>' + esc(discountLabel()) + '</td><td class="amt">&minus;' + money(c.disc) + '</td></tr>'
+        : "",
       DEPOSIT_AMOUNT: money(c.deposit), BALANCE_AMOUNT: money(c.balance),
       DEPOSIT_PCT: c.depositPct, BALANCE_PCT: 100 - c.depositPct,
       PAYMENT_SCHEDULE: paymentScheduleHTML(c),
@@ -296,6 +311,7 @@
       "  Cleaning fee: " + money(c.clean) + "\n" +
       (st.dogs > 0 ? "  Pet fee: " + money(c.pet) + "\n" : "") +
       "  Tax (" + taxRate() + "% room rate): " + money(c.tax) + "\n" +
+      (c.disc > 0 ? "  " + discountLabel() + ": -" + money(c.disc) + "  ** verify this guest's e-mail hasn't already used it **\n" : "") +
       "  TOTAL: " + money(c.total) + "\n\n" +
       "PAYMENT\n  " + pay + "\n" +
       "  Zelle: 805-689-2914  ·  Venmo: @jonathan-banks-27  ·  PayPal (Friends & Family): anyamaryams@gmail.com\n\n" +
@@ -317,7 +333,8 @@
       check_in: fmtLong(st.start), check_out: fmtLong(st.end),
       nights: c.n, guests: st.guests, dogs: st.dogs,
       nightly_subtotal: money(c.sub), cleaning_fee: money(c.clean),
-      pet_fee: st.dogs > 0 ? money(c.pet) : "—", taxes: money(c.tax), total: money(c.total),
+      pet_fee: st.dogs > 0 ? money(c.pet) : "—", taxes: money(c.tax),
+      discount: c.disc > 0 ? "−" + money(c.disc) + " (" + discountLabel() + ")" : "—", total: money(c.total),
       payment_type: c.fullNow ? "Full payment due now" : "10% deposit to hold",
       due_now: money(c.deposit), balance: c.fullNow ? "—" : money(c.balance),
       balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
@@ -336,7 +353,7 @@
       type: "Booking request", home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: st.start, check_out: st.end, nights: c.n, guests: st.guests, dogs: st.dogs,
       nightly_subtotal: money(c.sub), cleaning_fee: money(c.clean), pet_fee: money(c.pet),
-      taxes: money(c.tax), total: money(c.total),
+      taxes: money(c.tax), discount: c.disc > 0 ? "−" + money(c.disc) + " (" + discountLabel() + ")" : "—", total: money(c.total),
       payment_type: c.fullNow ? "Full payment due now" : "10% deposit to hold",
       due_now: money(c.deposit), balance: money(c.balance),
       balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
@@ -367,6 +384,10 @@
   }
 
   function renderDone(c) {
+    // The request is in — mark the first-booking discount used (local + Supabase).
+    if (c.disc > 0 && window.BMGDiscount && window.BMGDiscount.markRedeemed) {
+      window.BMGDiscount.markRedeemed(st.email);
+    }
     setStep(3);
     var holdText = c.fullNow
       ? "To confirm your stay, the <strong>full amount of " + money(c.total) + "</strong> is due within <strong>3 days</strong> (or before check-in if sooner), or the dates are released."
@@ -406,6 +427,9 @@
   function open(homeKey, start, end) {
     if (!homeObj(homeKey)) return;
     st = { homeKey: homeKey, start: start, end: end, guests: 2, dogs: 0, name: "", email: "", phone: "", address: "", agreed: false, signature: "", step: 1 };
+    // Pre-fill from a stored discount code so the credit is clearly theirs.
+    var disc = window.BMGDiscount && window.BMGDiscount.current && window.BMGDiscount.current();
+    if (disc) { if (disc.name) st.name = disc.name; if (disc.email) st.email = disc.email; }
     if (!els.overlay) build();
     var h = homeObj(homeKey);
     els.img.src = h.image; els.img.alt = h.name;
