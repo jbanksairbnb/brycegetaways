@@ -910,3 +910,82 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   .faq__item summary { font-size: 16px; }
   .faq__a { font-size: 15px; }
 }
+
+/* ==========================================================================
+   First-booking $50 discount — homepage banner, popup, booking summary row
+   (behaviour in assets/js/discount.js; kept to the design system: radius 0,
+   no gradients, ink / pine / bone palette)
+   ========================================================================== */
+
+/* Discount line inside the booking cost summary (booking.js) */
+.bk-row--disc { color: var(--pine); font-weight: 500; }
+.bk-row--disc span:last-child { white-space: nowrap; }
+
+/* Homepage banner — shown/hidden + filled by discount.js per visitor state */
+.disc-banner {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 14px 22px; padding: 16px var(--pad);
+  background: var(--pine); color: var(--bone);
+  text-align: center;
+}
+.disc-banner[hidden] { display: none; }
+.disc-banner__badge {
+  font-family: var(--sans); font-weight: 500; font-size: 12px;
+  letter-spacing: .2em; text-transform: uppercase;
+  padding: 6px 12px; border: 1px solid var(--hairline-dark); color: var(--bone);
+}
+.disc-banner__msg {
+  margin: 0; font-family: var(--serif); font-size: 20px; font-weight: 300;
+  color: var(--bone); line-height: 1.25;
+}
+.disc-banner__cta { padding: 12px 22px; }
+.disc-banner__cta[hidden] { display: none; }
+
+/* First-visit popup — mirrors the booking modal shell */
+.dq-overlay {
+  position: fixed; inset: 0; z-index: 220; background: rgba(27,29,27,.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px; overflow-y: auto;
+}
+.dq-overlay[hidden] { display: none; }
+.dq-modal {
+  position: relative; background: var(--bone); width: 100%; max-width: 460px;
+  box-shadow: 0 24px 60px rgba(12,14,13,.35);
+}
+.dq-close {
+  position: absolute; top: 10px; right: 14px; background: none; border: 0;
+  font-size: 30px; line-height: 1; color: var(--muted-grey); cursor: pointer; z-index: 2;
+}
+.dq-close:hover { color: var(--ink); }
+.dq-body { padding: 34px 32px 30px; }
+.dq-eyebrow {
+  font-family: var(--sans); font-weight: 400; font-size: 11px;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--pine); margin-bottom: 10px;
+}
+.dq-title { font-family: var(--serif); font-weight: 300; font-size: 32px; line-height: 1.05; margin: 0 0 12px; }
+.dq-sub { font-size: 14.5px; line-height: 1.6; color: var(--body-grey); margin: 0 0 20px; text-wrap: pretty; }
+.dq-form { display: flex; flex-direction: column; gap: 14px; }
+.dq-field { display: flex; flex-direction: column; gap: 5px; }
+.dq-field > span { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-grey); }
+.dq-field input {
+  font-family: var(--sans); font-size: 15px; padding: 11px 12px;
+  border: 1px solid var(--hairline-strong); background: #fff; width: 100%;
+}
+.dq-field input:focus { outline: none; border-color: var(--pine); }
+.dq-submit { width: 100%; margin-top: 2px; }
+.dq-err { color: #b3261e; font-size: 13px; min-height: 1px; }
+.dq-fine { font-size: 11.5px; line-height: 1.5; color: var(--faint-grey); margin: 4px 0 0; text-wrap: pretty; }
+.dq-code {
+  font-family: var(--sans); font-weight: 500; font-size: 22px; letter-spacing: .12em;
+  text-align: center; padding: 14px; margin: 0 0 18px;
+  background: var(--sand); border: 1px dashed var(--sage-deep); color: var(--ink);
+}
+.dq-actions { display: flex; flex-direction: column; gap: 10px; }
+.dq-actions .btn { width: 100%; }
+
+@media (max-width: 640px) {
+  .dq-overlay { padding: 0; align-items: stretch; }
+  .dq-modal { max-width: none; }
+  .dq-body { padding: 30px 22px 26px; }
+  .disc-banner__msg { font-size: 17px; }
+}
