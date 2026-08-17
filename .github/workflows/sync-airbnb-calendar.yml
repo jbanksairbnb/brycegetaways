@@ -12,6 +12,9 @@ on:
   workflow_dispatch: {}
   push:
     # Re-sync when the sync itself changes, so a fix takes effect immediately.
+    # Only on the default branch: this job commits the calendar it fetches, and
+    # that belongs on main, not on whatever feature branch touched the script.
+    branches: [main]
     paths:
       - "scripts/sync-ical.js"
       - ".github/workflows/sync-airbnb-calendar.yml"
@@ -29,11 +32,11 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Fetch OTA calendars
         env:
