@@ -11,10 +11,10 @@ static homepage matching the approved design, hosted on GitHub Pages. Includes
 an interim booking-*request* form that emails the hosts (via Formspree) until
 the full availability + hold flow is built.
 
-Planned next (see `docs/` / the design handoff): dedicated property pages, a
-real availability calendar with date holds, Airbnb iCal sync, and an owner
-admin back end. Those require a dynamic app host (e.g. Vercel) rather than
-GitHub Pages — a decision to be made before Phase 2.
+Since shipped on top of Pages: dedicated property pages, the availability
+calendar, the owner's `/manage.html` editor, and Airbnb iCal sync (see below).
+Still planned (see `docs/` / the design handoff): date holds and a full owner
+admin back end, which do need a dynamic app host (e.g. Vercel).
 
 ## Structure
 
@@ -91,6 +91,44 @@ the whole promotion off site-wide (popup, banner, and booking credit all hide).
 **Note (Phase 1):** enforcement is *owner-verified* — the site shows and records
 the discount and flags it in the request e-mail, but doesn't hard-block a second
 use; the owners confirm against the stored list before collecting payment.
+
+## Airbnb calendar sync
+
+The public calendar merges three sources, so a stay booked on Airbnb stops
+showing as available here without anyone touching the site:
+
+| Source | What it holds | Who updates it |
+| --- | --- | --- |
+| `assets/data/availability.json` | Rates, minimum stays, manual blocks | The owners, via `/manage.html` |
+| `assets/data/ota-blocked.json` | Nights booked or blocked on Airbnb/VRBO | The **Sync Airbnb calendar** workflow, hourly |
+| `/api/availability` | The same OTA nights, live | Only on a dynamic host (Vercel) |
+
+The sync runs in GitHub Actions rather than in the browser because the OTAs
+send no CORS headers, and it commits a static file rather than relying on the
+serverless function because the live site is served by GitHub Pages, which
+can't run one. `calendar.js` reads whichever sources answer and ignores the
+rest, so this works on Pages, on Vercel, and in local preview.
+
+### Setup (one time)
+
+The iCal URLs are private — anyone holding one can read the raw reservation
+details — so they live in Actions secrets, never in this public repo. Under
+**Settings → Secrets and variables → Actions → New repository secret**, add:
+
+| Secret | Home | Value |
+| --- | --- | --- |
+| `ICS_CHALET` | The Chalet, 133 Aspen Way S | Airbnb → Calendar → Availability → Connect calendars → Export |
+| `ICS_MODERN` | The Cabin, 155 Aspen Way S | same, for the second listing |
+
+Comma-separate the value to sync more than one platform for a home, e.g.
+`https://www.airbnb.com/calendar/ical/123.ics?t=…, https://www.vrbo.com/icalendar/abc.ics`.
+
+Then run it once from **Actions → Sync Airbnb calendar → Run workflow**. After
+that it runs hourly on its own, and only commits when the dates actually change.
+
+If a listing's URL is ever rotated or revoked, the run goes **red** and the
+affected home keeps its previous nights rather than dropping them — an unsynced
+night must never show as bookable. Re-export the feed and update the secret.
 
 ## Local preview
 

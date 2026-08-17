@@ -1,0 +1,73 @@
+# Keeps the public availability calendar in sync with Airbnb (and any other
+# iCal-exporting OTA) by fetching each home's feed on a schedule and committing
+# the booked nights to assets/data/ota-blocked.json.
+#
+# The feed URLs are private and live in Actions secrets — see scripts/sync-ical.js.
+name: Sync Airbnb calendar
+
+on:
+  schedule:
+    # Hourly at :17 — off the top of the hour, when Actions is most congested.
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+  push:
+    # Re-sync when the sync itself changes, so a fix takes effect immediately.
+    # Only on the default branch: this job commits the calendar it fetches, and
+    # that belongs on main, not on whatever feature branch touched the script.
+    branches: [main]
+    paths:
+      - "scripts/sync-ical.js"
+      - ".github/workflows/sync-airbnb-calendar.yml"
+
+# Never let two runs race on the same commit.
+concurrency:
+  group: sync-airbnb-calendar
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+
+      - name: Fetch OTA calendars
+        env:
+          ICS_CHALET: ${{ secrets.ICS_CHALET }}
+          ICS_MODERN: ${{ secrets.ICS_MODERN }}
+        run: node scripts/sync-ical.js
+
+      - name: Commit changes
+        id: commit
+        run: |
+          if git diff --quiet -- assets/data/ota-blocked.json; then
+            echo "No availability changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/ota-blocked.json
+          git commit -m "Sync Airbnb availability"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # A push made with GITHUB_TOKEN does not always kick off the built-in
+      # Pages build, so ask for one explicitly. Best-effort: harmless (and a 404)
+      # if the site is served from somewhere other than branch-based Pages.
+      - name: Request a Pages rebuild
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /dev/null -w "pages build request: HTTP %{http_code}\n"

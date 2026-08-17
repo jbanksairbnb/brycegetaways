@@ -247,24 +247,38 @@
     });
   }
 
-  /* Merge OTA (Airbnb/VRBO) booked nights from /api/availability into each home's
-     blocked list. Display-only — never persisted. Fails silently when the sync
-     function isn't reachable (e.g. local preview), leaving manual blocks intact. */
+  /* Merge OTA (Airbnb/VRBO) booked nights into each home's blocked list, so a
+     stay booked on Airbnb stops showing as available here. Display-only — never
+     persisted back to availability.json, which stays the owners' to edit.
+
+     Two sources, because the site has been served from both hosts:
+       • assets/data/ota-blocked.json — committed hourly by the Sync Airbnb
+         calendar workflow. Works anywhere, including GitHub Pages.
+       • /api/availability — the Vercel function, live only on a dynamic host.
+     Whichever answer, both, or neither — each failure is silent and leaves the
+     manual blocks intact (e.g. local preview, where neither exists). */
+  var OTA_SOURCES = ["assets/data/ota-blocked.json", "/api/availability"];
+
+  function applyBlocked(d, res) {
+    if (!res || !res.blocked) return;
+    Object.keys(res.blocked).forEach(function (k) {
+      var h = d.homes && d.homes[k];
+      if (!h) return;
+      if (!h.blocked) h.blocked = [];
+      var seen = {};
+      h.blocked.forEach(function (x) { seen[x] = 1; });
+      res.blocked[k].forEach(function (x) { if (!seen[x]) { h.blocked.push(x); seen[x] = 1; } });
+    });
+  }
+
   function mergeIcal(d) {
-    return fetch("/api/availability", { cache: "no-store" })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (res) {
-        if (!res || !res.blocked) return;
-        Object.keys(res.blocked).forEach(function (k) {
-          var h = d.homes && d.homes[k];
-          if (!h) return;
-          if (!h.blocked) h.blocked = [];
-          var seen = {};
-          h.blocked.forEach(function (x) { seen[x] = 1; });
-          res.blocked[k].forEach(function (x) { if (!seen[x]) { h.blocked.push(x); seen[x] = 1; } });
-        });
-      })
-      .catch(function () { /* offline / not deployed — manual blocks only */ });
+    return Promise.all(OTA_SOURCES.map(function (url) {
+      return fetch(url, { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    })).then(function (results) {
+      results.forEach(function (res) { applyBlocked(d, res); });
+    });
   }
 
   /* ------------------------------------------------------------- init */
