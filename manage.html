@@ -54,6 +54,25 @@
     details.mgr-help summary { cursor: pointer; font-family: var(--sans); letter-spacing: .1em; text-transform: uppercase; font-size: 12px; color: var(--pine); }
     details.mgr-help ol { line-height: 1.7; }
     details.mgr-help code { background: var(--sand); padding: 1px 5px; }
+
+    /* Bookings ledger */
+    .bkg-title { font-family: var(--serif); font-weight: 400; font-size: 26px; }
+    .bkg-summary { color: var(--muted-grey); font-size: 13.5px; }
+    .bkg-h { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-grey); margin: 20px 0 8px; }
+    .bkg-card { border: 1px solid var(--hairline); padding: 14px 16px; margin-bottom: 10px; }
+    .bkg-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .bkg-guest { font-size: 17px; }
+    .bkg-meta { color: var(--muted-grey); font-size: 13.5px; margin-top: 2px; }
+    .bkg-meta--contact { margin-top: 8px; word-break: break-word; }
+    .bkg-money { font-size: 13.5px; margin-top: 6px; }
+    .bkg-badge { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 9px; white-space: nowrap; border: 1px solid var(--hairline); }
+    .bkg-badge--signed { background: var(--sand); }
+    .bkg-badge--deposit_received { background: #eef3ef; border-color: #3d5c4c; color: #3d5c4c; }
+    .bkg-badge--paid_in_full { background: #3d5c4c; border-color: #3d5c4c; color: #fff; }
+    .bkg-badge--cancelled { color: var(--muted-grey); text-decoration: line-through; }
+    .bkg-flag { margin-top: 8px; padding: 7px 10px; font-size: 13px; background: #fdf3f1; border-left: 3px solid #a8442f; color: #8c3524; }
+    .bkg-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    @media (max-width: 620px) { .bkg-actions .mgr-btn { flex: 1 1 auto; } }
   </style>
 </head>
 <body>
@@ -153,6 +172,40 @@
     </div>
     <div class="mgr-cal" id="mgr-cal"></div>
 
+    <!-- Bookings ledger -->
+    <div class="mgr-card" id="bkg">
+      <div class="mgr-top">
+        <h2 class="bkg-title">Bookings</h2>
+        <span class="bkg-summary" id="bkg-summary"></span>
+      </div>
+
+      <div id="bkg-login">
+        <p class="mgr-sub">Sign in to see signed agreements and guest details. This is a separate
+          login from the GitHub token above &mdash; guest details are never readable without it.</p>
+        <div class="mgr-bar">
+          <div class="mgr-field">
+            <label for="bkg-email">Owner e-mail</label>
+            <input id="bkg-email" class="wide" type="email" autocomplete="username">
+          </div>
+          <div class="mgr-field">
+            <label for="bkg-pw">Password</label>
+            <input id="bkg-pw" type="password" autocomplete="current-password">
+          </div>
+          <button id="bkg-signin" class="mgr-btn" type="button">Sign in</button>
+        </div>
+      </div>
+
+      <div id="bkg-panel" hidden>
+        <div class="mgr-bar">
+          <button id="bkg-refresh" class="mgr-btn mgr-btn--ghost" type="button">Refresh</button>
+          <button id="bkg-signout" class="mgr-btn mgr-btn--ghost" type="button">Sign out</button>
+        </div>
+        <div id="bkg-list"></div>
+      </div>
+
+      <div id="bkg-status" class="mgr-status"></div>
+    </div>
+
     <details class="mgr-help">
       <summary>How to set this up (one time)</summary>
       <ol>
@@ -166,6 +219,9 @@
     </details>
   </div>
 
+  <script src="assets/js/site-config.js"></script>
+  <script src="assets/js/bookings-store.js"></script>
   <script src="assets/js/manage.js"></script>
+  <script src="assets/js/manage-bookings.js"></script>
 </body>
 </html>
