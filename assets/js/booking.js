@@ -369,6 +369,32 @@
     var e = emailCfg();
     return window.emailjs.send(e.serviceId, e.templateId, emailParams(c), { publicKey: e.publicKey });
   }
+  // The row filed in the bookings ledger. Raw numbers, not the formatted money
+  // strings the e-mails use — the manager page and the reminder job do date and
+  // currency math on these. Statuses: signed → deposit_received → paid_in_full,
+  // or cancelled. A stay only holds dates once it leaves "signed".
+  function bookingRecord(c) {
+    return {
+      home_key: st.homeKey, home_name: LABEL[st.homeKey],
+      check_in: st.start, check_out: st.end, nights: c.n,
+      guests: st.guests, dogs: st.dogs,
+      guest_name: st.name, guest_email: st.email,
+      guest_phone: st.phone, guest_address: st.address,
+      nightly_subtotal: c.sub, cleaning_fee: c.clean, pet_fee: c.pet,
+      taxes: c.tax, discount: c.disc, total: c.total,
+      deposit_due: c.deposit, balance_due: c.fullNow ? 0 : c.balance,
+      balance_due_date: c.fullNow ? null : balanceDueISO(),
+      paid_in_full_at_booking: c.fullNow,
+      signature: st.signature, signed_at: new Date().toISOString(),
+      agreement_html: agreementHTML(),
+      status: "signed"
+    };
+  }
+  function fileBooking(c) {
+    if (!window.BMGBookings || !window.BMGBookings.configured()) return Promise.resolve(false);
+    return window.BMGBookings.save(bookingRecord(c)).then(function () { return true; }, function () { return false; });
+  }
+
   function sendViaFormspree(c) {
     var payload = {
       _subject: "Booking request — " + LABEL[st.homeKey] + " — " + st.name,
@@ -401,13 +427,18 @@
     var guest = emailjsReady()
       ? sendViaEmailJS(c).then(function () { return true; }, function () { return false; })
       : Promise.resolve(false);
-    Promise.all([owner, guest]).then(function (r) {
+    // Filed in parallel, and never allowed to fail the submission: the e-mails
+    // are what the guest and the owners actually rely on, so a Supabase outage
+    // must not turn a signed agreement into an error screen.
+    var filed = fileBooking(c);
+    Promise.all([owner, guest, filed]).then(function (r) {
       if (!r[0] && !r[1]) {
         err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
         btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
         return;
       }
       st.guestEmailed = r[1];
+      st.filed = r[2];
       renderDone(c);
     });
   }

@@ -20,6 +20,19 @@ window.BMGConfig = {
     discountTemplateId: "template_guuhec9"  // First-booking $50 signup auto-reply (guest)
   },
 
+  /* Bookings ledger (Supabase) — every signed rental agreement is filed here and
+     worked from /manage.html. It lives in the same Supabase project as the
+     discount signups, so the URL and key below are reused from `discount`.
+
+     The publishable (anon) key can only INSERT into this table: row-level
+     security gives anonymous callers no read at all, so guest names, addresses
+     and phone numbers can't be pulled out of the public site. Reading and
+     updating need an owner login through Supabase Auth. See the README
+     ("Bookings ledger") for the exact table and policies. */
+  bookings: {
+    table: "bookings"
+  },
+
   /* First-booking $50 discount.
      The signup form (popup + homepage banner) captures a name + e-mail, e-mails
      the guest a "book here" auto-reply, and stores the address so the owners can

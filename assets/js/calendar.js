@@ -247,17 +247,26 @@
     });
   }
 
-  /* Merge OTA (Airbnb/VRBO) booked nights into each home's blocked list, so a
-     stay booked on Airbnb stops showing as available here. Display-only — never
+  /* Merge booked nights from every source into each home's blocked list, so a
+     stay booked elsewhere stops showing as available here. Display-only — never
      persisted back to availability.json, which stays the owners' to edit.
 
-     Two sources, because the site has been served from both hosts:
-       • assets/data/ota-blocked.json — committed hourly by the Sync Airbnb
-         calendar workflow. Works anywhere, including GitHub Pages.
-       • /api/availability — the Vercel function, live only on a dynamic host.
-     Whichever answer, both, or neither — each failure is silent and leaves the
-     manual blocks intact (e.g. local preview, where neither exists). */
-  var OTA_SOURCES = ["assets/data/ota-blocked.json", "/api/availability"];
+     Three sources:
+       • assets/data/ota-blocked.json — nights booked on Airbnb/VRBO, committed
+         hourly by the Sync Airbnb calendar workflow. Works anywhere, including
+         GitHub Pages.
+       • assets/data/direct-booked.json — nights held by a direct booking whose
+         deposit has landed, committed by the Bookings workflow from the Supabase
+         ledger. A signed-but-unpaid booking is deliberately absent: dates are
+         held by money, not by a signature.
+       • /api/availability — the OTA nights live, only on a dynamic host.
+     Whichever answer, all, or none — each failure is silent and leaves the
+     manual blocks intact (e.g. local preview, where none exist). */
+  var OTA_SOURCES = [
+    "assets/data/ota-blocked.json",
+    "assets/data/direct-booked.json",
+    "/api/availability"
+  ];
 
   function applyBlocked(d, res) {
     if (!res || !res.blocked) return;

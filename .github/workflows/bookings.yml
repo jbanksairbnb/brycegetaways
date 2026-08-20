@@ -1,0 +1,92 @@
+# Projects the Supabase bookings ledger onto the public site, and chases the
+# money. Once a day:
+#   • commits assets/data/direct-booked.json, so nights held by a paid direct
+#     booking stop showing as available on the calendar;
+#   • e-mails the owners any balance due 5 days before check-in, and any deposit
+#     still unpaid past the 3-day window in the rental agreement.
+#
+# Also runs on demand — /manage.html dispatches it after a status change, so the
+# calendar catches up in about a minute instead of waiting for tomorrow.
+#
+# Secrets required (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL, SUPABASE_SERVICE_KEY   the ledger (service key: never public)
+#   MAIL_USERNAME, MAIL_PASSWORD         Gmail address + app password
+name: Bookings
+
+on:
+  schedule:
+    # 11:20 UTC — around 7:20am Eastern, so a reminder is waiting at breakfast.
+    - cron: "20 11 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "scripts/sync-bookings.js"
+      - ".github/workflows/bookings.yml"
+
+# The job commits; never let two runs race on the same file.
+concurrency:
+  group: bookings
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  bookings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+
+      - name: Read the ledger
+        id: sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node scripts/sync-bookings.js
+
+      - name: Commit the held nights
+        id: commit
+        run: |
+          if git diff --quiet -- assets/data/direct-booked.json; then
+            echo "No booking-calendar changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/direct-booked.json
+          git commit -m "Update direct-booking calendar"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # As in the Airbnb sync: a GITHUB_TOKEN push doesn't reliably trigger the
+      # built-in Pages build, so ask for one. Harmless 404 if Pages isn't in use.
+      - name: Request a Pages rebuild
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        run: |
+          curl -sS -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /dev/null -w "pages build request: HTTP %{http_code}\n"
+
+      - name: E-mail the reminders
+        if: steps.sync.outputs.has_reminders == 'true'
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: Bryce Mountain Getaways
+          to: ${{ secrets.MAIL_USERNAME }}
+          subject: ${{ steps.sync.outputs.subject }}
+          body: ${{ steps.sync.outputs.body }}

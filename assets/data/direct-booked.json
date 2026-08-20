@@ -1,0 +1,8 @@
+{
+  "updated": null,
+  "note": "Nights held by direct bookings whose deposit has been received. Generated from the Supabase bookings ledger by scripts/sync-bookings.js — do not edit by hand.",
+  "blocked": {
+    "chalet": [],
+    "modern": []
+  }
+}
