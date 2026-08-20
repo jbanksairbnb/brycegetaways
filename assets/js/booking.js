@@ -7,6 +7,7 @@
   "use strict";
 
   var FORM_ENDPOINT = "https://formspree.io/f/mqaqgypl";
+  var OWNER_EMAIL = "brycegetaways@gmail.com";
   var TEMPLATE_URL = "assets/agreement-template.html";
   var LABEL = { chalet: "The Chalet", modern: "The Cabin" };
   var ADDRESS = {
@@ -345,7 +346,11 @@
 
   function emailParams(c) {
     return {
-      to_email: st.email, owner_email: "brycegetaways@gmail.com", reply_to: st.email,
+      // This message is addressed to the guest (the owners are Bcc'd), so Reply-To
+      // is the owners' mailbox — a guest hitting reply must reach Jonathan & Anna,
+      // not themselves. The owners' reply-to-the-guest path is the Formspree
+      // notification, which sets _replyto to the guest.
+      to_email: st.email, owner_email: OWNER_EMAIL, reply_to: OWNER_EMAIL, guest_email: st.email,
       guest_name: st.name, guest_phone: st.phone, guest_address: st.address,
       home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: fmtLong(st.start), check_out: fmtLong(st.end),

@@ -118,16 +118,23 @@ template body references. In the EmailJS dashboard, open the booking template
 
 - **To:** `{{to_email}}` — the guest. Add `{{owner_email}}` (or
   `brycegetaways@gmail.com`) as **Bcc** if the owners want the EmailJS copy too.
-- **Reply-To:** `{{reply_to}}`
+- **Bcc:** `{{owner_email}}` — the owners' copy through EmailJS.
+- **Reply-To:** `{{reply_to}}` — this resolves to the *owners'* mailbox, not the
+  guest's: the message is addressed to the guest, so replying to it has to reach
+  Jonathan & Anna. (The owners' reply-to-the-guest path is the Formspree
+  notification, whose `_replyto` is the guest.)
 - In the body, the booking summary (`{{summary}}`) **and the agreement itself**:
   - HTML template → `{{{agreement_html}}}` — **three** braces, so EmailJS injects
-    the rendered agreement instead of escaping the tags.
-  - Plain-text template → `{{agreement_text}}`.
+    the rendered agreement instead of escaping the tags. If a test send shows raw
+    `<h2>`/`<p>` tags, the template is being treated as plain text — use the
+    `agreement_text` form below instead.
+  - Plain-text template → `{{agreement_text}}`, ideally inside a `<pre>` block so
+    the line breaks survive.
 
 Without one of those two variables in the body the guest gets a booking summary
 with a signature line but **not** the agreement they signed.
 
-Other params the template can use: `guest_name`, `guest_phone`, `guest_address`,
+Other params the template can use: `guest_name`, `guest_email`, `guest_phone`, `guest_address`,
 `home`, `property_address`, `check_in`, `check_out`, `nights`, `guests`, `dogs`,
 `nightly_subtotal`, `cleaning_fee`, `pet_fee`, `taxes`, `discount`, `total`,
 `payment_type`, `due_now`, `balance`, `balance_due`, `signature`, `signed_at`.
