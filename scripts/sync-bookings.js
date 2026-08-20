@@ -17,7 +17,8 @@
  *
  * CONFIGURE via GitHub → Settings → Secrets and variables → Actions:
  *   SUPABASE_URL         = https://xxxxxxxx.supabase.co
- *   SUPABASE_SERVICE_KEY = the service_role key (Settings → API)
+ *   SUPABASE_SERVICE_KEY = a secret key (Project Settings → API Keys → Secret keys;
+ *                          the legacy service_role key on older projects)
  */
 "use strict";
 

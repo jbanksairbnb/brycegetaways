@@ -238,7 +238,7 @@ lives in `sessionStorage` and dies with the tab.
 | Secret | Value |
 | --- | --- |
 | `SUPABASE_URL` | `https://xxxxxxxx.supabase.co` (Settings → API → Project URL) |
-| `SUPABASE_SERVICE_KEY` | the **service_role** key — bypasses RLS, so it may only ever live here |
+| `SUPABASE_SERVICE_KEY` | a **secret key** (`sb_secret_…`, Project Settings → API Keys → Secret keys). On older projects this is the legacy **service_role** key. Either bypasses every policy above, so it may only ever live here — never in `site-config.js`, the repo, or anything the site serves. Shown in full once: copy it on creation, and if it ever leaks, revoke and replace it on that same screen. |
 | `MAIL_USERNAME` | `brycegetaways@gmail.com` |
 | `MAIL_PASSWORD` | a Gmail **app password**, not the account password |
 
