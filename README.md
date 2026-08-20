@@ -92,6 +92,59 @@ the whole promotion off site-wide (popup, banner, and booking credit all hide).
 the discount and flags it in the request e-mail, but doesn't hard-block a second
 use; the owners confirm against the stored list before collecting payment.
 
+## Booking requests & the signed agreement
+
+When a guest completes step 3 of the booking flow they have already ticked
+"I agree" and typed their name as an electronic signature, so the submission is
+a **signed agreement** and both sides need a copy of it. Submitting fires two
+independent sends, so one failing never loses the signed document:
+
+| Send | Goes to | Always? | Carries |
+| --- | --- | --- | --- |
+| **Formspree** (`/f/mqaqgypl`) | The owners — the file copy | Yes | Booking summary **plus the full agreement text** in `signed_agreement` |
+| **EmailJS** (`templateId`) | The guest — their own copy | Only when EmailJS is configured | The same, as `agreement_html` / `agreement_text` |
+
+The owners' copy deliberately does **not** depend on how the EmailJS template is
+wired — Formspree is posted on every submission, so the record exists even if
+EmailJS is misconfigured or down. (That means the owners can receive two
+e-mails per booking when the EmailJS template also copies them; that redundancy
+is intentional.)
+
+### Wiring the guest's copy (EmailJS template)
+
+Adding a parameter in code does nothing on its own — EmailJS only sends what the
+template body references. In the EmailJS dashboard, open the booking template
+(`emailjs.templateId` in `site-config.js`) and make sure it has:
+
+- **To:** `{{to_email}}` — the guest. Add `{{owner_email}}` (or
+  `brycegetaways@gmail.com`) as **Bcc** if the owners want the EmailJS copy too.
+- **Bcc:** `{{owner_email}}` — the owners' copy through EmailJS.
+- **Reply-To:** `{{reply_to}}` — this resolves to the *owners'* mailbox, not the
+  guest's: the message is addressed to the guest, so replying to it has to reach
+  Jonathan & Anna. (The owners' reply-to-the-guest path is the Formspree
+  notification, whose `_replyto` is the guest.)
+- In the body, the booking summary (`{{summary}}`) **and the agreement itself**:
+  - HTML template → `{{{agreement_html}}}` — **three** braces, so EmailJS injects
+    the rendered agreement instead of escaping the tags. If a test send shows raw
+    `<h2>`/`<p>` tags, the template is being treated as plain text — use the
+    `agreement_text` form below instead.
+  - Plain-text template → `{{agreement_text}}`, ideally inside a `<pre>` block so
+    the line breaks survive.
+
+Without one of those two variables in the body the guest gets a booking summary
+with a signature line but **not** the agreement they signed.
+
+Other params the template can use: `guest_name`, `guest_email`, `guest_phone`, `guest_address`,
+`home`, `property_address`, `check_in`, `check_out`, `nights`, `guests`, `dogs`,
+`nightly_subtotal`, `cleaning_fee`, `pet_fee`, `taxes`, `discount`, `total`,
+`payment_type`, `due_now`, `balance`, `balance_due`, `signature`, `signed_at`.
+
+Worth double-checking in the dashboard: `emailjs.serviceId` is currently set to
+`brycegetaways@gmail.com`, which is the mailbox address rather than the
+`service_xxxxxxx`-style Service ID EmailJS issues. If it doesn't match the
+Service ID shown under **Email Services**, the guest's copy silently fails and
+only the Formspree (owner) copy goes out.
+
 ## Airbnb calendar sync
 
 The public calendar merges three sources, so a stay booked on Airbnb stops

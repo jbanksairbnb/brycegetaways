@@ -7,6 +7,7 @@
   "use strict";
 
   var FORM_ENDPOINT = "https://formspree.io/f/mqaqgypl";
+  var OWNER_EMAIL = "brycegetaways@gmail.com";
   var TEMPLATE_URL = "assets/agreement-template.html";
   var LABEL = { chalet: "The Chalet", modern: "The Cabin" };
   var ADDRESS = {
@@ -241,6 +242,24 @@
   }
   function refillAgreement() { var b = document.getElementById("bk-agreement"); if (b && tpl != null) b.innerHTML = fill(tpl); }
 
+  // The signed agreement itself, rendered for the record: HTML for the e-mail
+  // body, plus a plain-text rendering so it stays readable wherever HTML is
+  // stripped (Formspree's notification, a text-only mail client).
+  function stripComments(h) { return h.replace(/<!--[\s\S]*?-->/g, ""); }
+  function agreementHTML() { return tpl == null ? "" : stripComments(fill(tpl)); }
+  function agreementText() {
+    if (tpl == null) return "";
+    return stripComments(fill(tpl))
+      .replace(/<li[^>]*>/gi, "  - ")
+      .replace(/<\/t[dh]>/gi, "   ")
+      .replace(/<\/(h1|h2|p|li|tr|div)>/gi, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&nbsp;/g, " ").replace(/&mdash;/g, "\u2014").replace(/&middot;/g, "\u00b7")
+      .replace(/&ldquo;|&rdquo;/g, '"').replace(/&rsquo;/g, "'").replace(/&minus;/g, "-")
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&amp;/g, "&")
+      .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+  }
+
   function downloadAgreement() {
     if (tpl == null) return;
     var w = window.open("", "_blank");
@@ -327,7 +346,11 @@
 
   function emailParams(c) {
     return {
-      to_email: st.email, owner_email: "brycegetaways@gmail.com", reply_to: st.email,
+      // This message is addressed to the guest (the owners are Bcc'd), so Reply-To
+      // is the owners' mailbox — a guest hitting reply must reach Jonathan & Anna,
+      // not themselves. The owners' reply-to-the-guest path is the Formspree
+      // notification, which sets _replyto to the guest.
+      to_email: st.email, owner_email: OWNER_EMAIL, reply_to: OWNER_EMAIL, guest_email: st.email,
       guest_name: st.name, guest_phone: st.phone, guest_address: st.address,
       home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: fmtLong(st.start), check_out: fmtLong(st.end),
@@ -338,7 +361,8 @@
       payment_type: c.fullNow ? "Full payment due now" : "10% deposit to hold",
       due_now: money(c.deposit), balance: c.fullNow ? "—" : money(c.balance),
       balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
-      signature: st.signature, signed_at: new Date().toISOString(), summary: summaryText(c)
+      signature: st.signature, signed_at: new Date().toISOString(), summary: summaryText(c),
+      agreement_html: agreementHTML(), agreement_text: agreementText()
     };
   }
   function sendViaEmailJS(c) {
@@ -358,7 +382,7 @@
       due_now: money(c.deposit), balance: money(c.balance),
       balance_due: c.fullNow ? "N/A (paid in full)" : fmtLong(balanceDueISO()),
       agreement_accepted: "YES", signature_typed: st.signature, signed_at: new Date().toISOString(),
-      message: summaryText(c)
+      message: summaryText(c), signed_agreement: agreementText()
     };
     return fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
       .then(function (r) { if (!r.ok) throw new Error("bad"); return r.json(); });
@@ -368,19 +392,24 @@
     var btn = document.getElementById("bk-submit"), err = document.getElementById("bk-err3");
     btn.disabled = true; btn.textContent = "SENDING…"; err.textContent = "";
     var c = compute();
-    var fail = function () {
-      err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
-      btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
-    };
-    if (emailjsReady()) {
-      sendViaEmailJS(c)
-        .then(function () { st.guestEmailed = true; renderDone(c); })
-        .catch(function () { // don't lose the request — still notify the owners
-          sendViaFormspree(c).then(function () { st.guestEmailed = false; renderDone(c); }).catch(fail);
-        });
-    } else {
-      sendViaFormspree(c).then(function () { st.guestEmailed = false; renderDone(c); }).catch(fail);
-    }
+    // Two independent sends, so one failing never loses the signed agreement:
+    //   • Formspree — always, and always with the full agreement text. This is
+    //     the owners' file copy, so their record never depends on how the
+    //     EmailJS template happens to be wired.
+    //   • EmailJS — the guest's own copy, when it's configured.
+    var owner = sendViaFormspree(c).then(function () { return true; }, function () { return false; });
+    var guest = emailjsReady()
+      ? sendViaEmailJS(c).then(function () { return true; }, function () { return false; })
+      : Promise.resolve(false);
+    Promise.all([owner, guest]).then(function (r) {
+      if (!r[0] && !r[1]) {
+        err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
+        btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
+        return;
+      }
+      st.guestEmailed = r[1];
+      renderDone(c);
+    });
   }
 
   function renderDone(c) {
@@ -397,9 +426,9 @@
         '<div class="bk-done__check">✓</div>' +
         "<h4>Request received — thank you!</h4>" +
         "<p>" + (st.guestEmailed
-          ? "A confirmation has been emailed to you, and your signed request has gone to Jonathan &amp; Anna, who will confirm your dates shortly."
-          : "Your signed request has gone to Jonathan &amp; Anna, who will confirm your dates and follow up by email shortly.") +
-        " A copy of your signed agreement is yours to download below.</p>" +
+          ? "A copy of your signed Rental Agreement has been emailed to you, and your signed request has gone to Jonathan &amp; Anna, who will confirm your dates shortly."
+          : "Your signed request and Rental Agreement have gone to Jonathan &amp; Anna, who will confirm your dates and email you a copy shortly.") +
+        " You can also download the agreement below.</p>" +
         "<p>" + holdText + "</p>" +
         '<div class="bk-pay">' +
           '<div class="bk-pay__title">How to pay</div>' +
