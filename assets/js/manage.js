@@ -1,17 +1,32 @@
 /* Bryce Mountain Getaways — availability manager (private).
    Loads/saves assets/data/availability.json via the GitHub Contents API using a
-   fine-grained token the owner pastes once (kept in localStorage). No server. */
+   fine-grained token the owner pastes once (kept in localStorage). No server.
+
+   The editor also overlays the nights held by the two automatic sources — the
+   Airbnb/VRBO sync and paid direct bookings — read-only. They live in their own
+   files and are merged by calendar.js for guests, so they were invisible here;
+   an owner looking at this grid saw an Airbnb-booked night as available and had
+   to block it by hand. A hand-copied night is worse than a missing one: the
+   sync releases the night when the guest cancels, but the copy in
+   availability.json stays blocked forever and the night quietly stops selling.
+   So show them, and don't let them be selected. */
 (function () {
   "use strict";
 
   var OWNER = "jbanksairbnb", REPO = "brycegetaways", PATH = "assets/data/availability.json";
   var TOKEN_KEY = "bmg_gh_token", BRANCH_KEY = "bmg_gh_branch";
   var EDITOR_MIN_MONTHS = 15; // editor always shows at least this many months
+  // Read-only overlays, same files calendar.js merges for guests. Relative URLs:
+  // the editor is served from the site root alongside them.
+  var SYNCED_SOURCES = [
+    { url: "assets/data/ota-blocked.json", label: "Airbnb" },
+    { url: "assets/data/direct-booked.json", label: "Direct" }
+  ];
   var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   var DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-  var state = { data: null, sha: null, homeKey: "chalet", picked: {} };
+  var state = { data: null, sha: null, homeKey: "chalet", picked: {}, synced: {} };
   var el = {};
 
   /* ---- date helpers ---- */
@@ -29,6 +44,11 @@
     return (weekend && h.weekendRate != null) ? h.weekendRate : h.defaultRate;
   }
   function isBlocked(h, s) { return h.blocked && h.blocked.indexOf(s) !== -1; }
+  // Which automatic source holds this night, if any — "Airbnb", "Direct", or "".
+  function syncedBy(s) {
+    var m = state.synced[state.homeKey];
+    return (m && m[s]) || "";
+  }
   function hasOverride(h, s) { return h.rates && h.rates[s] != null; }
   function baseMin(h) { return h.minNights || 2; }
   function publicMonths() { var n = state.data && state.data.publicMonths; return (n && n >= 1) ? n : 12; }
@@ -72,6 +92,29 @@
       .catch(function () { state.data = defaultData(); state.sha = null; });
   }
 
+  /* Fetch the automatic overlays. Each failure is silent and simply leaves that
+     source out — in local preview neither file is served, and the editor still
+     has to work. Always resolves. */
+  function loadSynced() {
+    return Promise.all(SYNCED_SOURCES.map(function (src) {
+      return fetch(src.url, { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { return j && j.blocked ? { label: src.label, blocked: j.blocked } : null; })
+        .catch(function () { return null; });
+    })).then(function (results) {
+      var byHome = {};
+      results.forEach(function (res) {
+        if (!res) return;
+        Object.keys(res.blocked).forEach(function (k) {
+          var m = byHome[k] || (byHome[k] = {});
+          // First source to claim a night names it; Airbnb is listed first.
+          res.blocked[k].forEach(function (d) { if (!m[d]) m[d] = res.label; });
+        });
+      });
+      state.synced = byHome;
+    });
+  }
+
   function defaultData() {
     return {
       homes: {
@@ -85,6 +128,9 @@
     localStorage.setItem(TOKEN_KEY, token());
     localStorage.setItem(BRANCH_KEY, branch());
     state.picked = {};
+    // Refresh the overlay too — an Airbnb booking may have landed since the
+    // page opened. Independent of the token: these files need no auth.
+    loadSynced().then(render);
     if (token()) {
       ghGet().then(function (d) { state.data = d; status("Loaded “" + branch() + "”. Ready to edit."); render(); })
         .catch(function (e) {
@@ -125,7 +171,11 @@
   }
 
   /* ---- editing ops (apply to the picked set) ---- */
-  function pickedList() { return Object.keys(state.picked); }
+  // Synced nights are filtered out here, not just made unclickable, so no
+  // editing op can reach one even if the overlay lands after a day was picked.
+  function pickedList() {
+    return Object.keys(state.picked).filter(function (s) { return !syncedBy(s); });
+  }
   function setPrice(v) {
     var h = home(); if (!h.rates) h.rates = {};
     pickedList().forEach(function (s) { if (v == null) delete h.rates[s]; else h.rates[s] = v; });
@@ -174,13 +224,26 @@
         var cd = new Date(y, mo, day), s = iso(cd);
         if (cd < t) { html += '<div class="cal-cell cal-cell--past"><span class="cal-daynum">' + day + "</span></div>"; continue; }
         var blk = isBlocked(h, s);
+        var syn = syncedBy(s);
         var minOv = (h.minStays && h.minStays[s] != null && h.minStays[s] !== baseMin(h));
-        var cls = "cal-cell " + (blk ? "cal-cell--blocked" : "cal-cell--open");
+        var cls = "cal-cell " + ((blk || syn) ? "cal-cell--blocked" : "cal-cell--open");
+        if (syn) cls += " cal-cell--synced";
+        if (syn && blk) cls += " is-duplicate";
         if (hasOverride(h, s)) cls += " has-override";
         if (minOv) cls += " has-minoverride";
-        if (state.picked[s]) cls += " is-picked";
-        html += '<div class="' + cls + '" data-date="' + s + '"><span class="cal-daynum">' + day + "</span>";
-        if (blk) {
+        if (state.picked[s] && !syn) cls += " is-picked";
+        var title = syn
+          ? syn + " holds this night — it clears itself when that booking ends, so there is nothing to do here."
+          : "";
+        html += '<div class="' + cls + '" data-date="' + s + '"' +
+          (title ? ' title="' + title + '"' : "") +
+          '><span class="cal-daynum">' + day + "</span>";
+        if (syn) {
+          html += '<span class="cal-price">' + syn + "</span>";
+          // Flag the hand-copies: those are the ones that stay blocked after a
+          // cancellation, because unblocking them is the owner's to do.
+          if (blk) html += '<span class="cal-min">blocked by hand too</span>';
+        } else if (blk) {
           html += '<span class="cal-price">Booked</span>';
         } else {
           html += '<span class="cal-price">' + money(priceFor(h, s)) + "</span>";
@@ -195,9 +258,14 @@
     if (el.publicMonths && document.activeElement !== el.publicMonths) el.publicMonths.value = publicMonths();
     if (el.taxrate && document.activeElement !== el.taxrate) el.taxrate.value = taxRate();
     if (el.legendCount) {
-      el.legendCount.textContent = (h.blocked || []).length + " blocked · " +
+      var synMap = state.synced[state.homeKey] || {};
+      var synCount = Object.keys(synMap).length;
+      var dupCount = (h.blocked || []).filter(function (s) { return synMap[s]; }).length;
+      el.legendCount.textContent = (h.blocked || []).length + " blocked by hand · " +
+        synCount + " synced · " +
         Object.keys(h.rates || {}).length + " custom prices · " +
-        Object.keys(h.minStays || {}).length + " holiday minimums";
+        Object.keys(h.minStays || {}).length + " holiday minimums" +
+        (dupCount ? " · " + dupCount + " hand-blocked nights the sync already covers" : "");
     }
   }
 
@@ -211,6 +279,7 @@
     var cell = e.target.closest(".cal-cell[data-date]");
     if (!cell) return;
     var s = cell.getAttribute("data-date");
+    if (syncedBy(s)) return; // held by Airbnb or a paid direct booking — not ours to edit
     if (state.picked[s]) delete state.picked[s]; else state.picked[s] = true;
     cell.classList.toggle("is-picked");
     updateToolbar();
@@ -276,7 +345,7 @@
     document.getElementById("mgr-clear").addEventListener("click", function () { state.picked = {}; render(); });
 
     // First paint from the published copy so the grid isn't empty before Load.
-    loadLocal().then(function () {
+    Promise.all([loadLocal(), loadSynced()]).then(function () {
       el.tabs.forEach(function (t) { t.classList.toggle("is-active", t.getAttribute("data-home") === state.homeKey); });
       setHome(state.homeKey);
       if (token()) load(); else status("Paste your GitHub token and click Load to edit the live data.", false);
