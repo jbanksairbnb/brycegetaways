@@ -48,6 +48,12 @@
     .mgr-cal .cal-month__label { font-family: var(--serif); font-size: 20px; margin-bottom: 10px; }
     .mgr-cal .cal-cell--open, .mgr-cal .cal-cell--blocked { cursor: pointer; }
     .mgr-cal .cal-cell.is-picked { outline: 2px solid var(--pine); outline-offset: -2px; }
+    /* Nights an automatic source holds: shown, explained, and not editable. */
+    .mgr-cal .cal-cell--synced { cursor: default; background: #eef3ef; border-color: #b9ccc0; }
+    .mgr-cal .cal-cell--synced .cal-price { color: #3d5c4c; letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; }
+    .mgr-cal .cal-cell--synced .cal-min { color: var(--muted-grey); font-size: 9.5px; }
+    .mgr-cal .cal-cell--synced.is-duplicate { border-color: #a8442f; }
+    .mgr-legend .cal-key--sync { background: #eef3ef; border: 1px solid #b9ccc0; }
     .mgr-cal .cal-cell.has-override .cal-price { color: var(--pine); font-weight: 500; }
 
     details.mgr-help { margin-top: 26px; font-size: 14px; color: var(--body-grey); }
@@ -81,7 +87,8 @@
       <h1>Availability &amp; Rates</h1>
       <a href="index.html">← Back to site</a>
     </div>
-    <p class="mgr-sub">Private manager for The Chalet &amp; The Cabin. Click days to select, then set prices or block/unblock. Save writes straight to the live site.</p>
+    <p class="mgr-sub">Private manager for The Chalet &amp; The Cabin. Click days to select, then set prices or block/unblock. Save writes straight to the live site.
+      Nights already booked on Airbnb or by a paid direct booking show as <strong>synced</strong> and can&rsquo;t be selected &mdash; they are blocked for guests automatically, and blocking them here would keep them blocked after a cancellation.</p>
 
     <!-- Connection -->
     <div class="mgr-card">
@@ -165,7 +172,8 @@
 
     <div class="cal-legend mgr-legend">
       <span class="cal-key cal-key--open"></span>Available
-      <span class="cal-key cal-key--blk"></span>Blocked
+      <span class="cal-key cal-key--blk"></span>Blocked by hand
+      <span class="cal-key cal-key--sync"></span>Booked on Airbnb / direct (synced &mdash; nothing to do)
       <span class="cal-key cal-key--price"></span>Custom price
       <span class="cal-key cal-key--minx"></span>Holiday minimum
       <span class="mgr-legend__note" id="mgr-legend-count"></span>

@@ -300,6 +300,19 @@ If a listing's URL is ever rotated or revoked, the run goes **red** and the
 affected home keeps its previous nights rather than dropping them — an unsynced
 night must never show as bookable. Re-export the feed and update the secret.
 
+### Don't block synced nights by hand
+
+`/manage.html` overlays the synced sources read-only: a night held by Airbnb or
+by a paid direct booking shows shaded, labelled with its source, and can't be
+selected. That overlay is the point — without it the editor showed those nights
+as available, and blocking one by hand looks like it works while quietly costing
+you the night later: the sync releases it when the guest cancels, but the copy
+in `availability.json` stays blocked until someone notices.
+
+Nights blocked in both places are outlined and marked *blocked by hand too*, and
+the legend counts them. They're safe today; clear them when convenient so a
+future cancellation puts the night back on sale on its own.
+
 ## Local preview
 
 It's static — open `index.html`, or run any static server:
