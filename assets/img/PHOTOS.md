@@ -28,3 +28,29 @@ Recommended: JPG, ~2400px on the long edge, saved at ~80% quality.
 
 **Still needed for a complete site:** winter and fall photography (see the two
 rows above). Everything else maps to photos the owners already have.
+
+## Hiking & Fishing pages
+
+`hiking.html` and `fishing.html` follow the same rule as everything above: each
+slot shows a labelled placeholder tile until a real file lands, so the pages are
+live and correct today and simply get better as photos arrive. The hiking hero
+already uses the existing `fall-tibbett.jpg`; the fishing hero needs one.
+
+| Filename to use here          | Slot                                  |
+|-------------------------------|---------------------------------------|
+| `fishing-hero.jpg`            | Fishing page — full-width hero        |
+| `trail-lake-laura.jpg`        | Hiking — Lake Laura Trail Loop        |
+| `trail-orkney-springs.jpg`    | Hiking — Orkney Springs & N. Mountain |
+| `trail-falls-ridge.jpg`       | Hiking — Falls Ridge (the waterfall)  |
+| `trail-laurel-run.jpg`        | Hiking — Laurel Run Circuit           |
+| `trail-nutmeg-point.jpg`      | Hiking — Nutmeg Point overlook        |
+| `trail-big-schloss.jpg`       | Hiking — Big Schloss                  |
+| `trail-tibbet-knob.jpg`       | Hiking — Tibbet Knob                  |
+| `trail-copernicus-ridge.jpg`  | Hiking — Copernicus Ridge             |
+| `fishing-lake-laura.jpg`      | Fishing — Lake Laura                  |
+| `fishing-stony-creek.jpg`     | Fishing — Big Stony Creek             |
+| `fishing-north-fork.jpg`      | Fishing — North Fork Shenandoah       |
+| `fishing-passage-creek.jpg`   | Fishing — Passage Creek               |
+
+Guests' own trail and catch photos work well here — just make sure you have
+permission to publish them.

@@ -3,34 +3,89 @@
   "use strict";
 
   /* ---------------------------------------------------------------- Seasons */
+  // A chip is either a plain label or [label, href] — the second form renders as
+  // a link. Several activities run across more than one season on purpose: golf,
+  // biking, hiking and the lift are open well past summer, and a guest reading
+  // the Spring tab shouldn't have to guess that.
+  var BR = "https://bryceresort.com/";
+  var LINKS = {
+    ski:      BR + "winter/ski-and-snowboard",
+    lessons:  BR + "winter/ski-and-snowboard/ski-and-snowboard-lessons",
+    tubing:   BR + "winter/snow-tubing",
+    skating:  BR + "winter/ice-skating",
+    golf:     BR + "summer/golf-course",
+    bikePark: BR + "summer/bike-park",
+    lake:     BR + "summer/lake-laura",
+    other:    BR + "summer/other-activities", // fling golf + scenic lift rides
+    market:   "https://visitshenandoahcounty.com/listing/bryce-farmers-market/902/",
+    skyline:  "https://visitskylinedrive.org/plan-your-visit/",
+    hiking:   "hiking.html",
+    fishing:  "fishing.html",
+    wine:     "wine-country.html"
+  };
+
   var seasons = {
     Winter: {
       img: "assets/img/season-winter.jpg",
       alt: "Snow on the slopes at Bryce Resort",
       title: "Ski-country winters, minutes from your door",
       copy: "Bryce Resort runs day and night skiing, snowboarding, tubing, and ice skating all winter — a five-minute walk from The Cabin, a short stroll from The Chalet. Come home to the fireplace, or a hot tub under a cold, clear sky.",
-      chips: ["Skiing & snowboarding", "Ski & snowboard lessons", "Night skiing", "Snow tubing", "Ice skating", "Après by the fire"]
+      chips: [
+        ["Skiing & snowboarding", LINKS.ski],
+        ["Ski & snowboard lessons", LINKS.lessons],
+        ["Night skiing", LINKS.lessons],
+        ["Snow tubing", LINKS.tubing],
+        ["Ice skating", LINKS.skating],
+        "Après by the fire"
+      ]
     },
     Spring: {
       img: "assets/img/season-spring.jpg",
       alt: "Spring porch and deck at the homes",
       title: "The valley wakes up",
       copy: "Trails dry out, trout streams run high, and the porch swing season begins. Spring at Bryce is quiet, green, and yours — hiking, biking, and farmers markets without the crowds.",
-      chips: ["Hiking trails", "Mountain biking", "Fly fishing", "Farmers markets"]
+      chips: [
+        ["Hiking trails", LINKS.hiking],
+        ["Mountain biking", LINKS.bikePark],
+        ["Fly fishing", LINKS.fishing],
+        ["PGA golf", LINKS.golf],
+        ["Fling golf", LINKS.other],
+        ["Scenic lift rides", LINKS.other],
+        ["Lake Laura", LINKS.lake],
+        ["Bryce Farmers Market", LINKS.market]
+      ]
     },
     Summer: {
       img: "assets/img/season-summer.jpg",
       alt: "Covered deck bar with the Shenandoah Valley below",
       title: "Golf, lake days, and long evenings on the deck",
       copy: "Tee off on the PGA championship course, swim or kayak at Lake Laura, ride the mountain bike park — then grill dinner with the whole Shenandoah Valley laid out below you.",
-      chips: ["PGA golf", "Fling golf", "Scenic lift rides", "Lake Laura", "Mountain bike park", "Deck dinners"]
+      chips: [
+        ["PGA golf", LINKS.golf],
+        ["Fling golf", LINKS.other],
+        ["Scenic lift rides", LINKS.other],
+        ["Lake Laura", LINKS.lake],
+        ["Mountain bike park", LINKS.bikePark],
+        ["Hiking trails", LINKS.hiking],
+        ["Bryce Farmers Market", LINKS.market],
+        "Deck dinners"
+      ]
     },
     Fall: {
       img: "assets/img/season-fall.jpg",
       alt: "Fall foliage across the valley on Skyline Drive",
       title: "Foliage season on Skyline Drive",
       copy: "October is peak Bryce — fire-red ridgelines, wineries along the Shenandoah Wine Trail, and the most famous fall drive in America under an hour away. Firepit nights included.",
-      chips: ["Skyline Drive foliage", "Shenandoah wineries", "Mountain biking", "Hiking", "Firepit nights"]
+      chips: [
+        ["Skyline Drive foliage", LINKS.skyline],
+        ["Shenandoah wineries", LINKS.wine],
+        ["Hiking trails", LINKS.hiking],
+        ["Mountain biking", LINKS.bikePark],
+        ["PGA golf", LINKS.golf],
+        ["Fling golf", LINKS.other],
+        ["Scenic lift rides", LINKS.other],
+        "Firepit nights"
+      ]
     }
   };
 
@@ -51,11 +106,29 @@
     seasonTitle.textContent = d.title;
     seasonCopy.textContent = d.copy;
     seasonChips.innerHTML = "";
-    d.chips.forEach(function (label) {
-      var span = document.createElement("span");
-      span.className = "chip";
-      span.textContent = label;
-      seasonChips.appendChild(span);
+    d.chips.forEach(function (chip) {
+      var label = chip, href = null;
+      if (Object.prototype.toString.call(chip) === "[object Array]") {
+        label = chip[0]; href = chip[1];
+      }
+      var node;
+      if (href) {
+        node = document.createElement("a");
+        node.href = href;
+        node.className = "chip chip--link";
+        // Off-site activities open in a new tab so the guest keeps their place
+        // here; our own pages navigate normally.
+        if (href.indexOf("http") === 0) {
+          node.target = "_blank";
+          node.rel = "noopener";
+          node.className += " chip--out";
+        }
+      } else {
+        node = document.createElement("span");
+        node.className = "chip";
+      }
+      node.textContent = label;
+      seasonChips.appendChild(node);
     });
     tabs.forEach(function (t) {
       var on = t.getAttribute("data-season") === name;
