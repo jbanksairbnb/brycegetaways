@@ -38,13 +38,11 @@ already uses the existing `fall-tibbett.jpg`; the fishing hero needs one.
 
 | Filename to use here          | Slot                                  |
 |-------------------------------|---------------------------------------|
-| `fishing-hero.jpg`            | Fishing page — full-width hero        |
 | `trail-lake-laura.jpg`        | Hiking — Lake Laura Trail Loop        |
 | `trail-orkney-springs.jpg`    | Hiking — Orkney Springs & N. Mountain |
 | `trail-falls-ridge.jpg`       | Hiking — Falls Ridge (the waterfall)  |
 | `trail-laurel-run.jpg`        | Hiking — Laurel Run Circuit           |
 | `trail-nutmeg-point.jpg`      | Hiking — Nutmeg Point overlook        |
-| `trail-big-schloss.jpg`       | Hiking — Big Schloss                  |
 | `trail-tibbet-knob.jpg`       | Hiking — Tibbet Knob                  |
 | `trail-copernicus-ridge.jpg`  | Hiking — Copernicus Ridge             |
 | `fishing-lake-laura.jpg`      | Fishing — Lake Laura                  |
@@ -54,3 +52,48 @@ already uses the existing `fall-tibbett.jpg`; the fishing hero needs one.
 
 Guests' own trail and catch photos work well here — just make sure you have
 permission to publish them.
+
+### Why the trail cards draw a graphic
+
+Seven of the eight hikes have no photograph available under any licence this
+site can use. That isn't for want of looking: Wikimedia Commons was searched by
+name, by category, and by coordinates around each trailhead, and Openverse by
+name with a commercial-use filter. These are obscure national-forest trails and
+nobody has published free photography of them. Big Schloss was the only hit.
+
+So those cards draw their own statistics instead — a ridge whose width reads as
+distance and whose height reads as climb, scaled against the biggest hike on the
+page, with the exact figures printed beside it. It is a comparison, not a survey:
+we have each trail's distance and total gain, not its real elevation profile.
+Falls Ridge and Nutmeg Point have no published climb at all, so their ridges are
+dashed and say "climb not recorded" rather than showing an invented number.
+
+**Dropping a real photo in still works and needs no code change.** The graphic
+sits behind the image inside the slot, so a file with the right name simply
+covers it. The names above are the ones to use.
+
+### Licensed photos already in place
+
+`fishing-hero.jpg` is not ours. It is sunrise mist on the North Fork of the
+Shenandoah at Seven Bends State Park — the same water the page's North Fork card
+describes — shot by Virginia State Parks staff and published under
+[CC BY 2.0](https://creativecommons.org/licenses/by/2.0/):
+
+- Source: <https://www.flickr.com/photos/37922399@N05/52451469774/>
+- Via Wikimedia Commons, `File:SE 10-20-22 Foggy River.jpg`
+- Resized to 2000px wide, EXIF stripped; original is 3878×2446
+
+CC BY means the credit line at the foot of `fishing.html` is a licence condition,
+not a courtesy. **If you replace this photo with one of your own, delete that
+credit line too** — leaving it would attribute your photo to someone else. If you
+keep the photo, keep the credit.
+
+`trail-big-schloss.jpg` is the same arrangement: a Table Mountain Pine on the
+rock slabs of Big Schloss, by Chris M, under
+[CC BY 2.0](https://creativecommons.org/licenses/by/2.0/):
+
+- Source: <https://commons.wikimedia.org/wiki/File:Pinus_pungens_Big_Schloss.jpg>
+- Resized to 1200px wide, EXIF stripped; original is 2217×1952
+
+Its credit line is at the foot of `hiking.html`, and the same rule applies — swap
+the photo, remove the credit.
