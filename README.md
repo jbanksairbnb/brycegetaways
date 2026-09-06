@@ -105,12 +105,31 @@ independent sends, so one failing never loses the signed document:
 | --- | --- | --- | --- |
 | **Formspree** (`/f/mqaqgypl`) | The owners — the file copy | Yes | Booking summary **plus the full agreement text** in `signed_agreement` |
 | **EmailJS** (`templateId`) | The guest — their own copy | Only when EmailJS is configured | The same, as `agreement_html` / `agreement_text` |
+| **EmailJS** (`ownerTemplateId`, or `templateId` again) | The owners — addressed to them, replying to the guest | Only when EmailJS is configured | The same |
 
-The owners' copy deliberately does **not** depend on how the EmailJS template is
-wired — Formspree is posted on every submission, so the record exists even if
-EmailJS is misconfigured or down. (That means the owners can receive two
-e-mails per booking when the EmailJS template also copies them; that redundancy
-is intentional.)
+The owners' file copy deliberately does **not** depend on how the EmailJS
+template is wired — Formspree is posted on every submission, so the record
+exists even if EmailJS is misconfigured or down. The owners therefore receive
+two e-mails per booking; that redundancy is intentional, because either route
+can fail on its own (Formspree caps free submissions per month; EmailJS caps
+requests per month).
+
+The owners' EmailJS copy is a **separate send addressed to them**, not a Bcc on
+the guest's message. Bcc-to-self does not work here: the EmailJS service sends
+*from* `brycegetaways@gmail.com`, and Gmail treats the inbound Bcc copy as a
+duplicate of the message it already has in **Sent**, so it never reaches the
+inbox. If a booking notification seems to be missing, check **Sent** — a copy
+sitting there and nowhere else is this exact symptom.
+
+Set `emailjs.ownerTemplateId` to give the owners a template worded for them.
+Left blank, the booking template is reused, so the owners' copy opens
+"Hi \<guest name\>" but carries every detail.
+
+When a send fails it is logged to the browser console as
+`[booking] … failed:` with the reason EmailJS or Formspree gave (for example
+`The service ID is invalid`). Open DevTools → Console on a test booking to see
+exactly which route is broken — the guest still sees a success screen as long
+as one route got through.
 
 ### Wiring the guest's copy (EmailJS template)
 
@@ -118,13 +137,14 @@ Adding a parameter in code does nothing on its own — EmailJS only sends what t
 template body references. In the EmailJS dashboard, open the booking template
 (`emailjs.templateId` in `site-config.js`) and make sure it has:
 
-- **To:** `{{to_email}}` — the guest. Add `{{owner_email}}` (or
-  `brycegetaways@gmail.com`) as **Bcc** if the owners want the EmailJS copy too.
-- **Bcc:** `{{owner_email}}` — the owners' copy through EmailJS.
-- **Reply-To:** `{{reply_to}}` — this resolves to the *owners'* mailbox, not the
-  guest's: the message is addressed to the guest, so replying to it has to reach
-  Jonathan & Anna. (The owners' reply-to-the-guest path is the Formspree
-  notification, whose `_replyto` is the guest.)
+- **To:** `{{to_email}}` — the guest on the guest's send, and the owners on the
+  owners' send. Leave it as the variable; the code fills in the right address.
+- **Bcc:** `{{owner_email}}` — optional, and *not* how the owners get their
+  copy (see the Bcc/Gmail note above). Safe to leave in place or clear.
+- **Reply-To:** `{{reply_to}}` — the owners' mailbox on the guest's copy (the
+  message is addressed to the guest, so replying to it has to reach Jonathan &
+  Anna), and the guest's address on the owners' copy (so answering a request
+  goes straight back to the guest).
 - In the body, the booking summary (`{{summary}}`) **and the agreement itself**:
   - HTML template → `{{{agreement_html}}}` — **three** braces, so EmailJS injects
     the rendered agreement instead of escaping the tags. If a test send shows raw
@@ -141,11 +161,13 @@ Other params the template can use: `guest_name`, `guest_email`, `guest_phone`, `
 `nightly_subtotal`, `cleaning_fee`, `pet_fee`, `taxes`, `discount`, `total`,
 `payment_type`, `due_now`, `balance`, `balance_due`, `signature`, `signed_at`.
 
-Worth double-checking in the dashboard: `emailjs.serviceId` is currently set to
-`brycegetaways@gmail.com`, which is the mailbox address rather than the
-`service_xxxxxxx`-style Service ID EmailJS issues. If it doesn't match the
-Service ID shown under **Email Services**, the guest's copy silently fails and
-only the Formspree (owner) copy goes out.
+**Check this first if e-mails go missing:** `emailjs.serviceId` in
+`site-config.js` is set to `brycegetaways@gmail.com`, which is the mailbox
+address rather than the `service_xxxxxxx`-style Service ID EmailJS issues
+(dashboard → **Email Services** → the service → **Service ID**). Unless the
+service was created with that exact custom ID, *every* EmailJS send fails —
+guest copy, owners' copy, and the discount auto-reply alike — and only the
+Formspree notification goes out. Paste the real Service ID over it.
 
 ## Bookings ledger
 
