@@ -1019,6 +1019,12 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   text-transform: uppercase; color: var(--muted-grey); text-align: center; margin: 14px 0 0;
 }
 
+/* Photo credit under a page note — smaller and quieter than the note itself,
+   but present: the header photo is CC BY, which requires visible attribution. */
+.page-credit { font-size: 12px; line-height: 1.65; color: var(--faint-grey); margin: 12px 0 0; text-align: center; }
+.page-credit a { color: var(--faint-grey); text-decoration: underline; text-underline-offset: 2px; }
+.page-credit a:hover { color: var(--pine); }
+
 /* --- labelled photo slots -------------------------------------------------
    main.js swaps a missing photo for a transparent GIF and tags it .img-missing,
    but a pseudo-element can't render on a replaced element, so the tile's label

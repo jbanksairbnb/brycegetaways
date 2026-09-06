@@ -38,7 +38,6 @@ already uses the existing `fall-tibbett.jpg`; the fishing hero needs one.
 
 | Filename to use here          | Slot                                  |
 |-------------------------------|---------------------------------------|
-| `fishing-hero.jpg`            | Fishing page — full-width hero        |
 | `trail-lake-laura.jpg`        | Hiking — Lake Laura Trail Loop        |
 | `trail-orkney-springs.jpg`    | Hiking — Orkney Springs & N. Mountain |
 | `trail-falls-ridge.jpg`       | Hiking — Falls Ridge (the waterfall)  |
@@ -54,3 +53,19 @@ already uses the existing `fall-tibbett.jpg`; the fishing hero needs one.
 
 Guests' own trail and catch photos work well here — just make sure you have
 permission to publish them.
+
+### Licensed photos already in place
+
+`fishing-hero.jpg` is not ours. It is sunrise mist on the North Fork of the
+Shenandoah at Seven Bends State Park — the same water the page's North Fork card
+describes — shot by Virginia State Parks staff and published under
+[CC BY 2.0](https://creativecommons.org/licenses/by/2.0/):
+
+- Source: <https://www.flickr.com/photos/37922399@N05/52451469774/>
+- Via Wikimedia Commons, `File:SE 10-20-22 Foggy River.jpg`
+- Resized to 2000px wide, EXIF stripped; original is 3878×2446
+
+CC BY means the credit line at the foot of `fishing.html` is a licence condition,
+not a courtesy. **If you replace this photo with one of your own, delete that
+credit line too** — leaving it would attribute your photo to someone else. If you
+keep the photo, keep the credit.
