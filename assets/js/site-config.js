@@ -7,10 +7,10 @@
 
      publicKey  — EmailJS dashboard → Account → General → Public Key
      serviceId  — EmailJS dashboard → Email Services → your service → Service ID.
-                  Usually a `service_xxxxxxx` string, but it can be a custom one:
-                  ours is deliberately the mailbox address (verified 2026-09-06),
-                  so leave it alone. Whatever it is, it has to match the dashboard
-                  exactly or every send fails with "The service ID is invalid".
+                  It has to match the dashboard exactly or every send fails.
+                  Note this is per-*service*: rebuilding the Gmail service (as on
+                  2026-09-06, when the old OAuth grant could not be revived)
+                  issues a brand-new ID, and the value below has to follow it.
      templateId — EmailJS dashboard → Email Templates → your template → Template ID
 
    Until all three are filled in, the booking form still works — it falls back
@@ -18,7 +18,7 @@
 window.BMGConfig = {
   emailjs: {
     publicKey: "Olkr11Rp94JH-M-Nm",
-    serviceId: "brycegetaways@gmail.com",
+    serviceId: "service_mvhwiu6",
     templateId: "template_je53hdm",        // booking confirmation + signed agreement (guest)
     ownerTemplateId: "",                    // booking notification addressed to the owners; blank reuses templateId
     contactTemplateId: "",                  // Contact-Us form (owner + auto-reply)

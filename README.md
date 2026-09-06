@@ -161,15 +161,33 @@ Other params the template can use: `guest_name`, `guest_email`, `guest_phone`, `
 `nightly_subtotal`, `cleaning_fee`, `pet_fee`, `taxes`, `discount`, `total`,
 `payment_type`, `due_now`, `balance`, `balance_due`, `signature`, `signed_at`.
 
-**`emailjs.serviceId` is correct as written** — verified against the dashboard
-on 2026-09-06. It reads `brycegetaways@gmail.com`, which looks like the mailbox
-address rather than the `service_xxxxxxx`-style ID EmailJS usually issues, but
-the Gmail service was created with that exact string as its custom **Service
-ID** (dashboard → **Email Services** → the service). Don't "fix" it to a
-`service_…` value; changing it is what would break every EmailJS send. If it
-ever stops matching what the dashboard shows, *every* EmailJS send fails —
-guest copy, owners' copy, and the discount auto-reply alike — and only the
-Formspree notification goes out.
+**If e-mail stops arriving, check `emailjs.serviceId` first.** It must match
+dashboard → **Email Services** → the service → **Service ID** exactly. When it
+doesn't, *every* EmailJS send fails — guest copy, owners' copy, and the discount
+auto-reply alike — and only the Formspree notification goes out.
+
+The catch is that the ID belongs to the *service*, not the account. Deleting and
+re-creating the Gmail service issues a **new** ID, and the site keeps calling
+the old one until this file is updated. That is exactly what happened on
+2026-09-06: a `Gmail_API: Invalid grant` error could not be cleared by
+disconnecting and reconnecting, so the service was rebuilt from scratch — which
+moved the ID from `brycegetaways@gmail.com` (a custom ID on the old service) to
+`service_mvhwiu6`.
+
+A test send from the dashboard passing while the live site sends nothing is the
+signature of this: the dashboard tests the service directly and never reads
+`site-config.js`. Re-check the template IDs too — recreating templates renumbers
+them the same way.
+
+### If the Gmail connection breaks again
+
+`Gmail_API: Invalid grant` means Google revoked the OAuth token (a password
+change, or access removed from
+[myaccount.google.com/permissions](https://myaccount.google.com/permissions)).
+Try **Disconnect → Connect Account** on the service first. If that keeps
+failing, remove EmailJS at that Google permissions page and reconnect in an
+incognito window signed into `brycegetaways@gmail.com` only. Re-creating the
+service works too — just update `serviceId` here afterwards.
 
 ## Bookings ledger
 
