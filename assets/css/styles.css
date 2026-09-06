@@ -260,6 +260,11 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
   letter-spacing: .14em; color: var(--pine);
   border: 1px solid rgba(61, 92, 76, .4); padding: 9px 16px;
 }
+/* A chip that goes somewhere. The arrow marks the off-site ones, so a guest can
+   tell a Bryce Resort booking page from one of our own. */
+a.chip--link { text-decoration: none; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+a.chip--link:hover, a.chip--link:focus-visible { background: var(--pine); border-color: var(--pine); color: #fff; }
+a.chip--out::after { content: " ↗"; letter-spacing: 0; }
 
 /* ==========================================================================
    The Homes — dark section
@@ -340,7 +345,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 300; margin: 0; }
    ========================================================================== */
 .explore { background: var(--sand); padding: 90px var(--pad); }
 .explore .section__head { margin-bottom: 52px; }
-.places { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+/* Six cards now: three across reads better than four-plus-a-gap. */
+.places { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 .place {
   background: var(--bone); padding: 30px 26px; border-top: 2px solid var(--pine);
   color: inherit; display: flex; flex-direction: column;
@@ -503,13 +509,13 @@ a.place:hover .place__more { color: var(--pine-dark); }
 }
 .subpage-hero h1 { font-size: 60px; line-height: 1.05; color: #fff; }
 
-.wine-intro { max-width: 760px; margin: 0 auto; padding: 74px var(--pad) 20px; text-align: center; }
-.wine-intro p { font-size: 17px; line-height: 1.75; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+.page-intro, .wine-intro { max-width: 760px; margin: 0 auto; padding: 74px var(--pad) 20px; text-align: center; }
+.page-intro p, .wine-intro p { font-size: 17px; line-height: 1.75; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
 
-.wine-group { max-width: var(--maxw); margin: 0 auto; padding: 54px var(--pad) 0; }
-.wine-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--hairline); padding-bottom: 18px; margin-bottom: 34px; }
-.wine-group__head h2 { font-size: 34px; line-height: 1.1; }
-.wine-group__head .eyebrow { color: var(--muted-grey); }
+.page-group, .wine-group { max-width: var(--maxw); margin: 0 auto; padding: 54px var(--pad) 0; }
+.page-group__head, .wine-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--hairline); padding-bottom: 18px; margin-bottom: 34px; }
+.page-group__head h2, .wine-group__head h2 { font-size: 34px; line-height: 1.1; }
+.page-group__head .eyebrow, .wine-group__head .eyebrow { color: var(--muted-grey); }
 
 .venues { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .venue {
@@ -527,16 +533,16 @@ a.venue:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(27,29,
 .venue__link { margin-top: auto; font-family: var(--sans); font-weight: 400; font-size: 11px; line-height: 1; letter-spacing: .18em; text-transform: uppercase; color: var(--pine); }
 a.venue:hover .venue__link { color: var(--pine-dark); }
 
-.wine-note { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 0; }
-.wine-note p { font-size: 13.5px; line-height: 1.7; font-weight: 300; color: var(--muted-grey); margin: 0; text-align: center; text-wrap: pretty; }
+.page-note, .wine-note { max-width: 760px; margin: 0 auto; padding: 56px var(--pad) 0; }
+.page-note p, .wine-note p { font-size: 13.5px; line-height: 1.7; font-weight: 300; color: var(--muted-grey); margin: 0; text-align: center; text-wrap: pretty; }
 
-.wine-cta { text-align: center; padding: 64px var(--pad) 96px; }
-.wine-cta h2 { font-size: 38px; line-height: 1.1; margin-bottom: 10px; }
-.wine-cta p { font-size: 15px; line-height: 1.7; font-weight: 300; color: var(--body-grey); margin: 0 auto 26px; max-width: 480px; }
+.page-cta, .wine-cta { text-align: center; padding: 64px var(--pad) 96px; }
+.page-cta h2, .wine-cta h2 { font-size: 38px; line-height: 1.1; margin-bottom: 10px; }
+.page-cta p, .wine-cta p { font-size: 15px; line-height: 1.7; font-weight: 300; color: var(--body-grey); margin: 0 auto 26px; max-width: 480px; }
 
 @media (max-width: 1000px) {
   .subpage-hero h1 { font-size: 40px; }
-  .wine-group__head h2 { font-size: 28px; }
+  .page-group__head h2, .wine-group__head h2 { font-size: 28px; }
 }
 @media (max-width: 560px) {
   .venues { grid-template-columns: 1fr; }
@@ -988,4 +994,119 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   .dq-modal { max-width: none; }
   .dq-body { padding: 30px 22px 26px; }
   .disc-banner__msg { font-size: 17px; }
+}
+
+
+/* ==========================================================================
+   Trails & Fishing subpages
+   Shared with the wine page via .page-intro / .page-group / .page-note /
+   .page-cta above; everything below is specific to the activity cards.
+   ========================================================================== */
+
+/* Screen-reader-only text: used for section headings that the design carries
+   visually (a map, a photo) but that the document outline still needs. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* --- the orientation map: a schematic, not a survey ---------------------- */
+.ridgemap { max-width: var(--maxw); margin: 0 auto; padding: 40px var(--pad) 0; }
+.ridgemap__frame { background: var(--bone); border: 1px solid var(--hairline); padding: 18px; }
+.ridgemap svg { display: block; width: 100%; height: auto; }
+.ridgemap__caption {
+  font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted-grey); text-align: center; margin: 14px 0 0;
+}
+
+/* --- labelled photo slots -------------------------------------------------
+   main.js swaps a missing photo for a transparent GIF and tags it .img-missing,
+   but a pseudo-element can't render on a replaced element, so the tile's label
+   never appeared. Draw the label on the wrapper instead and let the image sit
+   transparently on top of it — a real photo simply covers it. */
+.photo-slot { position: relative; background: var(--mist); }
+.photo-slot::after {
+  content: attr(data-label);
+  position: absolute; inset: 0; z-index: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; text-align: center;
+  font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--sage-deep);
+}
+.photo-slot img { position: relative; z-index: 1; }
+.photo-slot .img-missing { background: transparent !important; }
+
+/* --- filter bar ---------------------------------------------------------- */
+.trail-filter {
+  max-width: var(--maxw); margin: 0 auto; padding: 34px var(--pad) 0;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.trail-filter__label {
+  font-family: var(--sans); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted-grey); margin-right: 4px;
+}
+.trail-filter button {
+  font-family: var(--sans); font-weight: 400; font-size: 12px; letter-spacing: .14em;
+  color: var(--pine); background: none; border: 1px solid rgba(61, 92, 76, .4);
+  padding: 9px 16px; cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.trail-filter button:hover { background: var(--mist); }
+.trail-filter button.is-active { background: var(--pine); border-color: var(--pine); color: #fff; }
+.trail-filter__count { font-size: 12.5px; font-weight: 300; color: var(--muted-grey); margin-left: auto; }
+
+/* --- trail / water cards ------------------------------------------------- */
+.trails { max-width: var(--maxw); margin: 0 auto; padding: 26px var(--pad) 0; display: grid; gap: 22px; }
+.trail {
+  display: grid; grid-template-columns: 300px 1fr; gap: 0;
+  background: #fff; border: 1px solid var(--hairline); overflow: hidden;
+}
+.trail[hidden] { display: none; }
+.trail__photo { position: relative; min-height: 220px; background: var(--mist); }
+.trail__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.trail__body { padding: 24px 26px 22px; display: flex; flex-direction: column; }
+.trail__head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.trail__num {
+  font-family: var(--sans); font-size: 11px; letter-spacing: .18em; color: var(--sage-deep);
+  border: 1px solid rgba(61, 92, 76, .35); padding: 4px 8px; line-height: 1;
+}
+.trail__name { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.15; margin: 0; }
+.trail__drive {
+  margin-left: auto; font-family: var(--sans); font-size: 10.5px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--pine); white-space: nowrap;
+}
+.trail__stats {
+  list-style: none; margin: 14px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 8px 0;
+}
+.trail__stats li {
+  font-family: var(--sans); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--body-grey); padding: 0 14px; border-left: 1px solid var(--hairline-strong);
+}
+.trail__stats li:first-child { padding-left: 0; border-left: 0; }
+.trail__stats li[data-difficulty="Easy"] { color: var(--pine); }
+.trail__stats li[data-difficulty="Hard"] { color: #8c5a2b; }
+.trail__copy { font-size: 14.5px; line-height: 1.7; font-weight: 300; color: var(--body-grey); margin: 14px 0 18px; text-wrap: pretty; }
+.trail__links { margin-top: auto; display: flex; gap: 18px; flex-wrap: wrap; }
+.trail__links a {
+  font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--pine); text-decoration: none; border-bottom: 1px solid rgba(61, 92, 76, .35); padding-bottom: 3px;
+}
+.trail__links a:hover { color: var(--pine-dark); border-bottom-color: var(--pine-dark); }
+
+/* --- "know before you go" panel ------------------------------------------ */
+.tips { max-width: var(--maxw); margin: 0 auto; padding: 56px var(--pad) 0; }
+.tips__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.tip { border-top: 2px solid var(--pine); padding-top: 16px; }
+.tip h3 { font-family: var(--sans); font-weight: 400; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--pine); margin: 0 0 8px; }
+.tip p { font-size: 14px; line-height: 1.7; font-weight: 300; color: var(--body-grey); margin: 0; text-wrap: pretty; }
+.tip a { color: var(--pine); }
+
+@media (max-width: 860px) {
+  .trail { grid-template-columns: 1fr; }
+  .trail__photo { min-height: 190px; }
+  .trail__drive { margin-left: 0; width: 100%; }
+}
+@media (max-width: 560px) {
+  .trail__stats li { padding: 0 10px; }
+  .trail-filter__count { margin-left: 0; width: 100%; }
 }
