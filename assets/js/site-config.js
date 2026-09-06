@@ -6,7 +6,10 @@
    creating a free EmailJS account (https://www.emailjs.com):
 
      publicKey  — EmailJS dashboard → Account → General → Public Key
-     serviceId  — EmailJS dashboard → Email Services → your service → Service ID
+     serviceId  — EmailJS dashboard → Email Services → your service → Service ID.
+                  This is the `service_xxxxxxx` ID EmailJS issues, NOT the
+                  mailbox address the service sends from — a mismatch makes
+                  every EmailJS send fail with "The service ID is invalid".
      templateId — EmailJS dashboard → Email Templates → your template → Template ID
 
    Until all three are filled in, the booking form still works — it falls back
@@ -16,6 +19,7 @@ window.BMGConfig = {
     publicKey: "Olkr11Rp94JH-M-Nm",
     serviceId: "brycegetaways@gmail.com",
     templateId: "template_je53hdm",        // booking confirmation + signed agreement (guest)
+    ownerTemplateId: "",                    // booking notification addressed to the owners; blank reuses templateId
     contactTemplateId: "",                  // Contact-Us form (owner + auto-reply)
     discountTemplateId: "template_guuhec9"  // First-booking $50 signup auto-reply (guest)
   },

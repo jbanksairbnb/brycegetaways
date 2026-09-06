@@ -339,18 +339,36 @@
       "  Signed at: " + new Date().toISOString() + "\n";
   }
 
-  // EmailJS is used when configured (emails BOTH the guest and the owners);
-  // otherwise we fall back to Formspree, which emails the owners only.
+  // EmailJS is used when configured; Formspree is posted on every submission.
   function emailCfg() { return (window.BMGConfig && window.BMGConfig.emailjs) || {}; }
   function emailjsReady() { var e = emailCfg(); return !!(window.emailjs && e.publicKey && e.serviceId && e.templateId); }
 
-  function emailParams(c) {
+  // Every send may fail without taking the others down, but a failure has to
+  // leave a trace: silently swallowed, a wrong Service or Template ID looks
+  // exactly like a working site from the outside.
+  function sendFailed(what) {
+    return function (e) {
+      if (window.console && console.error) {
+        console.error("[booking] " + what + " failed:", (e && (e.text || e.message)) || e);
+      }
+      return false;
+    };
+  }
+
+  // `toOwner` builds the owners' own addressed copy instead of the guest's.
+  // The owners used to get their EmailJS copy only as a Bcc on the guest's
+  // message, but the service sends *from* their own mailbox, so Gmail treats
+  // that inbound copy as a duplicate of the one already in Sent and keeps it
+  // out of the inbox. Addressing them directly is what actually lands.
+  function emailParams(c, toOwner) {
     return {
-      // This message is addressed to the guest (the owners are Bcc'd), so Reply-To
-      // is the owners' mailbox — a guest hitting reply must reach Jonathan & Anna,
-      // not themselves. The owners' reply-to-the-guest path is the Formspree
-      // notification, which sets _replyto to the guest.
-      to_email: st.email, owner_email: OWNER_EMAIL, reply_to: OWNER_EMAIL, guest_email: st.email,
+      // The guest's copy replies to the owners — a guest hitting reply must
+      // reach Jonathan & Anna, not themselves. The owners' copy replies to the
+      // guest, so answering a request goes straight back to them.
+      to_email: toOwner ? OWNER_EMAIL : st.email,
+      owner_email: OWNER_EMAIL,
+      reply_to: toOwner ? st.email : OWNER_EMAIL,
+      guest_email: st.email,
       guest_name: st.name, guest_phone: st.phone, guest_address: st.address,
       home: LABEL[st.homeKey], property_address: ADDRESS[st.homeKey],
       check_in: fmtLong(st.start), check_out: fmtLong(st.end),
@@ -365,9 +383,25 @@
       agreement_html: agreementHTML(), agreement_text: agreementText()
     };
   }
-  function sendViaEmailJS(c) {
+  function sendViaEmailJS(c, toOwner) {
     var e = emailCfg();
-    return window.emailjs.send(e.serviceId, e.templateId, emailParams(c), { publicKey: e.publicKey });
+    // A dedicated owner template is optional — without one the booking template
+    // is reused, which reads as the guest's copy but carries every detail.
+    var template = (toOwner && e.ownerTemplateId) || e.templateId;
+    return window.emailjs.send(e.serviceId, template, emailParams(c, toOwner), { publicKey: e.publicKey });
+  }
+  // Both EmailJS copies, resolving to [guestSent, ownersSent]. They go one after
+  // the other rather than at once: EmailJS rate-limits a burst from a single
+  // account, and the owners' notification is the one that can't be lost to a 429.
+  function sendBothViaEmailJS(c) {
+    if (!emailjsReady()) return Promise.resolve([false, false]);
+    var guestSent = false;
+    return sendViaEmailJS(c, false)
+      .then(function () { guestSent = true; }, sendFailed("EmailJS (guest's copy)"))
+      .then(function () {
+        return sendViaEmailJS(c, true).then(function () { return true; }, sendFailed("EmailJS (owners' copy)"));
+      })
+      .then(function (ownersSent) { return [guestSent, ownersSent]; });
   }
   // The row filed in the bookings ledger. Raw numbers, not the formatted money
   // strings the e-mails use — the manager page and the reminder job do date and
@@ -418,26 +452,31 @@
     var btn = document.getElementById("bk-submit"), err = document.getElementById("bk-err3");
     btn.disabled = true; btn.textContent = "SENDING…"; err.textContent = "";
     var c = compute();
-    // Two independent sends, so one failing never loses the signed agreement:
+    // Independent sends, so one failing never loses the signed agreement:
     //   • Formspree — always, and always with the full agreement text. This is
     //     the owners' file copy, so their record never depends on how the
     //     EmailJS template happens to be wired.
     //   • EmailJS — the guest's own copy, when it's configured.
-    var owner = sendViaFormspree(c).then(function () { return true; }, function () { return false; });
-    var guest = emailjsReady()
-      ? sendViaEmailJS(c).then(function () { return true; }, function () { return false; })
-      : Promise.resolve(false);
+    //   • EmailJS — the owners' own addressed copy, when it's configured. This
+    //     is a separate send rather than a Bcc on the guest's message so that
+    //     the owners still get a booking notification if Formspree is capped,
+    //     unverified, or down.
+    var owner = sendViaFormspree(c).then(function () { return true; }, sendFailed("Formspree (owners' copy)"));
+    var mail = sendBothViaEmailJS(c);
     // Filed in parallel, and never allowed to fail the submission: the e-mails
     // are what the guest and the owners actually rely on, so a Supabase outage
     // must not turn a signed agreement into an error screen.
     var filed = fileBooking(c);
-    Promise.all([owner, guest, filed]).then(function (r) {
-      if (!r[0] && !r[1]) {
+    Promise.all([owner, mail, filed]).then(function (r) {
+      var formspreeSent = r[0], guestSent = r[1][0], ownersSent = r[1][1];
+      // Only a total loss is an error — as long as one route reached the owners,
+      // the signed agreement got where it needed to go.
+      if (!formspreeSent && !guestSent && !ownersSent) {
         err.textContent = "Something went wrong sending your request. Please email brycegetaways@gmail.com and we'll sort it out.";
         btn.disabled = false; btn.textContent = "SUBMIT REQUEST";
         return;
       }
-      st.guestEmailed = r[1];
+      st.guestEmailed = guestSent;
       st.filed = r[2];
       renderDone(c);
     });
