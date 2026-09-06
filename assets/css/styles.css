@@ -1039,7 +1039,12 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   font-family: var(--sans); font-weight: 300; font-size: 12px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--sage-deep);
 }
-.photo-slot img { position: relative; z-index: 1; }
+/* A slot holding a glyph doesn't need the text label as well. */
+.photo-slot:has(.glyph)::after { content: none; }
+/* Stated in full so a slot doesn't depend on .trail__photo img appearing later
+   in this file to position it. (The previous `position: relative` here was
+   harmless in practice — the later rule won — but it read as a contradiction.) */
+.photo-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 .photo-slot .img-missing { background: transparent !important; }
 
 /* --- filter bar ---------------------------------------------------------- */
@@ -1116,3 +1121,28 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   .trail__stats li { padding: 0 10px; }
   .trail-filter__count { margin-left: 0; width: 100%; }
 }
+
+
+/* ==========================================================================
+   Trail glyphs
+   Where no photograph of a trail exists under a licence we can use, the card
+   draws its own stats instead: a ridge whose width reads as distance and whose
+   height reads as climb, both scaled against the biggest hike on the page.
+   It is a comparison, not a survey — we have each trail's distance and total
+   gain, not its real elevation profile, so the shape is deliberately stylised
+   and the exact figures are printed beside it. Two trails have no published
+   climb; those ridges are dashed and say so rather than showing a made-up
+   number. Sits at z-index 0 inside .photo-slot, so dropping a real photo in
+   later simply covers it.
+   ========================================================================== */
+.glyph { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; }
+.glyph__scale { stroke: var(--hairline-strong); stroke-width: 1; stroke-dasharray: 2 5; }
+.glyph__ridge { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.glyph__ridge.is-estimated { stroke-dasharray: 6 5; }
+.glyph__label {
+  font-family: var(--sans); font-weight: 400; font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; fill: var(--muted-grey);
+}
+.glyph[data-difficulty="easy"] .glyph__ridge { stroke: var(--pine); }
+.glyph[data-difficulty="moderate"] .glyph__ridge { stroke: var(--sage-deep); }
+.glyph[data-difficulty="hard"] .glyph__ridge { stroke: #8c5a2b; }
