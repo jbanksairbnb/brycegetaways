@@ -7,9 +7,10 @@
 
      publicKey  — EmailJS dashboard → Account → General → Public Key
      serviceId  — EmailJS dashboard → Email Services → your service → Service ID.
-                  This is the `service_xxxxxxx` ID EmailJS issues, NOT the
-                  mailbox address the service sends from — a mismatch makes
-                  every EmailJS send fail with "The service ID is invalid".
+                  Usually a `service_xxxxxxx` string, but it can be a custom one:
+                  ours is deliberately the mailbox address (verified 2026-09-06),
+                  so leave it alone. Whatever it is, it has to match the dashboard
+                  exactly or every send fails with "The service ID is invalid".
      templateId — EmailJS dashboard → Email Templates → your template → Template ID
 
    Until all three are filled in, the booking form still works — it falls back

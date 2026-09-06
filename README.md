@@ -161,13 +161,15 @@ Other params the template can use: `guest_name`, `guest_email`, `guest_phone`, `
 `nightly_subtotal`, `cleaning_fee`, `pet_fee`, `taxes`, `discount`, `total`,
 `payment_type`, `due_now`, `balance`, `balance_due`, `signature`, `signed_at`.
 
-**Check this first if e-mails go missing:** `emailjs.serviceId` in
-`site-config.js` is set to `brycegetaways@gmail.com`, which is the mailbox
-address rather than the `service_xxxxxxx`-style Service ID EmailJS issues
-(dashboard → **Email Services** → the service → **Service ID**). Unless the
-service was created with that exact custom ID, *every* EmailJS send fails —
+**`emailjs.serviceId` is correct as written** — verified against the dashboard
+on 2026-09-06. It reads `brycegetaways@gmail.com`, which looks like the mailbox
+address rather than the `service_xxxxxxx`-style ID EmailJS usually issues, but
+the Gmail service was created with that exact string as its custom **Service
+ID** (dashboard → **Email Services** → the service). Don't "fix" it to a
+`service_…` value; changing it is what would break every EmailJS send. If it
+ever stops matching what the dashboard shows, *every* EmailJS send fails —
 guest copy, owners' copy, and the discount auto-reply alike — and only the
-Formspree notification goes out. Paste the real Service ID over it.
+Formspree notification goes out.
 
 ## Bookings ledger
 
