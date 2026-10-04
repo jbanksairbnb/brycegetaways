@@ -81,7 +81,7 @@
     .gst-pick { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
     .gst-pick .bkg-guest, .gst-pick .bkg-meta { display: block; }
     .gst-stay { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-    .gst-stay select, .gst-stay input, #gst-notes, .gst-tools input, .gst-tools select, #gst-subject, #gst-body, #gst-testTo { font-family: var(--sans); font-size: 14px; padding: 9px 11px; border: 1px solid var(--hairline-strong); background: var(--bone); }
+    .gst-stay select, .gst-stay input, #gst-notes, .gst-tools input, .gst-tools select, #gst-subject, #gst-body, #gst-tpl, #gst-testTo { font-family: var(--sans); font-size: 14px; padding: 9px 11px; border: 1px solid var(--hairline-strong); background: var(--bone); }
     .gst-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
     .gst-sub { display: block; margin-top: 12px; font-size: 14px; }
     #gst-subject, #gst-body { width: 100%; box-sizing: border-box; margin-bottom: 10px; }
@@ -248,6 +248,7 @@
         <div id="gst-compose">
           <h3 class="bkg-h">Write a message</h3>
           <p class="bkg-meta" id="gst-to"></p>
+          <select id="gst-tpl" style="margin-bottom:10px"></select>
           <input id="gst-subject" type="text" placeholder="Subject">
           <textarea id="gst-body" rows="8" placeholder="Hi {{first_name}}, we have a few open weekends this winter and wanted to offer you&hellip;"></textarea>
           <p class="bkg-meta">Use <code>{{first_name}}</code> or <code>{{name}}</code> to personalise. An unsubscribe link is added automatically.</p>
