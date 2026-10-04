@@ -241,7 +241,7 @@
     if (!email || !pw) { status("Enter the owner e-mail and password.", true); return; }
     el.signin.disabled = true;
     window.BMGBookings.signIn(email, pw)
-      .then(function () { el.pw.value = ""; showSignedIn(true); return load(); })
+      .then(function () { el.pw.value = ""; showSignedIn(true); document.dispatchEvent(new Event("bmg:auth")); return load(); })
       .catch(function (e) { status("Sign-in failed: " + e.message, true); })
       .then(function () { el.signin.disabled = false; });
   }
@@ -271,7 +271,7 @@
     el.pw.addEventListener("keydown", function (e) { if (e.key === "Enter") signIn(); });
     el.refresh.addEventListener("click", load);
     el.signout.addEventListener("click", function () {
-      window.BMGBookings.signOut(); rows = []; showSignedIn(false); status("Signed out.", false);
+      window.BMGBookings.signOut(); rows = []; showSignedIn(false); document.dispatchEvent(new Event("bmg:auth")); status("Signed out.", false);
     });
 
     if (window.BMGBookings.session()) { showSignedIn(true); load(); }

@@ -94,6 +94,38 @@ the whole promotion off site-wide (popup, banner, and booking credit all hide).
 the discount and flags it in the request e-mail, but doesn't hard-block a second
 use; the owners confirm against the stored list before collecting payment.
 
+## Guest list & messages
+
+`/manage.html` has a **Guests & messages** section (same owner login as Bookings).
+
+- **Storage.** Every discount signup is copied into a `guests` table by a database
+  trigger the moment it is submitted. Past guests come in with **Import from
+  bookings**; anyone else via **Add guest** (name, e-mail, phone, stay dates,
+  tags, notes).
+- **Messaging.** Pick one guest, tick several, or filter (signed up but never
+  stayed, stayed at a given home, stayed in a given year, a tag) and **Select all
+  shown**. Write a subject and message — `{{first_name}}` / `{{name}}` are filled
+  in per guest — preview it, send yourself a test, then send. Each guest gets
+  their own e-mail with an unsubscribe link; unsubscribed guests are never
+  offered. Every send (and failure) is logged in `guest_messages` and shown under
+  **Message history**.
+
+### One-time setup
+
+1. **Database.** Paste `supabase/guests.sql` into the Supabase SQL editor and run
+   it. It creates `guests` and `guest_messages` (owner-only), the signup trigger,
+   backfills existing signups, and **locks down `discount_signups`**: the old
+   policies let anyone holding the public key read every signup e-mail. Code
+   lookup and redemption now go through two small functions instead.
+   Run the SQL and deploy this change together.
+2. **E-mail template.** In EmailJS create a template: To = `{{to_email}}`,
+   Subject = `{{subject}}`, body = `{{{message_html}}}` (three braces, HTML
+   template). Put its ID in `site-config.js` as `emailjs.broadcastTemplateId`.
+   Free EmailJS plans cap monthly sends, so check your plan for large lists.
+
+The signup popup now tells guests they may receive offers and open dates, which
+is what makes these messages appropriate to send.
+
 ## Booking requests & the signed agreement
 
 When a guest completes step 3 of the booking flow they have already ticked

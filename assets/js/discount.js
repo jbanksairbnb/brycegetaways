@@ -77,19 +77,21 @@
     return fetch(sbUrl(c), { method: "POST", headers: sbHeaders(c, { Prefer: "return=minimal" }), body: JSON.stringify(rec) })
       .then(function (r) { return r.ok ? true : null; }).catch(function () { return null; });
   }
+  // Lookups and redemption go through security-definer functions (supabase/guests.sql)
+  // so the table itself never has to be readable or editable with the public key.
+  function sbRpc(c, fn, args) {
+    return fetch(c.supabaseUrl.replace(/\/$/, "") + "/rest/v1/rpc/" + fn, { method: "POST", headers: sbHeaders(c), body: JSON.stringify(args) });
+  }
   function sbFind(field, value) {
-    var c = sb(); if (!c) return Promise.resolve(null);
-    return fetch(sbUrl(c, field + "=eq." + encodeURIComponent(value) + "&select=email,name,code,status&limit=1"), { headers: sbHeaders(c) })
+    var c = sb(); if (!c || field !== "code") return Promise.resolve(null);
+    return sbRpc(c, "lookup_discount", { p_code: value })
       .then(function (r) { return r.ok ? r.json() : []; })
       .then(function (rows) { return (rows && rows[0]) || null; })
       .catch(function () { return null; });
   }
-  function sbSetRedeemed(email) {
-    var c = sb(); if (!c || !email) return Promise.resolve(null);
-    return fetch(sbUrl(c, "email=eq." + encodeURIComponent(email)), {
-      method: "PATCH", headers: sbHeaders(c, { Prefer: "return=minimal" }),
-      body: JSON.stringify({ status: "redeemed", redeemed_at: new Date().toISOString() })
-    }).then(function (r) { return r.ok; }).catch(function () { return null; });
+  function sbSetRedeemed(code) {
+    var c = sb(); if (!c || !code) return Promise.resolve(null);
+    return sbRpc(c, "redeem_discount", { p_code: code }).then(function (r) { return r.ok; }).catch(function () { return null; });
   }
 
   /* ------------------------------------------------------ signup pipeline */
@@ -156,7 +158,7 @@
         '<label class="dq-field"><span>Email</span><input type="email" id="dq-email" autocomplete="email" required></label>' +
         '<div class="dq-err" id="dq-err" role="alert"></div>' +
         '<button type="submit" class="btn btn--dark dq-submit">SEND MY $' + amount() + ' CODE</button>' +
-        '<p class="dq-fine">One code per guest, good for your first booking only. We’ll only e-mail you about your stay — no spam, unsubscribe anytime.</p>' +
+        '<p class="dq-fine">One code per guest, good for your first booking only. We’ll e-mail you about your stay, plus the occasional offer or open dates — never spam, and every e-mail has an unsubscribe link.</p>' +
       '</form>';
     var form = els.body.querySelector(".dq-form");
     form.addEventListener("submit", function (e) {
@@ -294,7 +296,7 @@
       var r = get();
       if (r) { r.status = "redeemed"; r.email = r.email || email; set(r); }
       syncBanner();
-      return sbSetRedeemed(email || (r && r.email));
+      return sbSetRedeemed(r && r.code);
     }
   };
 

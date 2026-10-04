@@ -78,6 +78,15 @@
     .bkg-badge--cancelled { color: var(--muted-grey); text-decoration: line-through; }
     .bkg-flag { margin-top: 8px; padding: 7px 10px; font-size: 13px; background: #fdf3f1; border-left: 3px solid #a8442f; color: #8c3524; }
     .bkg-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .gst-pick { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+    .gst-pick .bkg-guest, .gst-pick .bkg-meta { display: block; }
+    .gst-stay { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .gst-stay select, .gst-stay input, #gst-notes, .gst-tools input, .gst-tools select, #gst-subject, #gst-body, #gst-testTo { font-family: var(--sans); font-size: 14px; padding: 9px 11px; border: 1px solid var(--hairline-strong); background: var(--bone); }
+    .gst-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+    .gst-sub { display: block; margin-top: 12px; font-size: 14px; }
+    #gst-subject, #gst-body { width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+    .gst-preview { border: 1px solid var(--hairline); padding: 12px 14px; margin: 10px 0; font-size: 14px; background: #fff; }
+    .gst-hist { padding: 4px 0; border-bottom: 1px solid var(--hairline); }
     @media (max-width: 620px) { .bkg-actions .mgr-btn { flex: 1 1 auto; } }
   </style>
 </head>
@@ -214,6 +223,48 @@
       <div id="bkg-status" class="mgr-status"></div>
     </div>
 
+    <!-- Guest list & messages -->
+    <div class="mgr-card" id="gst">
+      <div class="mgr-top">
+        <h2 class="bkg-title">Guests &amp; messages</h2>
+        <span class="bkg-summary" id="gst-summary"></span>
+      </div>
+
+      <div id="gst-login"><p class="mgr-sub">Sign in under <strong>Bookings</strong> above to see your guest list and send messages.</p></div>
+
+      <div id="gst-panel" hidden>
+        <p class="mgr-sub">Everyone who claims the discount is added here automatically. Add guests by hand, import past bookings, then message one guest or a group.</p>
+        <div class="gst-tools">
+          <input id="gst-search" type="search" placeholder="Search name, e-mail, tag">
+          <select id="gst-filter"></select>
+          <button id="gst-add" class="mgr-btn mgr-btn--ghost" type="button">Add guest</button>
+          <button id="gst-import" class="mgr-btn mgr-btn--ghost" type="button">Import from bookings</button>
+          <button id="gst-selall" class="mgr-btn mgr-btn--ghost" type="button">Select all shown</button>
+          <button id="gst-selnone" class="mgr-btn mgr-btn--ghost" type="button">Clear selection</button>
+        </div>
+        <div id="gst-editor" class="bkg-card" hidden></div>
+        <div id="gst-list"></div>
+
+        <div id="gst-compose">
+          <h3 class="bkg-h">Write a message</h3>
+          <p class="bkg-meta" id="gst-to"></p>
+          <input id="gst-subject" type="text" placeholder="Subject">
+          <textarea id="gst-body" rows="8" placeholder="Hi {{first_name}}, we have a few open weekends this winter and wanted to offer you&hellip;"></textarea>
+          <p class="bkg-meta">Use <code>{{first_name}}</code> or <code>{{name}}</code> to personalise. An unsubscribe link is added automatically.</p>
+          <div id="gst-preview" class="gst-preview" hidden></div>
+          <div class="gst-tools">
+            <button id="gst-previewbtn" class="mgr-btn mgr-btn--ghost" type="button">Preview</button>
+            <input id="gst-testTo" type="email" placeholder="Send a test to&hellip;">
+            <button id="gst-test" class="mgr-btn mgr-btn--ghost" type="button">Send test</button>
+            <button id="gst-send" class="mgr-btn" type="button" disabled>Send</button>
+          </div>
+        </div>
+
+        <details class="mgr-help"><summary>Message history</summary><div id="gst-history"></div></details>
+      </div>
+      <div id="gst-status" class="mgr-status"></div>
+    </div>
+
     <details class="mgr-help">
       <summary>How to set this up (one time)</summary>
       <ol>
@@ -227,9 +278,11 @@
     </details>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="assets/js/site-config.js"></script>
   <script src="assets/js/bookings-store.js"></script>
   <script src="assets/js/manage.js"></script>
   <script src="assets/js/manage-bookings.js"></script>
+  <script src="assets/js/manage-guests.js"></script>
 </body>
 </html>
