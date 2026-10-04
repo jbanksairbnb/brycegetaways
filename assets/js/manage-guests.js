@@ -308,9 +308,52 @@
     return window.emailjs.send(e.serviceId, e.broadcastTemplateId, emailParams(g, m), { publicKey: e.publicKey });
   }
 
+  /* ----------------------------------------------------- message templates */
+  // Starting points for the composer. Anything in [[double brackets]] is a blank to
+  // fill in; sending is blocked until none are left. {{first_name}} is filled per guest.
+  var BOOK_LINK = "https://www.brycemountaingetaways.com/#homes";
+  var TEMPLATES = [
+    { name: "Past-guest thank-you + discount",
+      subject: "Thank you for staying with us, {{first_name}} — [[AMOUNT]] off your next stay",
+      body: "Hi {{first_name}},\n\nThank you for staying with us at Bryce Mountain Getaways — we loved having you.\n\n" +
+        "As a thank-you, we'd like to take [[AMOUNT]] off your next direct booking. Check dates and book here: " + BOOK_LINK +
+        "\n\nJust mention this e-mail in the notes when you book and we'll apply it. Valid through [[EXPIRES]].\n\nWarmly,\nBryce Mountain Getaways" },
+    { name: "Open dates + discount",
+      subject: "Open dates at Bryce Mountain — [[AMOUNT]] off for you",
+      body: "Hi {{first_name}},\n\nWe have some open dates coming up at The Chalet and The Cabin: [[DATES]].\n\n" +
+        "Book direct for [[AMOUNT]] off — see availability and rates here: " + BOOK_LINK +
+        "\n\nMention this e-mail when you book and we'll apply the discount. Offer good through [[EXPIRES]].\n\nWarmly,\nBryce Mountain Getaways" },
+    { name: "Last-minute weekend deal",
+      subject: "Last-minute weekend at Bryce — [[PERCENT]] off",
+      body: "Hi {{first_name}},\n\nA weekend just opened up: [[DATES]] at [[HOME]]. Book it direct and take [[PERCENT]] off.\n\n" +
+        "Grab it here before it's gone: " + BOOK_LINK + "\n\nMention this e-mail when you book. First to book gets it.\n\nBryce Mountain Getaways" },
+    { name: "Reminder: your $50 code is waiting",
+      subject: "Your $50 off is still waiting, {{first_name}}",
+      body: "Hi {{first_name}},\n\nYou signed up for $50 off your first stay with us and haven't used it yet. Your code is still good — " +
+        "it comes off your total automatically when you book from the same link in your first e-mail, or you can check dates here: " + BOOK_LINK +
+        "\n\nWe'd love to host you.\n\nBryce Mountain Getaways" }
+  ];
+
+  function fillTemplateMenu() {
+    el.tpl.innerHTML = '<option value="">Start from a template…</option>' + TEMPLATES.map(function (t, i) {
+      return '<option value="' + i + '">' + esc(t.name) + "</option>";
+    }).join("");
+    el.tpl.addEventListener("change", function () {
+      var t = TEMPLATES[el.tpl.value];
+      if (!t) return;
+      if ((el.subject.value.trim() || el.body.value.trim()) && !window.confirm("Replace what you've written with this template?")) { el.tpl.value = ""; return; }
+      el.subject.value = t.subject; el.body.value = t.body;
+      status("Template loaded — fill in the [[blanks]], then preview.", false);
+      el.tpl.value = "";
+    });
+  }
+  function blanksLeft(text) { var m = String(text).match(/\[\[[^\]]*\]\]/g); return m ? m[0] : null; }
+
   function validateCompose() {
     var s = el.subject.value.trim(), b = el.body.value.trim();
     if (!s || !b) { status("Write a subject and a message first.", true); return null; }
+    var blank = blanksLeft(s) || blanksLeft(b);
+    if (blank) { status("Fill in " + blank + " before sending.", true); return null; }
     if (!emailReady()) { status("Sending isn't set up yet — add emailjs.broadcastTemplateId to site-config.js (see README → Guest list & messages).", true); return null; }
     return { subject: s, body: b };
   }
@@ -403,11 +446,12 @@
   function init() {
     el.card = document.getElementById("gst");
     if (!el.card) return;
-    ["login", "panel", "status", "summary", "list", "editor", "search", "filter", "compose", "to", "subject", "body", "send", "preview", "testTo", "history"]
+    ["login", "panel", "status", "summary", "list", "editor", "search", "filter", "compose", "to", "subject", "body", "tpl", "send", "preview", "testTo", "history"]
       .forEach(function (k) { el[k] = document.getElementById("gst-" + k); });
 
     if (!api() || !api().configured()) { el.login.innerHTML = '<p class="mgr-sub">Supabase isn\'t configured yet.</p>'; return; }
 
+    fillTemplateMenu();
     el.search.addEventListener("input", render);
     el.filter.addEventListener("change", render);
     document.getElementById("gst-add").addEventListener("click", function () { openEditor(null); });
