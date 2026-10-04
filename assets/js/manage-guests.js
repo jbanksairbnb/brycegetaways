@@ -101,7 +101,8 @@
     refreshFilterOptions();
     var list = visible();
     var subscribed = guests.filter(function (g) { return g.subscribed; }).length;
-    el.summary.textContent = guests.length + " guests · " + subscribed + " subscribed";
+    el.summary.textContent = guests.length + " guests · " + subscribed + " subscribed" +
+      (guests.length > subscribed ? " · " + (guests.length - subscribed) + " unsubscribed" : "");
 
     if (!list.length) {
       el.list.innerHTML = '<p class="mgr-sub">' + (guests.length ? "No guests match this filter." :
@@ -124,16 +125,17 @@
   function row(g) {
     var stays = staysOf(g).slice().sort(function (a, b) { return String(b.check_in).localeCompare(String(a.check_in)); })
       .map(function (s) { return esc(HOMES[s.home] || s.home || "Stay") + " " + fmt(s.check_in) + (s.check_out ? " → " + fmt(s.check_out) : ""); });
-    return '<div class="bkg-card gst-card" data-id="' + esc(g.id) + '">' +
+    return '<div class="bkg-card gst-card' + (g.subscribed ? "" : " gst-unsub") + '" data-id="' + esc(g.id) + '">' +
       '<div class="bkg-card__top">' +
         '<label class="gst-pick"><input type="checkbox"' + (selected[g.id] ? " checked" : "") + (g.subscribed ? "" : " disabled") + '>' +
           '<span><span class="bkg-guest">' + esc(g.name || "(no name)") + '</span>' +
           '<span class="bkg-meta">' + esc(g.email) + (g.phone ? " · " + esc(g.phone) : "") + "</span></span></label>" +
-        '<span class="bkg-badge">' + (g.subscribed ? esc(g.source) : "unsubscribed") + "</span>" +
+        '<span class="bkg-badge">' + (g.subscribed ? esc(g.source) : "unsubscribed" + (g.unsubscribed_at ? " " + fmt(g.unsubscribed_at) : "")) + "</span>" +
       "</div>" +
       (stays.length ? '<div class="bkg-meta">Stays: ' + stays.join(" · ") + "</div>" : '<div class="bkg-meta">No stays recorded</div>') +
       ((g.tags || []).length ? '<div class="bkg-meta">Tags: ' + (g.tags || []).map(esc).join(", ") + "</div>" : "") +
       (g.notes ? '<div class="bkg-meta">' + esc(g.notes) + "</div>" : "") +
+      (g.subscribed ? "" : '<div class="gst-flag">Unsubscribed — will not receive any more e-mails.</div>') +
       '<div class="bkg-actions">' +
         (g.subscribed ? '<button type="button" class="mgr-btn mgr-btn--ghost" data-act="msg">Message</button>' : "") +
         '<button type="button" class="mgr-btn mgr-btn--ghost" data-act="edit">Edit</button>' +
@@ -371,7 +373,9 @@
     var c = validateCompose(); if (!c) return;
     var to = el.testTo.value.trim();
     if (!validEmail(to)) { status("Enter the e-mail address to send the test to.", true); return; }
-    var g = recipients()[0] || { name: "Alex Sample" };
+    // Use the matching guest's own link so the test's Unsubscribe link really works.
+    var g = guests.filter(function (x) { return x.email.toLowerCase() === to.toLowerCase(); })[0] || recipients()[0];
+    if (!g) { status("Add that address as a guest (or tick a guest) first, so the test has a working unsubscribe link.", true); return; }
     g = { name: g.name, email: to, unsub_token: g.unsub_token };
     var m = build(g, "[TEST] " + c.subject, c.body);
     status("Sending test…", false);
@@ -381,11 +385,23 @@
 
   function sendAll() {
     var c = validateCompose(); if (!c) return;
-    var list = recipients();
-    if (!list.length) return;
-    if (!window.confirm("Send “" + c.subject + "” to " + list.length + " guest" + (list.length === 1 ? "" : "s") + "? This can't be undone.")) return;
-    var e = emailReady(), batch = new Date().toISOString(), ok = 0, bad = 0, i = 0;
+    var before = recipients().length;
     el.send.disabled = true;
+    status("Checking the latest unsubscribes…", false);
+    // Re-read the list so anyone who unsubscribed since this page loaded is dropped.
+    return call(table("guests") + "?select=*&order=created_at.desc", "GET").then(function (rows) {
+      guests = rows || [];
+      var list = recipients();
+      render();
+      if (list.length < before) status((before - list.length) + " selected guest(s) have unsubscribed and were removed from this send.", false);
+      if (!list.length) { el.send.disabled = false; return; }
+      return sendList(c, list);
+    }).catch(function (e) { el.send.disabled = false; status("Couldn't check the list, nothing was sent: " + e.message, true); });
+  }
+
+  function sendList(c, list) {
+    if (!window.confirm("Send “" + c.subject + "” to " + list.length + " guest" + (list.length === 1 ? "" : "s") + "? This can't be undone.")) { el.send.disabled = false; updateCompose(); return; }
+    var e = emailReady(), batch = new Date().toISOString(), ok = 0, bad = 0, i = 0;
 
     function next() {
       if (i >= list.length) {
@@ -462,6 +478,8 @@
     document.getElementById("gst-test").addEventListener("click", sendTest);
     el.send.addEventListener("click", sendAll);
     document.addEventListener("bmg:auth", sync);
+    // Pick up unsubscribes that happened while this tab sat open.
+    window.addEventListener("focus", function () { if (api().session() && !el.panel.hidden && !editing) load(); });
     sync();
   }
 
