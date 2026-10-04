@@ -126,6 +126,7 @@
     configured: configured, save: save,
     signIn: signIn, signOut: signOut, session: session,
     list: list, update: update,
+    rest: rest, token: token, cfg: cfg,
     nightsOf: nightsOf, holdsDates: holdsDates, addDaysISO: addDaysISO
   };
 })();

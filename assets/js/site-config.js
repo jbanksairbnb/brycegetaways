@@ -22,7 +22,8 @@ window.BMGConfig = {
     templateId: "template_je53hdm",        // booking confirmation + signed agreement (guest)
     ownerTemplateId: "",                    // booking notification addressed to the owners; blank reuses templateId
     contactTemplateId: "",                  // Contact-Us form (owner + auto-reply)
-    discountTemplateId: "template_guuhec9"  // First-booking $50 signup auto-reply (guest)
+    discountTemplateId: "template_guuhec9", // First-booking $50 signup auto-reply (guest)
+    broadcastTemplateId: ""                 // Owner-written messages from /manage.html → Guests (see README)
   },
 
   /* Bookings ledger (Supabase) — every signed rental agreement is filed here and

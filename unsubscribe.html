@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Unsubscribe — Bryce Mountain Getaways</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    body { padding: 0; }
+    .unsub { max-width: 520px; margin: 0 auto; padding: 90px 24px; text-align: center; }
+    .unsub h1 { font-family: var(--serif); font-weight: 400; font-size: 34px; margin-bottom: 14px; }
+    .unsub p { color: var(--body-grey); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="unsub">
+    <h1 id="u-title">One moment…</h1>
+    <p id="u-msg"></p>
+    <p><a href="index.html">← Back to Bryce Mountain Getaways</a></p>
+  </div>
+  <script src="assets/js/site-config.js"></script>
+  <script>
+    (function () {
+      var t = document.getElementById("u-title"), m = document.getElementById("u-msg");
+      function done(title, msg) { t.textContent = title; m.textContent = msg; }
+      var q = window.location.search.match(/[?&]t=([0-9a-fA-F-]{36})/);
+      var c = (window.BMGConfig && window.BMGConfig.discount) || {};
+      if (!q || !c.supabaseUrl || !c.supabaseAnonKey) {
+        done("Link not recognized", "This unsubscribe link looks incomplete. Reply to any of our e-mails and we’ll remove you by hand.");
+        return;
+      }
+      fetch(c.supabaseUrl.replace(/\/$/, "") + "/rest/v1/rpc/unsubscribe_guest", {
+        method: "POST",
+        headers: { apikey: c.supabaseAnonKey, Authorization: "Bearer " + c.supabaseAnonKey, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_token: q[1] })
+      }).then(function (r) { return r.ok ? r.json() : false; }).then(function (ok) {
+        if (ok === true) done("You’re unsubscribed", "We won’t send you any more offers or availability updates. Sorry to see you go.");
+        else done("Link not recognized", "We couldn’t match this link. Reply to any of our e-mails and we’ll remove you by hand.");
+      }).catch(function () {
+        done("Something went wrong", "Please try again in a moment, or reply to any of our e-mails and we’ll remove you by hand.");
+      });
+    })();
+  </script>
+</body>
+</html>
