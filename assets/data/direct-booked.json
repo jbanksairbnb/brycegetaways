@@ -1,9 +1,8 @@
 {
-  "updated": "2026-10-28T17:12:28.100Z",
+  "updated": "2026-10-29T17:27:49.314Z",
   "note": "Nights held by direct bookings whose deposit has been received. Generated from the Supabase bookings ledger by scripts/sync-bookings.js — do not edit by hand.",
   "blocked": {
     "chalet": [
-      "2026-10-26",
       "2026-11-01",
       "2026-11-02"
     ],
