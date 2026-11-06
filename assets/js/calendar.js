@@ -148,7 +148,7 @@
           // check-out date only.
           cls += " cal-cell--blocked cal-cell--checkout";
           html += '<div class="' + cls + '" data-date="' + s + '" data-checkout-only="1" title="Check-out only">' +
-            '<span class="cal-daynum">' + day + '</span><span class="cal-min">out only</span></div>';
+            '<span class="cal-daynum">' + day + '</span><span class="cal-min">check-out only</span></div>';
         } else if (isBlocked(h, s)) {
           cls += " cal-cell--blocked";
           html += '<div class="' + cls + '"><span class="cal-daynum">' + day + "</span></div>";
