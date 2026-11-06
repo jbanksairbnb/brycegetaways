@@ -142,6 +142,13 @@
         if (cd < t) {
           cls += " cal-cell--past";
           html += '<div class="' + cls + '"><span class="cal-daynum">' + day + "</span></div>";
+        } else if (isBlocked(h, s) && iso(addDays(cd, -1)) >= iso(t) && !isBlocked(h, iso(addDays(cd, -1)))) {
+          // Booked night, but the night before is open: a guest can still check
+          // out this morning (same-day turnover), so it's selectable as a
+          // check-out date only.
+          cls += " cal-cell--blocked cal-cell--checkout";
+          html += '<div class="' + cls + '" data-date="' + s + '" data-checkout-only="1" title="Check-out only">' +
+            '<span class="cal-daynum">' + day + '</span><span class="cal-min">out only</span></div>';
         } else if (isBlocked(h, s)) {
           cls += " cal-cell--blocked";
           html += '<div class="' + cls + '"><span class="cal-daynum">' + day + "</span></div>";
@@ -177,10 +184,22 @@
 
   /* ---------------------------------------------------- interaction */
   function onDayClick(e) {
-    var cell = e.target.closest(".cal-cell--open");
+    var cell = e.target.closest(".cal-cell--open, .cal-cell--checkout");
     if (!cell) return;
     var s = cell.getAttribute("data-date");
-    if (!state.start || state.end || parseISO(s) <= parseISO(state.start)) {
+    if (cell.hasAttribute("data-checkout-only")) {
+      // Only valid as the end of a stay that starts earlier with no booked nights between.
+      if (state.start && !state.end && parseISO(s) > parseISO(state.start) &&
+          !rangeHasBlocked(home(), state.start, s)) {
+        state.end = s;
+      } else {
+        state.start = null; state.end = null;
+        paintSelection();
+        els.summary.textContent = "That date is check-out only — pick a check-in date before it";
+        els.request.disabled = true;
+        return;
+      }
+    } else if (!state.start || state.end || parseISO(s) <= parseISO(state.start)) {
       state.start = s; state.end = null;           // begin a new selection
     } else if (rangeHasBlocked(home(), state.start, s)) {
       state.start = s; state.end = null;           // can't span a booked night

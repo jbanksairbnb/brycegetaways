@@ -783,6 +783,11 @@ a.venue:hover .venue__link { color: var(--pine-dark); }
   background: repeating-linear-gradient(45deg, #e9e7e0, #e9e7e0 3px, #dddbd3 3px, #dddbd3 6px);
 }
 .cal-cell--blocked .cal-daynum { text-decoration: line-through; }
+.cal-cell--checkout { cursor: pointer; }
+.cal-cell--checkout .cal-daynum { text-decoration: none; }
+.cal-cell--checkout:hover { border-color: var(--pine); }
+.cal-cell--checkout.is-end { background: var(--pine); border-color: var(--pine); color: #fff; }
+.cal-cell--checkout.is-end .cal-min { color: rgba(255, 255, 255, .9); }
 .cal-cell--open { background: #fff; border-color: var(--hairline); cursor: pointer; transition: background .1s ease, color .1s ease; }
 .cal-cell--open:hover { background: var(--mist); }
 .cal-cell--open.is-range { background: var(--mist); }
